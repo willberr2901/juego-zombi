@@ -1,4 +1,4 @@
-/* script.js - V7.0 ESTABLE Y SIN PARPADEOS */
+/* script.js - V8.0 COMPATIBLE */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // --- AUDIO AMBIENTAL (SIN TRUENOS MOLESTOS) ---
+    // --- AUDIO ---
     let audioCtx;
     function initAudio() {
         if (!audioCtx) {
@@ -14,19 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
             audioCtx = new AC();
         }
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        playAmbience(); // Sonido de viento suave
+        playAmbience();
     }
 
     function playAmbience() {
         if(!audioCtx) return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = 'triangle'; // Sonido suave
-        osc.frequency.value = 50; // Tono bajo
-        gain.gain.value = 0.05; // Volumen bajo
+        osc.type = 'triangle'; 
+        osc.frequency.value = 60;
+        gain.gain.value = 0.05;
         osc.connect(gain); gain.connect(audioCtx.destination);
         osc.start();
-        // No lo paramos, queda de fondo (Drone)
     }
 
     function playSound(type) {
@@ -42,12 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
             gain.gain.setValueAtTime(0.05, now);
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
-        } else if (type === 'BOSS') {
-            osc.type = 'sawtooth';
+        } else if (type === 'HIT') {
+            osc.type = 'square';
             osc.frequency.setValueAtTime(100, now);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.linearRampToValueAtTime(0, now + 1);
-            osc.start(now); osc.stop(now + 1);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.linearRampToValueAtTime(0, now + 0.1);
+            osc.start(now); osc.stop(now + 0.1);
         }
     }
 
@@ -101,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dragging = false; joyWrapper.style.display = "none"; joyX = 0; joyY = 0;
     });
 
-    // --- DISPARO & PC ---
+    // --- DISPARO & MOUSE ---
     let mouseX = 0, mouseY = 0;
     window.addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
 
@@ -121,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("btn-fire").addEventListener("touchstart", (e)=>{e.preventDefault();shoot();});
     document.addEventListener("mousedown", (e)=>{ if(gameRunning && e.target.tagName !== 'BUTTON') shoot(); });
 
+    // TECLADO
     const keys = {};
     window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
     window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
@@ -165,14 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Boss
         if(boss) {
             let angle = Math.atan2(player.y - boss.y, player.x - boss.x);
-            boss.x += Math.cos(angle)*2.2; boss.y += Math.sin(angle)*2.2;
+            boss.x += Math.cos(angle)*2; boss.y += Math.sin(angle)*2;
             if(Math.hypot(player.x-boss.x, player.y-boss.y) < 50) player.hp -= 1;
         }
 
-        // Items
         for(let i=items.length-1; i>=0; i--) {
             if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) {
                 ammo += 10; document.getElementById("ammo").innerText = ammo;
@@ -183,9 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function spawnBoss() {
-        boss = { x: canvas.width/2, y: -100, hp: 40, maxHp: 40 };
+        boss = { x: canvas.width/2, y: -100, hp: 50, maxHp: 50 };
         document.getElementById("log").innerText = "¡JEFE EN CAMINO!";
-        playSound('BOSS');
     }
 
     function draw() {
