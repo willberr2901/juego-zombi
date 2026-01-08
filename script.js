@@ -6,11 +6,20 @@ canvas.height = innerHeight;
 
 let gameRunning = false;
 
+// === 1. CARGAR IMÁGENES (NUEVO) ===
+// Crea los objetos de imagen
+const imgJugador = new Image();
+imgJugador.src = "personaje.png"; // ¡Asegúrate que el nombre sea EXACTO!
+
+// Opcional: Imagen de fondo
+const imgSuelo = new Image();
+imgSuelo.src = "suelo.jpg"; 
+
 // PLAYER
 const player = {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    radius: 20,
+    radius: 25, // Un poco más grande para que se vea bien la foto
     speed: 4
 };
 
@@ -27,7 +36,7 @@ startBtn.onclick = () => {
     animate();
 };
 
-// ===== JOYSTICK =====
+// ===== JOYSTICK (Sin cambios, tu código está bien) =====
 const joystickBase = document.getElementById("joystick-base");
 const joystickStick = document.getElementById("joystick-stick");
 
@@ -75,16 +84,35 @@ function update() {
     player.x += joyX * player.speed;
     player.y += joyY * player.speed;
 
-    player.x = Math.max(0, Math.min(canvas.width, player.x));
-    player.y = Math.max(0, Math.min(canvas.height, player.y));
+    // Límites de pantalla
+    player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
+    player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
 }
 
 function draw() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.beginPath();
-    ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2);
-    ctx.fillStyle = "#3498db";
-    ctx.fill();
+    // Limpiar pantalla
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // === 2. DIBUJAR FONDO (OPCIONAL) ===
+    // Si tienes imagen de suelo, descomenta la línea de abajo:
+    // ctx.drawImage(imgSuelo, 0, 0, canvas.width, canvas.height);
+
+    // === 3. DIBUJAR JUGADOR (CAMBIO IMPORTANTE) ===
+    // Antes usabas ctx.arc (círculo). Ahora usamos ctx.drawImage
+    
+    // ctx.drawImage(imagen, x, y, ancho, alto)
+    // Restamos el radio para que la imagen quede centrada en la coordenada X,Y
+    ctx.drawImage(
+        imgJugador, 
+        player.x - player.radius, 
+        player.y - player.radius, 
+        player.radius * 2, 
+        player.radius * 2
+    );
+    
+    // (Opcional) Si la imagen no carga, dibuja un borde rojo para saber dónde está
+    // ctx.strokeStyle = "red";
+    // ctx.strokeRect(player.x - player.radius, player.y - player.radius, player.radius * 2, player.radius * 2);
 }
 
 function animate() {
