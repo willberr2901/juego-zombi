@@ -3,58 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Sala de Control</title>
+    <title>Ciudad Z: Bio-Terror</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="menu-bg"></div>
-
-    <div id="menu-screen" class="menu-overlay">
+    <div class="scanlines"></div> <div class="blood-bg"></div> <div id="menu-screen" class="menu-overlay">
         
-        <div class="panel left-panel">
-            <h3>📂 REPORTE V15.0</h3>
-            <ul class="info-list">
-                <li class="new"><span>+</span> Menú Táctico</li>
-                <li class="new"><span>+</span> Terror Visual</li>
-                <li class="fix"><span>*</span> Corrección de Bugs</li>
-                <li class="del"><span>-</span> Sonidos Molestos</li>
+        <div class="cyber-panel left-panel">
+            <h3 class="glitch-header">ERROR_LOG_V16</h3>
+            <ul class="data-list">
+                <li class="plus"><span>[+]</span> Menú Bio-Terror</li>
+                <li class="plus"><span>[+]</span> Iluminación Roja</li>
+                <li class="minus"><span>[-]</span> Errores Visuales</li>
             </ul>
-            <div class="status-box">ESTADO: <span class="blink">CRÍTICO</span></div>
+            <div class="warning-box">
+                ⚠️ NIVEL DE AMENAZA: <span class="blink">EXTREMO</span>
+            </div>
         </div>
 
-        <div class="panel center-panel">
-            <div class="boss-container">
+        <div class="center-stage">
+            <div class="boss-glow-fx">
                 <img src="imagenes/boss.png" alt="BOSS" class="boss-img">
             </div>
             
-            <h1 class="game-title">CIUDAD <span class="blood">Z</span></h1>
+            <h1 class="toxic-title">CIUDAD <span class="bleed">Z</span></h1>
             
-            <button id="start-btn">ENTRAR A LA ZONA</button>
+            <button id="start-btn">INICIAR CAOS</button>
         </div>
 
-        <div class="panel right-panel">
-            <h3>📝 MISIÓN #01</h3>
-            <p class="lore">
-                La ciudad ha caído. Eres el único superviviente del equipo Alpha.
+        <div class="cyber-panel right-panel">
+            <h3 class="glitch-header">CONFIDENCIAL</h3>
+            <p class="lore-text">
+                "No queda nadie. Solo tú y ellos. La cura se ha perdido."
             </p>
-            <hr>
-            <p class="instructions">
-                <strong>OBJETIVO:</strong><br>
-                Sobrevive a las oleadas de infectados y elimina al Líder.
-            </p>
+            <div class="objective-display">
+                <p>OBJETIVO PRIMARIO:</p>
+                <span>MATAR AL PACIENTE CERO</span>
+            </div>
         </div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
-        <div class="top-bar">
-            <div class="score-box">💀 <span id="score">0</span></div>
-            <div class="level-box">NIV: <span id="level">1</span></div>
+        <div class="hud-top-bar">
+            <div class="hud-slot">💀 <span id="score">0</span></div>
+            <div class="hud-slot">NIV: <span id="level">1</span></div>
+            <div class="hud-slot">🛑 <span id="ammo">12</span></div>
         </div>
-        <div class="stats">
-            <p>❤️ <span id="health">100</span>% | 🔫 <span id="ammo">12</span></p>
-            <p id="log">Sobrevive...</p>
+        <div class="health-system">
+            <div class="hp-border"><div id="health-bar"></div></div>
         </div>
+        <button id="pause-btn" class="mini-btn">II</button>
     </div>
 
     <div id="touch-zone"></div>
