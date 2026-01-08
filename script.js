@@ -1,4 +1,4 @@
-/* Archivo: script.js - VERSIÓN FINAL CORREGIDA (NOMBRES EN INGLÉS) */
+/* Archivo: script.js - VERSIÓN FINAL CORREGIDA (CON MOVIMIENTO) */
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -21,7 +21,7 @@ function playSound(type) {
     } catch (e) {}
 }
 
-// --- IMÁGENES (COINCIDEN CON TU FOTO: player.png, zombie.png, etc.) ---
+// --- IMÁGENES (Nombres en inglés, como en tu carpeta) ---
 const playerImg = new Image(); playerImg.src = 'imagenes/player.png'; 
 const zombieImg = new Image(); zombieImg.src = 'imagenes/zombie.png';
 const survivorImg = new Image(); survivorImg.src = 'imagenes/survivor.png';
@@ -131,6 +131,11 @@ function startSpawners(){clearInterval(spawnZ);clearInterval(spawnS);spawnZ=setI
 
 function update() {
     frameCount++;handleMobileShooting();
+    
+    // --- MOVIMIENTO DE ENTIDADES (¡ESTO FALTABA!) ---
+    zombies.forEach(z => z.update()); // ¡Zombis, muévanse!
+    if(boss) boss.update(); // ¡Jefe, muévase!
+    
     if(keys['w']||keys['ArrowUp'])player.y-=player.speed;if(keys['s']||keys['ArrowDown'])player.y+=player.speed;
     if(keys['a']||keys['ArrowLeft'])player.x-=player.speed;if(keys['d']||keys['ArrowRight'])player.x+=player.speed;
     player.x=Math.max(0,Math.min(canvas.width,player.x));player.y=Math.max(0,Math.min(canvas.height,player.y));
@@ -139,7 +144,10 @@ function update() {
     for(let i=floatingTexts.length-1;i>=0;i--){floatingTexts[i].update();if(floatingTexts[i].life<=0)floatingTexts.splice(i,1);}
     
     for(let i=bullets.length-1;i>=0;i--){
-        let b=bullets[i];let hit=false;
+        let b=bullets[i];
+        b.update(); // ¡Balas, muévanse! (¡ESTO TAMBIÉN FALTABA!)
+        
+        let hit=false;
         for(let j=zombies.length-1;j>=0;j--){
             let z=zombies[j];
             if(Math.hypot(b.x-z.x,b.y-z.y)<b.radius+z.radius){
@@ -185,4 +193,3 @@ function animate() {
 
 document.getElementById('start-btn').addEventListener('click', startGame);
 menuScreen.style.display='flex';gameUI.style.display='none';
-
