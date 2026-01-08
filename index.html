@@ -2,53 +2,99 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Mobile Edition</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ciudad Z · Mobile Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- ===== MENÚ PRINCIPAL ===== -->
     <div id="menu-screen" class="menu-overlay">
         <h1 id="menu-title">CIUDAD Z</h1>
         <p id="menu-subtitle">Sobrevive a la infección</p>
-        <p class="high-score-display">🏆 MEJOR RÉCORD: <span id="menu-highscore">0</span></p>
+
+        <!-- Versión -->
+        <p class="version">Versión 1.2.0 · Mobile Edition</p>
+
+        <!-- Novedades -->
+        <div class="update-box">
+            <strong>🆕 Nueva actualización</strong>
+            <ul>
+                <li>Sistema de oleadas</li>
+                <li>Mejor feedback de daño</li>
+                <li>Mejoras de combate</li>
+            </ul>
+        </div>
+
+        <!-- Récord -->
+        <p class="high-score-display">
+            🏆 MEJOR RÉCORD: <span id="menu-highscore">0</span>
+        </p>
+
+        <!-- Resultado final -->
         <p id="final-score" style="display:none;"></p>
+
+        <!-- Botón -->
         <button id="start-btn">JUGAR</button>
+
+        <!-- Instrucciones -->
         <div class="instructions">
-            <p>PC: W A S D + Clic</p>
-            <p>Móvil: Usa los botones en pantalla</p>
+            <p>🖥️ PC: W A S D + Clic</p>
+            <p>📱 Móvil: Usa los botones en pantalla</p>
         </div>
     </div>
 
-    <div id="game-ui" class="ui-container" style="display: none;">
+    <!-- ===== HUD DEL JUEGO ===== -->
+    <div id="game-ui" class="ui-container" style="display:none;">
+
+        <!-- Barra superior -->
         <div class="top-bar">
-            <div class="score-box">PTS: <span id="score">0</span></div>
-            <div class="level-box">NIV: <span id="level">1</span></div>
+            <div class="score-box">PTS <span id="score">0</span></div>
+            <div class="level-box">NIV <span id="level">1</span></div>
             <div class="record-box">🏆 <span id="ui-highscore">0</span></div>
         </div>
 
-        <div class="stats">
-            <p>❤️ <span id="health">100</span>% | 🔫 <span id="ammo">12</span></p>
+        <!-- Estado de partida -->
+        <p id="game-status" class="status">OLEADA 1</p>
+
+        <!-- Estadísticas principales -->
+        <div class="stats main-stats">
+            <p>❤️ <span id="health">100</span>%</p>
+            <p>🔫 <span id="ammo">12</span></p>
+        </div>
+
+        <!-- Estadísticas secundarias -->
+        <div class="stats secondary-stats">
             <p>🧪 Cura: <span id="cure">0</span>%</p>
-            <p id="log" style="color:white; font-size:12px;">Sobrevive...</p>
+            <p id="log">Sobrevive...</p>
         </div>
     </div>
 
+    <!-- ===== CONTROLES MÓVILES ===== -->
     <div id="mobile-controls">
+
         <div class="dpad">
-            <button id="btn-up">⬆️</button>
+            <button id="btn-up" data-action="up" aria-label="Arriba">⬆️</button>
+
             <div class="dpad-middle">
-                <button id="btn-left">⬅️</button>
-                <button id="btn-right">➡️</button>
+                <button id="btn-left" data-action="left" aria-label="Izquierda">⬅️</button>
+                <button id="btn-right" data-action="right" aria-label="Derecha">➡️</button>
             </div>
-            <button id="btn-down">⬇️</button>
+
+            <button id="btn-down" data-action="down" aria-label="Abajo">⬇️</button>
         </div>
+
         <div class="action-btn">
-            <button id="btn-fire">🔥 DISPARAR</button>
+            <button id="btn-fire" aria-label="Disparar">🔥</button>
         </div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
+    <!-- ===== CANVAS ===== -->
+    <canvas id="gameCanvas" tabindex="0"></canvas>
+
+    <!-- ===== SCRIPT ===== -->
     <script src="script.js"></script>
+
 </body>
 </html>
