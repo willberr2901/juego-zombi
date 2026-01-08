@@ -1,39 +1,42 @@
-/* style.css - V8.0 CINE DE TERROR */
+/* style.css - V9.0 ALTA VISIBILIDAD */
 body {
     margin: 0; padding: 0;
     background: #000;
-    color: #ccc;
-    font-family: 'Arial Black', sans-serif; /* Fuente gruesa */
+    color: #fff; /* Texto blanco brillante */
+    font-family: 'Arial Black', sans-serif;
     overflow: hidden;
     touch-action: none;
     user-select: none;
 }
 
-/* --- AMBIENTE DE FONDO --- */
+/* --- AMBIENTE DE FONDO (MUCHO MÁS BRILLANTE) --- */
 .ambient-light {
     position: absolute; inset: 0;
-    background: radial-gradient(circle at center, #400000 0%, #100000 50%, #000000 100%);
+    /* Usamos un rojo mucho más claro (#900000) en el centro */
+    background: radial-gradient(circle at center, #900000 0%, #400000 40%, #000000 90%);
     z-index: 1;
+    /* La animación ahora es más sutil para no oscurecer */
     animation: pulseLight 4s infinite ease-in-out;
 }
-@keyframes pulseLight { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+@keyframes pulseLight { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
 
-/* Efecto de líneas de TV (Textura) */
+/* Efecto de líneas de TV (Más visibles) */
 .scanlines {
     position: absolute; inset: 0;
     background: repeating-linear-gradient(
         0deg,
-        rgba(0,0,0,0.1),
-        rgba(0,0,0,0.1) 1px,
+        rgba(255,255,255,0.03), /* Líneas blancas muy tenues */
+        rgba(255,255,255,0.03) 1px,
         transparent 1px,
-        transparent 2px
+        transparent 3px
     );
     z-index: 2; pointer-events: none;
 }
 
 #vignette {
     position: absolute; inset: 0;
-    background: radial-gradient(circle, transparent 30%, #000 120%);
+    /* Viñeta menos agresiva para ver las esquinas */
+    background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 110%);
     z-index: 5; pointer-events: none;
 }
 
@@ -44,22 +47,23 @@ body {
     z-index: 100;
 }
 
-/* SILUETAS DE ZOMBIS (SOMBRAS) */
-/* Truco: brightness(0) vuelve la imagen negra totalmente */
+/* SILUETAS DE ZOMBIS (AHORA CON LUZ DE BORDE) */
 .silhouette {
-    position: absolute; bottom: -10px;
-    width: 220px; opacity: 0.7;
+    position: absolute; bottom: -15px;
+    width: 240px; 
+    opacity: 1; /* Opacidad al máximo */
     z-index: 10; pointer-events: none;
-    filter: brightness(0); 
+    /* TRUCO VISUAL: Sombra negra + sombra roja brillante detrás para perfilar */
+    filter: brightness(0) drop-shadow(0 -5px 15px rgba(255, 0, 0, 0.5)); 
 }
 .left-walker { left: -40px; transform: scaleX(-1); }
 .right-walker { right: -40px; }
 
-/* JEFE CENTRAL */
-.boss-display { position: relative; z-index: 20; margin-bottom: 0px; }
+/* JEFE CENTRAL (MÁS BRILLO) */
+.boss-display { position: relative; z-index: 20; margin-bottom: 10px; }
 .boss-img {
-    width: 150px;
-    filter: drop-shadow(0 0 30px #ff0000);
+    width: 160px;
+    filter: drop-shadow(0 0 35px #ff0000) contrast(1.2); /* Más resplandor */
     animation: float 5s infinite ease-in-out;
 }
 @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
@@ -67,34 +71,35 @@ body {
 /* TÍTULO */
 .title-container { text-align: center; z-index: 20; margin-bottom: 40px; }
 .main-title {
-    font-size: 60px; margin: 0; color: #ddd;
+    font-size: 60px; margin: 0; color: #fff;
     text-transform: uppercase; letter-spacing: -2px;
-    text-shadow: 0 5px 10px #000;
+    text-shadow: 0 5px 15px rgba(0,0,0,1);
 }
-.blood-text { color: #c00; text-shadow: 0 0 20px #f00; font-size: 80px; }
+.blood-text { color: #ff0000; text-shadow: 0 0 25px #ff0000; font-size: 85px; }
 
 .subtitle {
-    color: #888; font-size: 12px; letter-spacing: 6px;
+    color: #ccc; font-size: 14px; letter-spacing: 6px;
     margin-top: -5px; text-transform: uppercase;
-    border-top: 1px solid #500; display: inline-block; padding-top: 5px;
+    border-top: 2px solid #900; display: inline-block; padding-top: 10px;
 }
 
-/* BOTÓN PRO */
+/* BOTÓN PRO (MÁS VISIBLE) */
 #start-btn {
-    padding: 15px 60px; font-size: 22px;
-    background: transparent;
-    color: #c00;
-    border: 2px solid #c00;
+    padding: 18px 60px; font-size: 24px;
+    background: rgba(150, 0, 0, 0.3); /* Fondo rojo semitransparente */
+    color: #fff;
+    border: 3px solid #f00;
     font-family: 'Arial Black', sans-serif;
     text-transform: uppercase; letter-spacing: 2px;
     cursor: pointer; z-index: 30;
-    box-shadow: 0 0 10px rgba(200, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
     transition: all 0.2s;
 }
-#start-btn:active { background: #c00; color: #000; transform: scale(0.95); }
+#start-btn:hover { background: #f00; box-shadow: 0 0 40px #f00; }
+#start-btn:active { transform: scale(0.95); }
 
-.stats-panel { margin-bottom: 20px; color: #666; font-size: 12px; z-index: 20; font-weight: bold; }
-.footer-hint { position: absolute; bottom: 10px; color: #333; font-size: 10px; z-index: 20; }
+.stats-panel { margin-bottom: 20px; color: #ddd; font-size: 14px; z-index: 20; font-weight: bold; }
+.footer-hint { position: absolute; bottom: 15px; color: #777; font-size: 11px; z-index: 20; }
 
 /* --- HUD DE JUEGO --- */
 .ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
@@ -104,54 +109,48 @@ body {
     font-size: 18px; font-weight: bold; color: #fff;
     text-shadow: 2px 2px 0 #000; font-family: 'Courier New', monospace;
 }
-.score { color: #f1c40f; } 
-.ammo { color: #ddd; letter-spacing: 1px; }
+.score { color: #f1c40f; } .ammo { color: #ddd; }
 
 .health-wrap {
     position: absolute; top: 15px; right: 15px;
-    width: 180px; height: 15px;
-    background: #111; border: 2px solid #555; transform: skewX(-15deg);
+    width: 180px; height: 18px; background: #111; border: 2px solid #fff; transform: skewX(-15deg);
 }
-.hp-track { width: 100%; height: 100%; padding: 2px; box-sizing: border-box; }
 #health-bar {
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, #a00, #e00);
-    box-shadow: 0 0 10px #f00;
-    transition: width 0.2s;
+    width: 100%; height: 100%; background: linear-gradient(90deg, #f00, #ff4d4d);
+    box-shadow: 0 0 15px #f00; transition: width 0.2s;
 }
 .hp-icon {
-    position: absolute; left: -25px; top: -5px;
-    color: #f00; font-size: 20px; font-weight: bold;
-    transform: skewX(15deg);
+    position: absolute; left: -25px; top: -3px;
+    color: #f00; font-size: 22px; font-weight: bold; transform: skewX(15deg);
+    text-shadow: 0 0 10px #f00;
 }
 
 #log {
     position: absolute; bottom: 100px; width: 100%; text-align: center;
-    color: #fff; text-shadow: 0 2px 4px #000; font-size: 14px;
-    opacity: 0.8;
+    color: #fff; text-shadow: 0 2px 4px #000; font-size: 16px; font-weight: bold;
 }
 
 /* CONTROLES */
 #touch-zone { position: absolute; inset: 0; z-index: 60; }
 #joystick-wrapper {
     position: absolute; width: 100px; height: 100px;
-    border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%;
     pointer-events: none; z-index: 65;
 }
 #joystick-stick {
     position: absolute; width: 40px; height: 40px;
-    background: rgba(255,255,255,0.8); border-radius: 50%;
+    background: #fff; border-radius: 50%;
     top: 50%; left: 50%; transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px white;
+    box-shadow: 0 0 15px white;
 }
 
 .action-btn { position: absolute; bottom: 40px; right: 40px; z-index: 70; }
 #btn-fire {
-    width: 80px; height: 80px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(200,0,0,0.4), rgba(100,0,0,0.8));
-    border: 2px solid #f00; cursor: pointer;
+    width: 90px; height: 90px; border-radius: 50%;
+    background: rgba(255, 0, 0, 0.3);
+    border: 3px solid #f00; cursor: pointer; box-shadow: 0 0 20px #f00;
 }
-#btn-fire::after { content: '🔥'; font-size: 30px; color: #fff; }
+#btn-fire::after { content: '🔥'; font-size: 35px; color: #fff; }
 #btn-fire:active { background: #f00; transform: scale(0.95); }
 
 @media (min-width: 1024px) { #touch-zone, .action-btn { display: none; } }
