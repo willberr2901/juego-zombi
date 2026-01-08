@@ -3,64 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Niebla Mortal</title>
+    <title>Ciudad Z: Origen</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="fog-container">
-        <div class="fog-img fog1"></div>
-        <div class="fog-img fog2"></div>
-    </div>
-    <div id="vignette"></div>
+    <div class="ambient-light"></div> <div class="scanlines"></div> <div id="vignette"></div>
 
     <div id="menu-screen" class="menu-overlay">
         
-        <div class="menu-decor left-zombie">
-            <img src="imagenes/zombie.png" alt="Z">
+        <div class="silhouette left-walker">
+            <img src="imagenes/zombie.png" alt="">
         </div>
-        <div class="menu-decor right-zombie">
-            <img src="imagenes/zombie.png" alt="Z">
+        <div class="silhouette right-walker">
+            <img src="imagenes/zombie.png" alt="">
         </div>
 
-        <div class="boss-frame">
-            <img src="imagenes/boss.png" alt="Boss" class="menu-boss-img">
+        <div class="boss-display">
+            <img src="imagenes/boss.png" alt="BOSS" class="boss-img">
+            <div class="boss-glow"></div>
         </div>
         
-        <h1 class="horror-title">CIUDAD Z</h1>
-        <p class="subtitle">LA NIEBLA TE CONSUMIRÁ</p>
-
-        <div class="menu-panel">
-            <p>🏆 RÉCORD: <span id="menu-highscore">0</span></p>
+        <div class="title-container">
+            <h1 class="main-title">CIUDAD <span class="blood-z">Z</span></h1>
+            <p class="subtitle">NO QUEDA ESPERANZA</p>
         </div>
 
-        <button id="start-btn">ENTRAR A LA NIEBLA</button>
+        <div class="stats-panel">
+            <p>MEJOR PUNTAJE: <span id="menu-highscore" style="color:#fff">0</span></p>
+        </div>
+
+        <button id="start-btn">SOBREVIVIR</button>
         
-        <div class="controls-hint">
-            <p>Recomendado: Jugar con Audífonos 🎧</p>
+        <div class="footer-hint">
+            Usa Audífonos 🎧 | V8.0
         </div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
         <div class="top-bar">
-            <div class="hud-box">💀 <span id="score">0</span></div>
-            <div class="hud-box">🔫 <span id="ammo">12</span></div>
+            <div class="hud-item score">💀 <span id="score">0</span></div>
+            <div class="hud-item ammo">❚❚❚ <span id="ammo">12</span></div>
         </div>
-        <div class="health-container">
-            <div class="health-icon">✚</div>
-            <div class="health-bar-bg"><div id="health-bar"></div></div>
+        <div class="health-wrap">
+            <div class="hp-icon">✚</div>
+            <div class="hp-track"><div id="health-bar"></div></div>
         </div>
-        <p id="log">Busca suministros en la niebla...</p>
+        <p id="log">Busca la salida...</p>
     </div>
 
     <div id="touch-zone"></div>
     <div id="joystick-wrapper" style="display:none;">
         <div id="joystick-stick"></div>
     </div>
-
     <div class="action-btn">
-        <button id="btn-fire">🔥</button>
-    </div>
+        <button id="btn-fire"></button> </div>
 
     <canvas id="gameCanvas"></canvas>
     <script src="script.js"></script>
