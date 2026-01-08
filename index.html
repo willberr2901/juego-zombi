@@ -9,92 +9,50 @@
 </head>
 <body>
 
-    <!-- ===== MENÚ PRINCIPAL ===== -->
-    <div id="menu-screen" class="menu-overlay">
-        <h1 id="menu-title">CIUDAD Z</h1>
-        <p id="menu-subtitle">Sobrevive a la infección</p>
+<!-- ===== MENÚ ===== -->
+<div id="menu-screen" class="menu-overlay">
+    <h1>CIUDAD Z</h1>
+    <p>Sobrevive a la infección</p>
+    <p class="high-score-display">🏆 RÉCORD: <span id="menu-highscore">0</span></p>
+    <button id="start-btn">JUGAR</button>
+    <p class="instructions">PC: WASD + Click | Móvil: Joystick + 🔥</p>
+</div>
 
-        <!-- Versión -->
-        <p class="version">Versión 1.2.0 · Mobile Edition</p>
+<!-- ===== HUD ===== -->
+<div id="game-ui" class="ui-container" style="display:none;">
+    <div class="top-bar">
+        <div class="score-box">PTS <span id="score">0</span></div>
+        <div class="level-box">NIV <span id="level">1</span></div>
+        <div class="record-box">🏆 <span id="ui-highscore">0</span></div>
+    </div>
 
-        <!-- Novedades -->
-        <div class="update-box">
-            <strong>🆕 Nueva actualización</strong>
-            <ul>
-                <li>Sistema de oleadas</li>
-                <li>Mejor feedback de daño</li>
-                <li>Mejoras de combate</li>
-            </ul>
-        </div>
+    <div class="stats">
+        <p>❤️ <span id="health">100</span>%</p>
+        <p>🔫 <span id="ammo">12</span></p>
+        <p>🧪 Cura <span id="cure">0</span>%</p>
+        <p id="log">Sobrevive...</p>
+    </div>
+</div>
 
-        <!-- Récord -->
-        <p class="high-score-display">
-            🏆 MEJOR RÉCORD: <span id="menu-highscore">0</span>
-        </p>
+<!-- ===== CONTROLES MÓVILES ===== -->
+<div id="mobile-controls">
 
-        <!-- Resultado final -->
-        <p id="final-score" style="display:none;"></p>
-
-        <!-- Botón -->
-        <button id="start-btn">JUGAR</button>
-
-        <!-- Instrucciones -->
-        <div class="instructions">
-            <p>🖥️ PC: W A S D + Clic</p>
-            <p>📱 Móvil: Usa los botones en pantalla</p>
+    <!-- JOYSTICK -->
+    <div id="joystick-container">
+        <div id="joystick-base">
+            <div id="joystick-stick"></div>
         </div>
     </div>
 
-    <!-- ===== HUD DEL JUEGO ===== -->
-    <div id="game-ui" class="ui-container" style="display:none;">
-
-        <!-- Barra superior -->
-        <div class="top-bar">
-            <div class="score-box">PTS <span id="score">0</span></div>
-            <div class="level-box">NIV <span id="level">1</span></div>
-            <div class="record-box">🏆 <span id="ui-highscore">0</span></div>
-        </div>
-
-        <!-- Estado de partida -->
-        <p id="game-status" class="status">OLEADA 1</p>
-
-        <!-- Estadísticas principales -->
-        <div class="stats main-stats">
-            <p>❤️ <span id="health">100</span>%</p>
-            <p>🔫 <span id="ammo">12</span></p>
-        </div>
-
-        <!-- Estadísticas secundarias -->
-        <div class="stats secondary-stats">
-            <p>🧪 Cura: <span id="cure">0</span>%</p>
-            <p id="log">Sobrevive...</p>
-        </div>
+    <!-- DISPARO -->
+    <div class="action-btn">
+        <button id="btn-fire">🔥</button>
     </div>
 
-    <!-- ===== CONTROLES MÓVILES ===== -->
-    <div id="mobile-controls">
+</div>
 
-        <div class="dpad">
-            <button id="btn-up" data-action="up" aria-label="Arriba">⬆️</button>
+<canvas id="gameCanvas"></canvas>
 
-            <div class="dpad-middle">
-                <button id="btn-left" data-action="left" aria-label="Izquierda">⬅️</button>
-                <button id="btn-right" data-action="right" aria-label="Derecha">➡️</button>
-            </div>
-
-            <button id="btn-down" data-action="down" aria-label="Abajo">⬇️</button>
-        </div>
-
-        <div class="action-btn">
-            <button id="btn-fire" aria-label="Disparar">🔥</button>
-        </div>
-    </div>
-
-    <!-- ===== CANVAS ===== -->
-    <canvas id="gameCanvas" tabindex="0"></canvas>
-
-    <!-- ===== SCRIPT ===== -->
-    <script src="script.js"></script>
-
+<script src="script.js"></script>
 </body>
 </html>
