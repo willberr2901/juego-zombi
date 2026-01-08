@@ -1,237 +1,273 @@
-/* script.js - VERSIÓN SEGURA V2.1 */
+/* script.js - V3.0 TERROR EDITION */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // --- AUDIO SEGURO (Se inicia solo al jugar) ---
+    // --- AUDIO PROCEDURAL DE TERROR ---
     let audioCtx;
+    let ambienceOsc;
+
     function initAudio() {
         if (!audioCtx) {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             audioCtx = new AudioContext();
-        }
-        if (audioCtx.state === 'suspended') {
+            playStartSound();
+            startAmbience();
+        } else if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
     }
 
-    function playSound(type) {
-        if (!audioCtx) return; // Si no hay audio, no hacer nada (evita errores)
-        try {
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            const now = audioCtx.currentTime;
-
-            if (type === 'SHOOT') {
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
-                gainNode.gain.setValueAtTime(0.1, now);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-            } else if (type === 'HIT') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, now);
-                gainNode.gain.setValueAtTime(0.1, now);
-                gainNode.gain.linearRampToValueAtTime(0, now + 0.1);
-            }
-            osc.start(now);
-            osc.stop(now + 0.1);
-        } catch (e) { console.log(e); }
+    function playStartSound() {
+        // Sonido grave e impactante al iniciar
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.setValueAtTime(50, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 2);
+        gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 2);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 2);
     }
 
-    // --- IMÁGENES ---
-    const playerImg = new Image(); playerImg.src = 'imagenes/player.png';
-    const zombieImg = new Image(); zombieImg.src = 'imagenes/zombie.png';
-    const survivorImg = new Image(); survivorImg.src = 'imagenes/survivor.png';
-    const roadImg = new Image(); roadImg.src = 'imagenes/asfalto.png';
-    const bossImg = new Image(); bossImg.src = 'imagenes/boss.png';
+    function startAmbience() {
+        // Zumbido de fondo (Drone)
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(30, audioCtx.currentTime); // Tono muy bajo
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime); // Volumen bajo
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start();
+        ambienceOsc = osc;
+    }
 
+    function playSound(type) {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'SHOOT') {
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            osc.start(now); osc.stop(now + 0.1);
+        } else if (type === 'COLLECT') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, now);
+            osc.frequency.linearRampToValueAtTime(1200, now + 0.2);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.linearRampToValueAtTime(0, now + 0.2);
+            osc.start(now); osc.stop(now + 0.2);
+        }
+    }
+
+    // --- ASSETS ---
+    const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
+    const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
+    const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; // Usamos survivor como item
+    const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png';
+    
     // --- VARIABLES ---
     let gameRunning = false;
-    let score = 0; let level = 1; let ammo = 12;
-    let zombies = []; let bullets = [];
-    let boss = null;
-    let spawnInterval;
+    let score = 0; let ammo = 12;
+    let zombies = []; let bullets = []; let items = [];
+    const player = { x: canvas.width/2, y: canvas.height/2, hp: 100, speed: 5 };
     
-    // Jugador
-    const player = { x: canvas.width / 2, y: canvas.height / 2, radius: 20, speed: 5, health: 100 };
-    
-    // Joystick
-    let joyX = 0; let joyY = 0; let joyActive = false;
-    const joystickBase = document.getElementById("joystick-base");
-    const joystickStick = document.getElementById("joystick-stick");
-    const maxRadius = 40;
+    // --- JOYSTICK DINÁMICO ---
+    const joyArea = document.getElementById("dynamic-joystick-area");
+    const joyContainer = document.getElementById("joystick-container");
+    const joyStick = document.getElementById("joystick-stick");
+    let joyStartX = 0, joyStartY = 0;
+    let joyX = 0, joyY = 0;
+    let dragging = false;
 
-    // --- CONTROLES ---
-    // 1. Joystick Móvil
-    function handleJoystick(touchX, touchY) {
-        const rect = joystickBase.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        let dx = touchX - centerX;
-        let dy = touchY - centerY;
-        const dist = Math.hypot(dx, dy);
-
-        if (dist > maxRadius) {
-            const ratio = maxRadius / dist;
-            dx *= ratio; dy *= ratio;
-        }
-        joystickStick.style.transform = `translate(${dx}px, ${dy}px)`;
-        joyX = dx / maxRadius;
-        joyY = dy / maxRadius;
-    }
-
-    joystickBase.addEventListener("touchstart", (e) => { e.preventDefault(); joyActive = true; handleJoystick(e.touches[0].clientX, e.touches[0].clientY); });
-    joystickBase.addEventListener("touchmove", (e) => { e.preventDefault(); if (joyActive) handleJoystick(e.touches[0].clientX, e.touches[0].clientY); });
-    joystickBase.addEventListener("touchend", (e) => { 
-        e.preventDefault(); joyActive = false; joyX = 0; joyY = 0; 
-        joystickStick.style.transform = `translate(0px, 0px)`; 
+    joyArea.addEventListener("touchstart", e => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        joyStartX = touch.clientX;
+        joyStartY = touch.clientY;
+        dragging = true;
+        
+        // Mover el joystick visual a donde tocaste
+        joyContainer.style.display = "block";
+        joyContainer.style.left = (joyStartX - 50) + "px"; // -50 para centrar (ancho/2)
+        joyContainer.style.top = (joyStartY - 50) + "px";
+        joyStick.style.transform = `translate(-50%, -50%)`;
+        joyX = 0; joyY = 0;
     });
 
-    // 2. Disparo
-    const btnFire = document.getElementById("btn-fire");
-    
+    joyArea.addEventListener("touchmove", e => {
+        e.preventDefault();
+        if(!dragging) return;
+        const touch = e.touches[0];
+        
+        let dx = touch.clientX - joyStartX;
+        let dy = touch.clientY - joyStartY;
+        const dist = Math.hypot(dx, dy);
+        const maxDist = 40;
+
+        if(dist > maxDist) {
+            const ratio = maxDist / dist;
+            dx *= ratio; dy *= ratio;
+        }
+
+        joyStick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        joyX = dx / maxDist;
+        joyY = dy / maxDist;
+    });
+
+    joyArea.addEventListener("touchend", e => {
+        e.preventDefault();
+        dragging = false;
+        joyContainer.style.display = "none";
+        joyX = 0; joyY = 0;
+    });
+
+    // --- TECLADO PC ---
+    const keys = {};
+    window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+    window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+
+    // --- DISPARO ---
+    document.getElementById("btn-fire").addEventListener("touchstart", (e) => { e.preventDefault(); shoot(); });
+    document.addEventListener("mousedown", () => { if(gameRunning) shoot(); });
+
     function shoot() {
-        if (ammo > 0) {
-            let vx = joyX * 15;
-            let vy = joyY * 15;
-            // Si no se mueve, dispara arriba
-            if (vx === 0 && vy === 0) vy = -15;
-            
-            bullets.push({ x: player.x, y: player.y, vx: vx, vy: vy });
-            ammo--;
-            document.getElementById('ammo').innerText = ammo;
+        if(ammo > 0) {
+            let vx = joyX * 15; let vy = joyY * 15;
+            if(!dragging) { // Si no usa joystick, usa teclado o defecto
+                vx = 0; vy = 0;
+                if(keys['d']) vx = 15; if(keys['a']) vx = -15;
+                if(keys['s']) vy = 15; if(keys['w']) vy = -15;
+                if(vx===0 && vy===0) vy = -15;
+            }
+            bullets.push({x: player.x, y: player.y, vx: vx, vy: vy});
+            ammo--; document.getElementById("ammo").innerText = ammo;
             playSound('SHOOT');
         }
     }
 
-    btnFire.addEventListener("touchstart", (e) => { e.preventDefault(); shoot(); });
-    btnFire.addEventListener("mousedown", (e) => { e.preventDefault(); shoot(); }); // Para PC
+    // --- GAME LOOP ---
+    function spawnZombie() {
+        const edge = Math.floor(Math.random()*4);
+        let x, y;
+        if(edge===0) { x = Math.random()*canvas.width; y = -50; }
+        else if(edge===1) { x = canvas.width+50; y = Math.random()*canvas.height; }
+        else if(edge===2) { x = Math.random()*canvas.width; y = canvas.height+50; }
+        else { x = -50; y = Math.random()*canvas.height; }
+        zombies.push({x:x, y:y, speed: 1 + Math.random()});
+    }
 
-    // 3. Teclado PC
-    const keys = {};
-    window.addEventListener("keydown", (e) => keys[e.key.toLowerCase()] = true);
-    window.addEventListener("keyup", (e) => keys[e.key.toLowerCase()] = false);
+    function spawnItem() {
+        items.push({
+            x: 50 + Math.random()*(canvas.width-100),
+            y: 50 + Math.random()*(canvas.height-100),
+            type: Math.random() > 0.5 ? 'AMMO' : 'HEALTH'
+        });
+    }
 
-    // --- LOOP DEL JUEGO ---
     function update() {
-        if (!gameRunning) return;
+        if(!gameRunning) return;
 
-        // Movimiento Híbrido (Joystick + Teclado)
-        let dx = joyX;
-        let dy = joyY;
-        if (keys['w']) dy = -1;
-        if (keys['s']) dy = 1;
-        if (keys['a']) dx = -1;
-        if (keys['d']) dx = 1;
-
-        player.x += dx * player.speed;
-        player.y += dy * player.speed;
-        player.x = Math.max(0, Math.min(canvas.width, player.x));
-        player.y = Math.max(0, Math.min(canvas.height, player.y));
-
+        // Movimiento Jugador
+        let dx = joyX; let dy = joyY;
+        if(!dragging) {
+            if(keys['d']) dx = 1; if(keys['a']) dx = -1;
+            if(keys['s']) dy = 1; if(keys['w']) dy = -1;
+        }
+        player.x += dx * player.speed; player.y += dy * player.speed;
+        
         // Balas
-        for (let i = bullets.length - 1; i >= 0; i--) {
+        for(let i=bullets.length-1; i>=0; i--){
             let b = bullets[i];
             b.x += b.vx; b.y += b.vy;
-            
-            // Colisiones
-            for (let j = zombies.length - 1; j >= 0; j--) {
+            // Colisiones Bala-Zombie
+            for(let j=zombies.length-1; j>=0; j--){
                 let z = zombies[j];
-                if (Math.hypot(b.x - z.x, b.y - z.y) < 30) {
-                    zombies.splice(j, 1);
-                    bullets.splice(i, 1);
-                    score += 50;
-                    document.getElementById('score').innerText = score;
-                    playSound('HIT');
-                    if(score % 500 === 0 && !boss) spawnBoss();
+                if(Math.hypot(b.x-z.x, b.y-z.y) < 30) {
+                    zombies.splice(j,1); bullets.splice(i,1);
+                    score+=10; document.getElementById("score").innerText = score;
                     break;
                 }
-            }
-            if(boss && Math.hypot(b.x-boss.x, b.y-boss.y) < 60) {
-                boss.hp--; bullets.splice(i,1); playSound('HIT');
-                if(boss.hp<=0) { boss=null; score+=1000; }
             }
         }
 
         // Zombies
         zombies.forEach(z => {
-            const angle = Math.atan2(player.y - z.y, player.x - z.x);
-            z.x += Math.cos(angle) * (1 + level * 0.1);
-            z.y += Math.sin(angle) * (1 + level * 0.1);
+            let angle = Math.atan2(player.y - z.y, player.x - z.x);
+            z.x += Math.cos(angle) * z.speed;
+            z.y += Math.sin(angle) * z.speed;
             if(Math.hypot(player.x-z.x, player.y-z.y) < 30) {
-                player.health -= 0.5;
-                document.getElementById('health').innerText = Math.floor(player.health);
+                player.hp -= 0.5;
+                document.getElementById("health-bar").style.width = player.hp + "%";
             }
         });
 
-        if(boss) {
-            const angle = Math.atan2(player.y - boss.y, player.x - boss.x);
-            boss.x += Math.cos(angle)*1.5; boss.y += Math.sin(angle)*1.5;
-            if(Math.hypot(player.x-boss.x, player.y-boss.y) < 60) player.health -= 1;
+        // Items (Suministros)
+        for(let i=items.length-1; i>=0; i--) {
+            let item = items[i];
+            if(Math.hypot(player.x-item.x, player.y-item.y) < 40) {
+                playSound('COLLECT');
+                if(item.type === 'AMMO') { ammo += 10; document.getElementById("ammo").innerText = ammo; }
+                else { player.hp = Math.min(100, player.hp + 30); document.getElementById("health-bar").style.width = player.hp + "%"; }
+                items.splice(i, 1);
+            }
         }
 
-        if (player.health <= 0) {
-            gameRunning = false;
-            alert("¡INFECTADO! Puntos: " + score);
-            location.reload();
-        }
-    }
-
-    function spawnBoss() {
-        boss = { x: canvas.width/2, y: -100, hp: 20, maxHp: 20 };
+        if(player.hp <= 0) location.reload();
     }
 
     function draw() {
-        if (roadImg.complete) {
-            const p = ctx.createPattern(roadImg, 'repeat');
-            ctx.fillStyle = p; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        } else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        // Fondo Oscuro
+        ctx.fillStyle = '#111'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        if(imgGround.complete) {
+            ctx.globalAlpha = 0.4; // Oscurecer el suelo
+            const ptrn = ctx.createPattern(imgGround, 'repeat');
+            ctx.fillStyle = ptrn; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.globalAlpha = 1.0;
+        }
 
-        bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x, b.y, 5, 0, Math.PI * 2); ctx.fillStyle = 'yellow'; ctx.fill(); });
-        
-        zombies.forEach(z => {
-            if (zombieImg.complete) ctx.drawImage(zombieImg, z.x - 32, z.y - 32, 64, 64);
-            else { ctx.beginPath(); ctx.fillStyle='red'; ctx.arc(z.x, z.y, 20, 0, Math.PI*2); ctx.fill(); }
+        // Items
+        items.forEach(item => {
+            if(imgItem.complete) ctx.drawImage(imgItem, item.x-20, item.y-20, 40, 40);
+            else { ctx.fillStyle = 'lime'; ctx.fillRect(item.x-10, item.y-10, 20, 20); }
         });
 
-        if(boss && bossImg.complete) ctx.drawImage(bossImg, boss.x-64, boss.y-64, 128, 128);
+        // Player
+        if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
 
-        if (playerImg.complete) ctx.drawImage(playerImg, player.x - 32, player.y - 32, 64, 64);
+        // Zombies
+        zombies.forEach(z => {
+            if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64);
+        });
+
+        bullets.forEach(b => {
+            ctx.fillStyle = '#ff0'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill();
+        });
     }
 
     function loop() {
-        if (gameRunning) {
-            update();
-            draw();
-            requestAnimationFrame(loop);
-        }
+        update(); draw(); requestAnimationFrame(loop);
     }
 
-    // --- INICIO DEL JUEGO ---
+    // START
     document.getElementById("start-btn").onclick = () => {
-        // 1. Iniciar Audio (Gestor de usuario)
         initAudio();
-        
-        // 2. Cambiar pantallas
         document.getElementById("menu-screen").style.display = "none";
         document.getElementById("game-ui").style.display = "block";
-        
-        // 3. Iniciar lógica
         gameRunning = true;
-        spawnInterval = setInterval(() => {
-            if(gameRunning) zombies.push({ x: Math.random() * canvas.width, y: -50 });
-        }, 1500);
+        
+        // Spawners (Zombis rápidos y Suministros lentos)
+        setInterval(spawnZombie, 1000); 
+        setInterval(spawnItem, 8000); // Items cada 8 segs
         
         loop();
     };
-
-    // Cargar récord
-    if(localStorage.getItem('zScore')) 
-        document.getElementById('menu-highscore').innerText = localStorage.getItem('zScore');
 });
