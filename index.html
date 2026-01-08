@@ -3,66 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: V13</title>
+    <title>Ciudad Z: V14</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <div class="noise-bg"></div>
     <div id="vignette"></div>
-    <div id="damage-overlay"></div>
 
     <div id="menu-screen" class="menu-overlay">
         
-        <div class="demon-shadow left-demon">
-            <img src="imagenes/zombie.png" alt="">
-        </div>
-        <div class="demon-shadow right-demon">
-            <img src="imagenes/zombie.png" alt="">
-        </div>
-
-        <div class="boss-display">
-            <img src="imagenes/boss.png" alt="BOSS" class="boss-terror">
-        </div>
-
-        <h1 class="main-title">CIUDAD <span class="blood-z">Z</span></h1>
-        
-        <div class="intro-box">
-            <p>SOBREVIVE A LA HORDA</p>
+        <div class="side-panel left-panel">
+            <h3 class="panel-title">📂 REGISTRO V14.0</h3>
+            <ul class="log-list">
+                <li class="added"><span>[+]</span> Menú Táctico</li>
+                <li class="added"><span>[+]</span> Brillo Infernal</li>
+                <li class="removed"><span>[-]</span> Sonidos Molestos</li>
+                <li class="fixed"><span>[!]</span> IA del Jefe</li>
+            </ul>
+            <div class="system-status">ESTADO: <span class="blink">CRÍTICO</span></div>
         </div>
 
-        <button id="start-btn">JUGAR</button>
+        <div class="center-stage">
+            <div class="boss-glow-container">
+                <img src="imagenes/boss.png" alt="BOSS" class="boss-main">
+            </div>
+            
+            <h1 class="main-title">CIUDAD <span class="blood-z">Z</span></h1>
+            
+            <button id="start-btn">SOBREVIVIR</button>
+
+            <div class="decor-zombie z-left"><img src="imagenes/zombie.png"></div>
+            <div class="decor-zombie z-right"><img src="imagenes/zombie.png"></div>
+        </div>
+
+        <div class="side-panel right-panel">
+            <h3 class="panel-title">📝 ARCHIVO #402</h3>
+            <p class="lore-text">
+                La infección ha llegado al 90%. Eres el último agente vivo en la zona.
+            </p>
+            <div class="objectives">
+                <p>OBJETIVOS:</p>
+                1. Eliminar hostiles.<br>
+                2. Recoger suministros.<br>
+                3. Matar al <strong>PACIENTE CERO</strong>.
+            </div>
+        </div>
     </div>
 
     <div id="modal-screen" class="modal-overlay" style="display:none;">
-        <h2 id="modal-title">PAUSA</h2>
-        <p id="modal-score">PUNTOS: 0</p>
-        <button id="modal-btn">CONTINUAR</button>
+        <h2 id="modal-title">SEÑAL PERDIDA</h2>
+        <p id="modal-score">BAJAS: 0</p>
+        <button id="modal-btn">REINICIAR SISTEMA</button>
     </div>
 
-    <div id="boss-warning">¡JEFE APROXIMÁNDOSE!</div>
+    <div id="boss-warning">¡AMENAZA NIVEL 5 DETECTADA!</div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
-        
-        <div class="hud-background">
-            <div class="stat-box">💀 <span id="score">0</span></div>
-            <div class="stat-box">NIV: <span id="level">1</span></div>
-            <div class="stat-box">🔫 <span id="ammo">12</span></div>
-            <button id="pause-btn">⏸️</button>
+        <div class="hud-top">
+            <div class="hud-block">💀 <span id="score">0</span></div>
+            <div class="hud-block">NIV: <span id="level">1</span></div>
+            <div class="hud-block">🔫 <span id="ammo">12</span></div>
+            <button id="pause-btn">||</button>
         </div>
-
-        <div class="health-wrapper">
+        <div class="health-area">
             <div class="hp-icon">✚</div>
-            <div class="hp-bar-bg"><div id="health-bar"></div></div>
+            <div class="hp-bar-frame"><div id="health-bar"></div></div>
         </div>
     </div>
 
     <div id="touch-zone"></div>
-    <div id="joystick-wrapper" style="display:none;">
-        <div id="joystick-stick"></div>
-    </div>
-    <div class="action-btn">
-        <button id="btn-fire"></button>
-    </div>
+    <div id="joystick-wrapper" style="display:none;"><div id="joystick-stick"></div></div>
+    <div class="action-btn"><button id="btn-fire"></button></div>
 
     <canvas id="gameCanvas"></canvas>
     <script src="script.js"></script>
