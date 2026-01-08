@@ -1,158 +1,113 @@
-/* style.css - V14.0 SALA DE CONTROL */
+/* style.css - V15.0 SOLO MENÚ MEJORADO */
 body {
-    margin: 0; padding: 0; background: #050000;
-    color: #ccc; font-family: 'Courier New', monospace; /* Estilo Documento Clasificado */
+    margin: 0; padding: 0; background: #000;
+    color: #ccc; font-family: 'Courier New', monospace;
     overflow: hidden; touch-action: none; user-select: none;
 }
 
-/* FONDO CON RUIDO */
-.noise-bg {
+/* FONDO TENEBROSO */
+.menu-bg {
     position: absolute; inset: 0;
-    background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.1"/%3E%3C/svg%3E');
-    opacity: 0.4; z-index: 1; pointer-events: none;
-}
-#vignette {
-    position: absolute; inset: 0; pointer-events: none; z-index: 2;
-    background: radial-gradient(circle, transparent 40%, #000 120%);
+    background: radial-gradient(circle, #200, #000); /* Rojo oscuro a negro */
+    z-index: 1; pointer-events: none;
 }
 
-/* LAYOUT DEL MENÚ (3 COLUMNAS) */
+/* --- ESTRUCTURA DEL MENÚ (3 COLUMNAS) --- */
 .menu-overlay {
     position: absolute; inset: 0; z-index: 100;
-    background: rgba(10, 0, 0, 0.95);
-    display: flex; flex-direction: row; /* Horizontal */
-    justify-content: center; align-items: center;
+    display: flex; flex-direction: row; /* Pone los paneles lado a lado */
+    align-items: center; justify-content: center;
     gap: 20px; padding: 20px;
+    background: rgba(0,0,0,0.8); /* Oscurecer un poco */
 }
 
-/* PANELES LATERALES (Izquierda y Derecha) */
-.side-panel {
-    width: 250px; height: 300px;
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid #500; border-top: 4px solid #a00;
-    padding: 15px; display: flex; flex-direction: column;
-    box-shadow: 0 0 15px rgba(100, 0, 0, 0.2);
-}
-.panel-title {
-    color: #f00; border-bottom: 1px solid #333;
-    margin: 0 0 10px 0; font-size: 16px; letter-spacing: 1px;
+/* ESTILOS COMUNES DE PANELES */
+.panel {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #500;
+    padding: 15px; border-radius: 5px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+    height: fit-content;
 }
 
-/* Estilos de la lista de cambios */
-.log-list { list-style: none; padding: 0; margin: 0; font-size: 12px; color: #888; }
-.log-list li { margin-bottom: 5px; }
-.added span { color: #0f0; } .removed span { color: #f00; } .fixed span { color: #ff0; }
-.system-status { margin-top: auto; font-size: 12px; color: #f00; font-weight: bold; border-top: 1px solid #333; padding-top: 10px;}
-.blink { animation: blink 1s infinite; }
+/* PANEL IZQUIERDO (VERSIONES) */
+.left-panel { width: 200px; text-align: left; border-left: 4px solid #a00; }
+.left-panel h3 { color: #f00; border-bottom: 1px solid #555; margin-top: 0; font-size: 14px; }
+.info-list { padding-left: 0; list-style: none; font-size: 11px; color: #888; }
+.info-list li { margin-bottom: 5px; }
+.new span { color: #0f0; } .del span { color: #f00; }
+.status-box { font-size: 12px; margin-top: 10px; color: #fff; font-weight: bold; }
+.blink { animation: blink 1s infinite; color: red; }
+@keyframes blink { 50% { opacity: 0; } }
 
-/* Texto de la derecha */
-.lore-text { font-size: 12px; color: #aaa; line-height: 1.4; }
-.objectives { margin-top: 15px; font-size: 12px; color: #f1c40f; line-height: 1.6; }
+/* PANEL DERECHO (HISTORIA) */
+.right-panel { width: 200px; text-align: left; border-right: 4px solid #a00; }
+.right-panel h3 { color: #f1c40f; border-bottom: 1px solid #555; margin-top: 0; font-size: 14px; }
+.lore { font-size: 11px; font-style: italic; color: #aaa; }
+.instructions { font-size: 11px; color: #fff; line-height: 1.4; }
 
-/* COLUMNA CENTRAL (El Juego) */
-.center-stage {
-    position: relative; width: 400px; text-align: center;
+/* PANEL CENTRAL (EL JEFE Y BOTÓN) */
+.center-panel {
+    width: 300px; text-align: center;
+    border: none; background: transparent; /* El centro no tiene caja, es libre */
+    box-shadow: none;
     display: flex; flex-direction: column; align-items: center;
 }
 
-/* JEFE Y ZOMBIS CON BRILLO INFERNAL CONSTANTE */
-.boss-main {
-    width: 180px; 
-    filter: drop-shadow(0 0 20px #f00) contrast(1.2);
+.boss-img {
+    width: 160px;
+    filter: drop-shadow(0 0 25px #f00);
     animation: float 4s infinite ease-in-out;
 }
-.decor-zombie {
-    position: absolute; bottom: 0; width: 150px; opacity: 0.8; z-index: -1;
-    filter: brightness(0) drop-shadow(0 0 10px #f00); /* Sombra negra con luz roja */
-}
-.z-left { left: -20px; transform: scaleX(-1); }
-.z-right { right: -20px; }
-
 @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 
-.main-title {
-    font-size: 60px; margin: 10px 0; color: #ddd;
-    font-family: 'Impact', sans-serif; letter-spacing: 2px;
-    text-shadow: 0 5px 10px #000;
+.game-title {
+    font-size: 50px; color: #ddd; margin: 10px 0;
+    text-shadow: 4px 4px 0 #000; font-family: 'Impact', sans-serif;
 }
-.blood-z { color: #f00; text-shadow: 0 0 20px red; }
+.blood { color: #f00; text-shadow: 0 0 20px red; }
 
-/* BOTÓN DEL TERROR */
 #start-btn {
-    padding: 15px 50px; font-size: 24px;
-    background: linear-gradient(180deg, #800, #400);
+    padding: 15px 40px; font-size: 22px;
+    background: linear-gradient(180deg, #900, #500);
     color: #fff; border: 2px solid #f00;
-    font-family: 'Courier New', monospace; font-weight: bold;
-    cursor: pointer; box-shadow: 0 0 20px #500;
+    cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold;
+    box-shadow: 0 0 20px #500; margin-top: 20px;
     transition: transform 0.1s;
 }
-#start-btn:hover { background: #f00; box-shadow: 0 0 40px #f00; color: #000; }
 #start-btn:active { transform: scale(0.95); }
 
-/* RESPONSIVE (Si la pantalla es pequeña, apilar las columnas) */
-@media (max-width: 900px) {
+/* --- RESPONSIVE (PARA MÓVIL) --- */
+/* Si la pantalla es pequeña, ponemos todo en columna vertical */
+@media (max-width: 800px) {
     .menu-overlay { flex-direction: column; overflow-y: auto; }
-    .side-panel { width: 90%; height: auto; margin-bottom: 10px; order: 2; }
-    .center-stage { order: 1; margin-bottom: 20px; width: 100%; }
-    .decor-zombie { display: none; /* Ocultar zombis laterales en celular para espacio */ }
+    .panel { width: 90%; margin-bottom: 10px; }
+    .center-panel { order: 1; margin-bottom: 20px; } /* El juego va primero */
+    .left-panel { order: 2; }
+    .right-panel { order: 3; }
 }
 
-/* --- HUD & JUEGO --- */
-.ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
-.hud-top {
-    position: absolute; top: 0; left: 0; width: 100%;
-    background: rgba(0,0,0,0.8); border-bottom: 1px solid #500;
-    display: flex; justify-content: center; gap: 15px; padding: 10px;
-}
-.hud-block { font-size: 18px; font-weight: bold; color: #fff; }
-#score { color: #f1c40f; } #ammo { color: #e74c3c; }
+/* --- HUD CLÁSICO (NO TOCAR) --- */
+.ui-container { position: absolute; top: 10px; left: 10px; z-index: 50; width: 95%; pointer-events: none; }
+.top-bar { display: flex; gap: 10px; }
+.score-box, .level-box { background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 5px; color: #f1c40f; font-weight: bold; border: 1px solid #555; }
+.stats { margin-top: 5px; background: rgba(0,0,0,0.7); padding: 5px; border-radius: 5px; width: fit-content; border: 1px solid #555; color: #fff; }
 
-#pause-btn {
-    position: absolute; right: 10px; top: 5px;
-    background: #333; color: #fff; border: 1px solid #fff;
-    cursor: pointer; pointer-events: auto; padding: 5px 10px;
-}
-
-.health-area {
-    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-    width: 250px; display: flex; align-items: center; gap: 10px;
-}
-.hp-bar-frame { width: 100%; height: 12px; background: #222; border: 1px solid #555; }
-#health-bar { width: 100%; height: 100%; background: #c00; transition: width 0.2s; }
-
-#boss-warning {
-    position: absolute; top: 30%; width: 100%; text-align: center;
-    font-size: 40px; color: #f00; font-weight: 900; background: rgba(0,0,0,0.8);
-    opacity: 0; transition: opacity 0.5s; z-index: 60;
-}
-.warning-active { opacity: 1 !important; animation: blink 0.5s infinite; }
-@keyframes blink { 0%{opacity:1;} 50%{opacity:0.2;} }
-
-/* PANTALLA MODAL (PAUSA/FIN) */
-.modal-overlay { background: rgba(0,0,0,0.95); z-index: 200; }
-#modal-title { font-size: 40px; color: #f00; margin-bottom: 10px; }
-#modal-btn {
-    padding: 10px 30px; background: #333; color: #fff;
-    border: 1px solid #fff; cursor: pointer; font-size: 18px;
-}
-
-/* CONTROLES TÁCTILES */
+/* CONTROLES */
 #touch-zone { position: absolute; inset: 0; z-index: 40; }
 #joystick-wrapper {
-    position: absolute; width: 100px; height: 100px;
-    border: 2px solid rgba(255,255,255,0.2); border-radius: 50%;
+    position: absolute; width: 120px; height: 120px;
+    border: 2px solid rgba(255,255,255,0.3); border-radius: 50%;
     pointer-events: none; z-index: 45;
 }
 #joystick-stick {
-    position: absolute; width: 40px; height: 40px;
-    background: rgba(255,255,255,0.5); border-radius: 50%;
+    position: absolute; width: 50px; height: 50px;
+    background: rgba(255,255,255,0.6); border-radius: 50%;
     top: 50%; left: 50%; transform: translate(-50%, -50%);
 }
-.action-btn { position: absolute; bottom: 40px; right: 30px; z-index: 60; pointer-events: auto; }
+.action-btn { position: absolute; bottom: 50px; right: 30px; z-index: 60; pointer-events: auto; }
 #btn-fire {
-    width: 80px; height: 80px; border-radius: 50%;
-    background: rgba(200, 0, 0, 0.4); border: 2px solid #f00; cursor: pointer;
+    width: 90px; height: 90px; border-radius: 50%;
+    background: rgba(200, 0, 0, 0.5); border: 2px solid #fff; cursor: pointer; color: white; font-size: 30px;
 }
-#btn-fire::after { content: '🔥'; font-size: 35px; }
-
 @media (min-width: 1024px) { #touch-zone, .action-btn { display: none; } }
