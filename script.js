@@ -1,4 +1,4 @@
-/* script.js - V24.0 AIMING SYSTEM & REWARDS */
+/* script.js - V25.0 SUELO OSCURO Y TERROR */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
@@ -6,10 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // DETECCIÓN DE MÓVIL
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // AUDIO
     let audioCtx;
     function initAudio() {
         if (!audioCtx) {
@@ -28,11 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
             osc.frequency.setValueAtTime(600, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
             gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
-        } else if (type === 'NUKE') { // Sonido de bomba
+        } else if (type === 'NUKE') {
             osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now);
             osc.frequency.exponentialRampToValueAtTime(10, now + 1);
-            gain.gain.setValueAtTime(0.5, now);
-            gain.gain.linearRampToValueAtTime(0, now + 1);
+            gain.gain.setValueAtTime(0.5, now); gain.gain.linearRampToValueAtTime(0, now + 1);
             osc.start(now); osc.stop(now + 1);
         }
     }
@@ -40,60 +37,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
     const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
     const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
+    const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png';
     const imgBoss = new Image(); imgBoss.src = 'imagenes/boss.png';
 
-    let gameRunning = false;
-    let score = 0, level = 1, ammo = 12, maxAmmo = 12;
-    let killCount = 0;
-    let killsForNextLevel = 10; // TOPE DE MUERTOS
+    let gameRunning = false, score = 0, level = 1, ammo = 12, maxAmmo = 12;
+    let killCount = 0, killsForNextLevel = 10;
     let zombies = [], bullets = [], items = [], boss = null;
     const player = { x: canvas.width/2, y: canvas.height/2, hp: 100, maxHp: 100, speed: 5 };
 
-    // --- PUNTERÍA PC (MOUSE) ---
+    // MOUSE PC
     let mouseX = 0, mouseY = 0;
     window.addEventListener('mousemove', e => {
         const rect = canvas.getBoundingClientRect();
-        mouseX = e.clientX - rect.left;
-        mouseY = e.clientY - rect.top;
+        mouseX = e.clientX - rect.left; mouseY = e.clientY - rect.top;
     });
 
-    // --- AUTO-AIM (MÓVIL) ---
+    // AUTO-AIM MÓVIL
     function getNearestZombie() {
-        let nearest = null;
-        let minDist = Infinity;
+        let nearest = null, minDist = Infinity;
         zombies.forEach(z => {
             const dist = Math.hypot(z.x - player.x, z.y - player.y);
             if (dist < minDist) { minDist = dist; nearest = z; }
         });
-        if (boss) { // El jefe tiene prioridad
+        if (boss) {
             const dist = Math.hypot(boss.x - player.x, boss.y - player.y);
             if (dist < minDist) return boss;
         }
         return nearest;
     }
 
-    // --- SISTEMA DE NIVELES Y BOMBA ---
     function triggerNuke() {
-        // Efecto visual
         const pulse = document.getElementById("pulse-wave");
-        pulse.classList.remove("pulse-active");
-        void pulse.offsetWidth; // Reiniciar animación
-        pulse.classList.add("pulse-active");
-        playSound('NUKE');
-
-        // Efecto jugable: Matar a todos
-        zombies = []; 
-        if(boss) boss.hp -= 20; // Daño masivo al jefe
-        player.hp = Math.min(player.maxHp, player.hp + 50); // Curar
-        ammo = maxAmmo; // Recargar
+        pulse.classList.remove("pulse-active"); void pulse.offsetWidth;
+        pulse.classList.add("pulse-active"); playSound('NUKE');
+        zombies = []; if(boss) boss.hp -= 20; player.hp = Math.min(player.maxHp, player.hp + 50); ammo = maxAmmo;
     }
 
     function levelUp() {
-        level++;
-        killsForNextLevel += 5; // Aumentar dificultad
-        killCount = 0;
-        triggerNuke(); // PREMIO: ¡BOMBA!
-        
+        level++; killsForNextLevel += 5; killCount = 0; triggerNuke();
         const banner = document.getElementById('combat-banner');
         document.getElementById('banner-msg').innerText = "¡NIVEL " + level + "! ZONA LIMPIA";
         banner.className = "banner-container banner-active banner-green";
@@ -105,134 +86,94 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("score").innerText = score;
         document.getElementById("ammo").innerText = ammo;
         document.getElementById("level").innerText = level;
-        document.getElementById("kills-left").innerText = (killsForNextLevel - killCount); // Mostrar faltantes
+        document.getElementById("kills-left").innerText = (killsForNextLevel - killCount);
         document.getElementById("health-num").innerText = Math.max(0, Math.floor(player.hp));
         document.getElementById("health-bar").style.width = Math.max(0, player.hp) + "%";
     }
 
-    // --- DISPARO INTELIGENTE ---
     function shoot() {
         if(ammo <= 0) return;
         let vx, vy;
-
         if (!isMobile) {
-            // PC: Usa el mouse
             const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
-            vx = Math.cos(angle) * 15;
-            vy = Math.sin(angle) * 15;
+            vx = Math.cos(angle) * 15; vy = Math.sin(angle) * 15;
         } else {
-            // MÓVIL: Auto-Aim o Joystick
-            if (dragging) {
-                // Si mueve joystick, dispara a donde camina (Twin Stick básico)
-                vx = joyX * 15; vy = joyY * 15;
-            } else {
-                // Si está quieto, Auto-Aim al más cercano
+            if (dragging) { vx = joyX * 15; vy = joyY * 15; }
+            else {
                 const target = getNearestZombie();
-                if (target) {
-                    const angle = Math.atan2(target.y - player.y, target.x - player.x);
-                    vx = Math.cos(angle) * 15; vy = Math.sin(angle) * 15;
-                } else {
-                    vx = 0; vy = -15; // Defecto arriba
-                }
+                if (target) { const angle = Math.atan2(target.y - player.y, target.x - player.x); vx = Math.cos(angle) * 15; vy = Math.sin(angle) * 15; }
+                else { vx = 0; vy = -15; }
             }
         }
-
         bullets.push({x: player.x, y: player.y, vx: vx, vy: vy});
         ammo--; updateHUD(); playSound('SHOOT');
     }
     
-    // Listeners disparo
     document.getElementById("btn-fire").addEventListener("touchstart", (e)=>{e.preventDefault(); shoot();});
     window.addEventListener("mousedown", e => { if(gameRunning && e.target.tagName !== 'BUTTON') shoot(); });
 
-    // --- BUCLE DE JUEGO ---
     function update() {
-        // Movimiento
         let dx = joyX, dy = joyY;
-        const keys = {}; // (Asegurar que definimos keys si no usamos joystick)
-        // ... (Tu lógica de movimiento de teclado aquí si quieres mantenerla, o solo joystick)
-        if(!dragging) {
-             // Lógica teclado simple (W A S D)
-             if (keys['d']) dx=1; if (keys['a']) dx=-1; if (keys['s']) dy=1; if (keys['w']) dy=-1;
-        }
+        const keys = {}; // Si quieres WASD, descomenta abajo
+        if(!dragging) { if(keys['d']) dx=1; /* ... lógica teclas ... */ }
         player.x += dx * player.speed; player.y += dy * player.speed;
         player.x = Math.max(0, Math.min(canvas.width, player.x)); player.y = Math.max(0, Math.min(canvas.height, player.y));
 
-        // Balas
         for(let i=bullets.length-1; i>=0; i--){
             let b = bullets[i]; b.x += b.vx; b.y += b.vy;
-            // Limites bala
             if(b.x<0||b.x>canvas.width||b.y<0||b.y>canvas.height) { bullets.splice(i,1); continue; }
-
             for(let j=zombies.length-1; j>=0; j--){
                 if(Math.hypot(b.x-zombies[j].x, b.y-zombies[j].y) < 30) {
                     zombies.splice(j,1); bullets.splice(i,1);
                     score+=10; killCount++; updateHUD();
-                    
-                    // CHECK DE NIVEL
                     if (killCount >= killsForNextLevel) levelUp();
                     break;
                 }
             }
             if(boss && Math.hypot(b.x-boss.x, b.y-boss.y) < 60) {
                 boss.hp--; bullets.splice(i,1);
-                if(boss.hp <= 0) { boss=null; score+=1000; levelUp(); } // Boss también sube nivel
+                if(boss.hp <= 0) { boss=null; score+=1000; levelUp(); }
             }
         }
-
         zombies.forEach(z => {
-            let angle = Math.atan2(player.y - z.y, player.x - z.x);
-            z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
-            if(Math.hypot(player.x-z.x, player.y-z.y) < 30) {
-                player.hp -= 0.5; updateHUD();
-                document.getElementById("blood-screen").style.boxShadow = "inset 0 0 100px rgba(255,0,0,0.8)";
-                setTimeout(()=>document.getElementById("blood-screen").style.boxShadow="none", 100);
-            }
+            let angle = Math.atan2(player.y - z.y, player.x - z.x); z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
+            if(Math.hypot(player.x-z.x, player.y-z.y) < 30) { player.hp -= 0.5; updateHUD(); }
         });
-
         if(boss) {
-            let angle = Math.atan2(player.y - boss.y, player.x - boss.x);
-            boss.x += Math.cos(angle)*2; boss.y += Math.sin(angle)*2;
+            let angle = Math.atan2(player.y - boss.y, player.x - boss.x); boss.x += Math.cos(angle)*2; boss.y += Math.sin(angle)*2;
             if(Math.hypot(player.x-boss.x, player.y-boss.y) < 50) { player.hp -= 1; updateHUD(); }
         }
-
         for(let i=items.length-1; i>=0; i--) {
-            if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) {
-                ammo += 10; items.splice(i,1); updateHUD();
-            }
+            if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) { ammo += 10; items.splice(i,1); updateHUD(); }
         }
         if(player.hp <= 0) location.reload();
     }
 
     function draw() {
-        // FONDO TÁCTICO GENERADO (NO IMAGEN FEA)
-        ctx.fillStyle = "#111"; // Fondo base oscuro
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Rejilla táctica verde oscuro
-        ctx.strokeStyle = "rgba(0, 50, 0, 0.3)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for (let x = 0; x <= canvas.width; x += 50) { ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
-        for (let y = 0; y <= canvas.height; y += 50) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
-        ctx.stroke();
+        // --- SUELO REALISTA PERO OSCURO ---
+        if(imgGround.complete) {
+            const ptrn = ctx.createPattern(imgGround, 'repeat');
+            ctx.fillStyle = ptrn;
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            
+            // CAPA DE OSCURIDAD (El truco para quitar lo gris)
+            ctx.fillStyle = "rgba(0, 0, 0, 0.7)"; 
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+        } else {
+            ctx.fillStyle='#111'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        }
 
         items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
         if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
         zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
         if(boss && imgBoss.complete) { ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); }
-        bullets.forEach(b => { 
-            ctx.fillStyle='#ff0'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill();
-            ctx.shadowBlur=10; ctx.shadowColor='orange'; // Bala brillante
-        });
-        ctx.shadowBlur=0;
+        bullets.forEach(b => { ctx.fillStyle='#ff0'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill(); });
     }
 
-    // Teclado
+    // Teclas PC (Movimiento WASD y Flechas)
     const k = {};
     window.addEventListener("keydown", e => k[e.key.toLowerCase()] = true);
     window.addEventListener("keyup", e => k[e.key.toLowerCase()] = false);
-    // Loop mover PC
     function updatePCKeys() {
         if (!dragging) {
             let dx=0, dy=0;
@@ -244,12 +185,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loop() { if(gameRunning) { update(); updatePCKeys(); draw(); requestAnimationFrame(loop); } }
 
+    const touchZone = document.getElementById("touch-zone");
+    const joyWrapper = document.getElementById("joystick-wrapper");
+    const joyStick = document.getElementById("joystick-stick");
+    let joyX = 0, joyY = 0, dragging = false, startX, startY;
+    if(touchZone) {
+        touchZone.addEventListener("touchstart", e => { e.preventDefault(); const t = e.touches[0]; startX = t.clientX; startY = t.clientY; dragging = true; joyWrapper.style.display = "block"; joyWrapper.style.left = (startX-60)+"px"; joyWrapper.style.top = (startY-60)+"px"; joyStick.style.transform = `translate(-50%, -50%)`; joyX=0; joyY=0; });
+        touchZone.addEventListener("touchmove", e => { if(!dragging) return; e.preventDefault(); const t = e.touches[0]; let dx = t.clientX-startX; let dy = t.clientY-startY; const dist = Math.hypot(dx, dy); if(dist>50) { const r=50/dist; dx*=r; dy*=r; } joyStick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; joyX=dx/50; joyY=dy/50; });
+        touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
+    }
+
     document.getElementById("start-btn").onclick = () => {
         initAudio();
         document.getElementById("menu-screen").style.display = "none";
         document.getElementById("game-ui").style.display = "block";
         gameRunning = true;
-        setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.1}); }, 1000);
+        setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
         setInterval(() => items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}), 8000);
         updateHUD(); loop();
     };
