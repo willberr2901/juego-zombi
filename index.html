@@ -3,50 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Supervivencia</title>
+    <title>Ciudad Z: V13</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="vignette"></div>
-    <div id="damage-overlay"></div> <div id="level-overlay"></div> <div id="menu-screen" class="menu-overlay">
-        <h1 class="main-title">CIUDAD <span class="blood-z">Z</span></h1>
-        <div class="intro-box">
-            <p>OBJETIVO: SOBREVIVIR</p>
-            <small>Usa el Joystick para moverte. Dispara a todo lo que se mueva.</small>
+    <div id="damage-overlay"></div>
+
+    <div id="menu-screen" class="menu-overlay">
+        
+        <div class="demon-shadow left-demon">
+            <img src="imagenes/zombie.png" alt="">
         </div>
-        <button id="start-btn">INICIAR MISIÓN</button>
+        <div class="demon-shadow right-demon">
+            <img src="imagenes/zombie.png" alt="">
+        </div>
+
+        <div class="boss-display">
+            <img src="imagenes/boss.png" alt="BOSS" class="boss-terror">
+        </div>
+
+        <h1 class="main-title">CIUDAD <span class="blood-z">Z</span></h1>
+        
+        <div class="intro-box">
+            <p>SOBREVIVE A LA HORDA</p>
+        </div>
+
+        <button id="start-btn">JUGAR</button>
     </div>
 
     <div id="modal-screen" class="modal-overlay" style="display:none;">
         <h2 id="modal-title">PAUSA</h2>
-        <p id="modal-score">PUNTUACIÓN: 0</p>
+        <p id="modal-score">PUNTOS: 0</p>
         <button id="modal-btn">CONTINUAR</button>
     </div>
 
-    <div id="boss-warning">¡ADVERTENCIA!<br>GRAN JEFE APROXIMÁNDOSE</div>
+    <div id="boss-warning">¡JEFE APROXIMÁNDOSE!</div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
         
-        <button id="pause-btn">II</button>
-
-        <div class="top-info">
-            <div class="stat-box">
-                <span class="icon">💀</span> <span id="score">0</span>
-            </div>
-            <div class="stat-box">
-                <span class="icon">NIVEL</span> <span id="level">1</span>
-            </div>
+        <div class="hud-background">
+            <div class="stat-box">💀 <span id="score">0</span></div>
+            <div class="stat-box">NIV: <span id="level">1</span></div>
+            <div class="stat-box">🔫 <span id="ammo">12</span></div>
+            <button id="pause-btn">⏸️</button>
         </div>
 
         <div class="health-wrapper">
             <div class="hp-icon">✚</div>
-            <div class="hp-bar-bg">
-                <div id="health-bar"></div>
-            </div>
-            <div class="ammo-box">
-                <span id="ammo">12</span> BALAS
-            </div>
+            <div class="hp-bar-bg"><div id="health-bar"></div></div>
         </div>
     </div>
 
