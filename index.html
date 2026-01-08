@@ -3,43 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Pesadilla</title>
+    <title>Ciudad Z: Tormenta de Sangre</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="vignette"></div>
-
-    <div id="menu-screen" class="menu-overlay">
+    <div id="vignette"></div> <div id="flash-overlay"></div> <div id="menu-screen" class="menu-overlay">
         <img src="imagenes/boss.png" alt="Boss" class="menu-boss-img">
         <h1 id="menu-title">CIUDAD Z</h1>
-        <p id="menu-subtitle">NO HAGAS RUIDO...</p>
+        <p id="menu-subtitle">LA TORMENTA HA COMENZADO</p>
         
         <div class="update-log">
-            <h3>🩸 ACTUALIZACIÓN V3.0</h3>
+            <h3>🩸 REPORTE V4.0</h3>
             <ul>
-                <li>👻 <b>Joystick Dinámico:</b> Toca donde quieras</li>
-                <li>📦 <b>Suministros:</b> Busca las cajas de ayuda</li>
-                <li>🔊 <b>Audio 3D:</b> Ambiente de terror</li>
+                <li>⚡ <b>Clima:</b> Tormentas Eléctricas</li>
+                <li>🎯 <b>PC:</b> Puntería con Mouse Real</li>
+                <li>📦 <b>Visibilidad:</b> Suministros Iluminados</li>
+                <li>👹 <b>Jefe:</b> Aparece al matar 10 Zombis</li>
             </ul>
         </div>
 
         <p class="high-score-display">RECORD: <span id="menu-highscore">0</span></p>
-        <button id="start-btn">SOBREVIVIR</button>
+        <button id="start-btn">INICIAR PESADILLA</button>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
         <div class="top-bar">
-            <div class="score-box">PTS: <span id="score">0</span></div>
+            <div class="score-box">💀 <span id="score">0</span></div>
             <div class="ammo-box">🔫 <span id="ammo">12</span></div>
         </div>
         <div class="health-bar-container">
             <div id="health-bar"></div>
         </div>
-        <p id="log">Sobrevive...</p>
+        <p id="log">Mata 10 zombis para atraer al Jefe...</p>
     </div>
 
-    <div id="dynamic-joystick-area"></div> <div id="joystick-container" style="display:none;">
+    <div id="dynamic-joystick-area"></div>
+    <div id="joystick-container" style="display:none;">
         <div id="joystick-base">
             <div id="joystick-stick"></div>
         </div>
