@@ -1,8 +1,8 @@
-/* style.css - V6.0 TERROR VISUAL */
+/* style.css - V7.0 NIEBLA TÓXICA */
 body {
     margin: 0; padding: 0;
-    background: #000;
-    color: #ccc;
+    background: #050505; /* Fondo casi negro */
+    color: #bbb;
     font-family: 'Courier New', monospace;
     overflow: hidden;
     touch-action: none;
@@ -10,101 +10,111 @@ body {
     cursor: crosshair;
 }
 
-/* EFECTOS DE PANTALLA */
-#vignette {
-    position: absolute; inset: 0;
-    background: radial-gradient(circle, transparent 40%, #000 130%);
-    pointer-events: none; z-index: 20;
+/* --- NIEBLA CSS (SIN IMÁGENES EXTERNAS) --- */
+.fog-container {
+    position: absolute; width: 100%; height: 100%; overflow: hidden; z-index: 1;
+    background: linear-gradient(to bottom, #000 0%, #1a0505 100%);
 }
 
-#red-flash {
+/* Efecto Vignette (Bordes oscuros fijos) */
+#vignette {
     position: absolute; inset: 0;
-    background: red; opacity: 0;
-    pointer-events: none; z-index: 25;
-    mix-blend-mode: overlay;
-    transition: opacity 0.1s;
+    background: radial-gradient(circle, transparent 40%, #000 95%);
+    pointer-events: none; z-index: 10;
 }
 
 /* MENÚ */
 .menu-overlay {
     position: absolute; inset: 0;
-    background: radial-gradient(circle, #200, #000);
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     z-index: 100;
-    border: 5px solid #400;
 }
 
-.boss-frame {
-    margin-bottom: 10px;
-    filter: drop-shadow(0 0 30px #f00);
-    animation: float 4s infinite ease-in-out;
+/* ZOMBIS DECORATIVOS (SILUETAS) */
+.menu-decor {
+    position: absolute; bottom: 0;
+    width: 200px; opacity: 0.6;
+    pointer-events: none;
+    filter: brightness(0) drop-shadow(0 0 5px rgba(255,0,0,0.3)); /* Convertir en sombra */
 }
-.menu-boss-img { width: 160px; }
+.left-zombie { left: -20px; transform: scaleX(-1); } /* Invertir lado */
+.right-zombie { right: -20px; }
 
-@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
+/* JEFE PRINCIPAL */
+.boss-frame { margin-bottom: 5px; z-index: 20; }
+.menu-boss-img {
+    width: 140px;
+    filter: drop-shadow(0 0 20px #500);
+    animation: float 6s infinite ease-in-out;
+}
+@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 
-.glitch-title {
-    font-size: 60px; color: #f00; font-weight: 900;
-    text-shadow: 4px 4px 0 #000; margin: 0;
+/* TÍTULO ESTILO CINE DE TERROR */
+.horror-title {
+    font-size: 65px; color: #b33939;
+    font-weight: 900; margin: 0; z-index: 20;
+    text-shadow: 0 5px 10px #000;
     letter-spacing: 5px;
+    border-bottom: 2px solid #500;
 }
 
-.subtitle { color: #888; letter-spacing: 3px; font-size: 14px; margin-bottom: 30px; border-bottom: 1px solid #f00; }
+.subtitle {
+    color: #666; font-size: 14px; letter-spacing: 4px;
+    margin-bottom: 30px; z-index: 20; text-transform: uppercase;
+}
 
+/* BOTÓN PRO */
 #start-btn {
-    padding: 20px 60px; font-size: 24px;
-    background: #900; color: #fff;
-    border: 2px solid #f00; border-radius: 5px;
-    box-shadow: 0 0 20px #f00; cursor: pointer;
-    font-weight: bold; text-transform: uppercase;
-    animation: pulse 1.5s infinite;
+    padding: 18px 50px; font-size: 22px;
+    background: linear-gradient(180deg, #500, #200);
+    color: #ccc; border: 1px solid #700;
+    border-radius: 4px; cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+    font-family: 'Courier New', monospace; font-weight: bold;
+    z-index: 20; transition: all 0.2s;
 }
-@keyframes pulse { 0%{transform:scale(1);} 50%{transform:scale(1.05);} 100%{transform:scale(1);} }
+#start-btn:hover { color: #fff; border-color: #f00; box-shadow: 0 0 20px #800; }
+#start-btn:active { transform: scale(0.98); }
 
-.controls-hint { margin-top: 30px; font-size: 12px; color: #555; text-align: center; }
+.menu-panel { margin-bottom: 20px; z-index: 20; color: #f1c40f; font-weight: bold; }
+.controls-hint { margin-top: 30px; font-size: 11px; color: #444; z-index: 20; }
 
-/* HUD */
-.ui-container { position: absolute; top: 10px; left: 10px; z-index: 30; width: 95%; pointer-events: none; }
-.top-bar { display: flex; gap: 15px; margin-bottom: 10px; }
-.hud-box { 
-    background: rgba(0,0,0,0.8); border: 1px solid #555;
-    padding: 8px 12px; font-weight: bold; font-size: 18px; color: #f1c40f;
-}
+/* --- HUD JUEGO --- */
+.ui-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 30; }
+.top-bar { position: absolute; top: 15px; left: 15px; display: flex; gap: 15px; }
 
-.health-container { position: absolute; top: 10px; right: 10px; display: flex; align-items: center; gap: 5px; }
-.health-bar-bg { width: 150px; height: 15px; background: #333; border: 1px solid #fff; }
-#health-bar { width: 100%; height: 100%; background: #0f0; transition: width 0.2s; }
-
-/* JOYSTICK DINÁMICO (Invisible hasta tocar) */
-#touch-zone {
-    position: absolute; top: 0; left: 0; width: 50%; height: 100%;
-    z-index: 50; /* Detecta el toque */
+.hud-box {
+    background: rgba(0,0,0,0.8); border-left: 3px solid #b33939;
+    padding: 8px 15px; font-weight: bold; font-size: 18px; color: #ddd;
 }
 
+.health-container { position: absolute; top: 15px; right: 15px; width: 200px; height: 15px; background: #222; border: 1px solid #555; }
+#health-bar { width: 100%; height: 100%; background: #c0392b; transition: width 0.2s; }
+
+#log {
+    position: absolute; bottom: 80px; width: 100%; text-align: center;
+    color: rgba(255,255,255,0.5); font-size: 12px;
+}
+
+/* CONTROLES */
+#touch-zone { position: absolute; inset: 0; z-index: 50; }
 #joystick-wrapper {
-    position: absolute; width: 120px; height: 120px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%; pointer-events: none; z-index: 55;
-    /* Se posiciona con JS */
+    position: absolute; width: 100px; height: 100px;
+    border: 2px dashed rgba(255,255,255,0.2); border-radius: 50%;
+    pointer-events: none; z-index: 55;
 }
-
 #joystick-stick {
-    position: absolute; width: 50px; height: 50px;
-    background: rgba(255,255,255,0.4); border-radius: 50%;
+    position: absolute; width: 40px; height: 40px;
+    background: rgba(255,255,255,0.5); border-radius: 50%;
     top: 50%; left: 50%; transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px #fff;
 }
 
-/* BOTÓN DISPARO */
-.action-btn { position: absolute; bottom: 50px; right: 40px; z-index: 60; }
+.action-btn { position: absolute; bottom: 40px; right: 30px; z-index: 60; }
 #btn-fire {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: rgba(200, 0, 0, 0.4); border: 3px solid #f00;
-    color: white; font-size: 30px; outline: none;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(100, 0, 0, 0.5); border: 2px solid #a00;
+    color: white; font-size: 30px;
 }
-#btn-fire:active { background: #f00; transform: scale(0.9); }
+#btn-fire:active { background: #a00; }
 
-@media (min-width: 1024px) {
-    #touch-zone, .action-btn { display: none; } /* Ocultar en PC */
-}
+@media (min-width: 1024px) { #touch-zone, .action-btn { display: none; } }
