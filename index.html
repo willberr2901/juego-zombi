@@ -3,40 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Pesadilla Final</title>
+    <title>Ciudad Z: Terror Total</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="vignette"></div>
-    <div id="game-flash"></div> <div id="menu-screen" class="menu-overlay">
-        <div class="boss-container">
+    <div id="vignette"></div> <div id="red-flash"></div> <div id="menu-screen" class="menu-overlay">
+        <div class="boss-frame">
             <img src="imagenes/boss.png" alt="Boss" class="menu-boss-img">
         </div>
         
-        <h1 class="bloody-title">CIUDAD Z</h1>
-        <p class="subtitle">LA MUERTE ESPERA</p>
+        <h1 class="glitch-title">CIUDAD Z</h1>
+        <p class="subtitle">NO MIRES ATRÁS</p>
 
-        <div class="menu-panel">
-            <div class="info-row">🏆 RÉCORD: <span id="menu-highscore">0</span></div>
-            <div class="info-row">⚠️ ESTADO: <span style="color:red">INFECTADO</span></div>
+        <div class="menu-info">
+            <p>🏆 RÉCORD: <span id="menu-highscore">0</span></p>
         </div>
 
-        <button id="start-btn">ENTRAR AL INFIERNO</button>
+        <button id="start-btn">SOBREVIVIR</button>
         
-        <div class="credits">V5.0 INTERFAZ INFERNAL</div>
+        <div class="controls-hint">
+            <p>📱 MÓVIL: Toca cualquier lado para moverte</p>
+            <p>💻 PC: Usa W-A-S-D y Mouse</p>
+        </div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
         <div class="top-bar">
-            <div class="hud-box score">💀 <span id="score">0</span></div>
-            <div class="hud-box ammo">🔫 <span id="ammo">12</span></div>
+            <div class="hud-box">💀 <span id="score">0</span></div>
+            <div class="hud-box">🔫 <span id="ammo">12</span></div>
         </div>
         <div class="health-container">
-            <div class="health-icon">❤️</div>
+            <div class="health-icon">✚</div>
             <div class="health-bar-bg"><div id="health-bar"></div></div>
         </div>
-        <p id="log">Mata para sobrevivir...</p>
+        <p id="log">Encuentra suministros...</p>
     </div>
 
     <div id="touch-zone"></div> <div id="joystick-wrapper" style="display:none;">
