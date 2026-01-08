@@ -1,11 +1,7 @@
-/* style.css - V22.0 HUD TÁCTICO DE TERROR */
-body {
-    margin: 0; padding: 0; background: #000;
-    color: #eee; font-family: 'Courier New', monospace;
-    overflow: hidden; touch-action: none; user-select: none;
-}
+/* style.css - V23.0 HUD PROFESIONAL */
+body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Courier New', monospace; overflow: hidden; touch-action: none; user-select: none; }
 
-/* --- ESTILOS DEL MENÚ V21 (NO TOCAR) --- */
+/* (ESTILOS DEL MENÚ V21 - MANTENER IGUAL) */
 .grid-bg { position: absolute; inset: 0; opacity: 0.15; background-image: linear-gradient(#500 1px, transparent 1px), linear-gradient(90deg, #500 1px, transparent 1px); background-size: 40px 40px; z-index: 1; pointer-events: none; }
 #vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle, transparent 20%, #000 100%); }
 .menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); }
@@ -17,14 +13,13 @@ body {
 .section-title { font-size: 12px; color: #aaa; margin: 10px 0 5px 0; font-weight: bold; }
 .patch-notes { padding: 0; list-style: none; font-size: 11px; color: #ccc; margin: 0; }
 .patch-notes li { margin-bottom: 4px; border-left: 2px solid #333; padding-left: 5px; }
-.buff { color: #4f4; border-color: #4f4 !important; } .nerf { color: #f44; border-color: #f44 !important; }
+.buff { color: #4f4; border-color: #4f4 !important; } .fix { color: #ff0; border-color: #ff0 !important; }
 .system-footer { margin-top: auto; font-size: 10px; color: #666; text-align: center; border-top: 1px solid #333; padding-top: 5px; }
 .intel-grid { display: flex; flex-direction: column; gap: 8px; font-size: 12px; }
 .intel-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #333; padding-bottom: 2px; }
-.intel-row span { color: #888; } .intel-row .val { color: #fff; font-weight: bold; } .intel-row .red { color: #f00; }
+.intel-row .val { color: #fff; font-weight: bold; } .intel-row .red { color: #f00; }
 .panel-hr { border: 0; border-top: 1px solid #500; margin: 20px 0; }
 .objective-box { text-align: center; background: rgba(50,0,0,0.3); padding: 10px; border: 1px solid #500; }
-.obj-label { font-size: 10px; color: #f00; margin: 0; letter-spacing: 2px; }
 .obj-main { font-size: 16px; color: #fff; font-weight: bold; margin: 5px 0 0 0; text-shadow: 0 0 5px #f00; }
 .center-stage { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 350px; }
 .boss-hologram img { width: 170px; filter: drop-shadow(0 0 35px #f00) contrast(1.1); animation: float 4s infinite ease-in-out; }
@@ -37,82 +32,76 @@ body {
 .ticker-text { color: #f00; font-weight: bold; font-size: 14px; animation: ticker 20s linear infinite; padding-left: 100%; }
 @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-200%); } }
 
-/* === NUEVOS ESTILOS DEL HUD TÁCTICO (V22) === */
+/* === AQUI COMIENZA EL HUD DE JUEGO MEJORADO (V23) === */
 .ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
-.hud-section { position: absolute; padding: 15px; }
-.top-left { top: 0; left: 0; }
-.top-right { top: 0; right: 0; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
 
-/* BARRA DE VIDA PRO */
-.vitals-gauge {
+/* CAJAS GENERALES */
+.combat-panel {
+    position: absolute; background: rgba(0, 0, 0, 0.85); /* Fondo negro para que se lea */
+    border: 2px solid #444; border-radius: 8px; padding: 10px 15px;
     display: flex; align-items: center; gap: 10px;
-    background: rgba(20, 0, 0, 0.7); border: 2px solid #500;
-    padding: 8px 15px; border-radius: 4px; transform: skewX(-10deg);
-}
-.heart-icon { color: #f00; font-size: 30px; text-shadow: 0 0 10px #f00; transform: skewX(10deg); }
-.blink-fast { animation: heartbeat 0.8s infinite; }
-@keyframes heartbeat { 0%, 100% { transform: skewX(10deg) scale(1); } 50% { transform: skewX(10deg) scale(1.2); } }
-
-.hp-bar-frame {
-    width: 250px; height: 20px; background: #111;
-    border: 2px solid #333; position: relative; overflow: hidden; transform: skewX(10deg);
-}
-#health-bar {
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, #c00, #f50);
-    box-shadow: 0 0 10px #f00; transition: width 0.2s;
-}
-.hp-text {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: bold; color: #fff; text-shadow: 1px 1px #000; font-size: 14px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px);
 }
 
-/* MEDIDORES TÁCTICOS (Munición, Score) */
-.tactical-gauge {
-    background: rgba(0, 0, 0, 0.8); border: 1px solid #555;
-    padding: 8px 15px; color: #eee; font-weight: bold; font-size: 20px;
-    border-right: 4px solid #f00; text-align: right;
-    box-shadow: -5px 5px 10px rgba(0,0,0,0.5);
-    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
-}
-.gauge-icon { font-size: 24px; }
-.tactical-gauge small { font-size: 10px; color: #aaa; text-transform: uppercase; }
-.ammo-gauge { color: #e74c3c; border-color: #c0392b; }
-.score-gauge { color: #f1c40f; border-color: #d4ac0d; }
-.level-gauge { color: #3498db; border-color: #2980b9; font-size: 16px; }
+/* Panel Salud */
+.health-panel { top: 20px; left: 20px; border-left: 5px solid #e74c3c; width: 300px; }
+.icon-box { font-size: 30px; color: #e74c3c; font-weight: bold; text-shadow: 0 0 10px red; }
+.bars-container { flex-grow: 1; }
+.bar-label { font-size: 10px; color: #aaa; margin-bottom: 3px; letter-spacing: 1px; }
+.health-bar-frame { width: 100%; height: 15px; background: #222; border: 1px solid #555; overflow: hidden; }
+#health-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #c0392b, #e74c3c); transition: width 0.2s; box-shadow: 0 0 10px #c0392b; }
+.health-number { font-size: 20px; font-weight: bold; color: #fff; width: 60px; text-align: right; }
 
+/* Panel Estadísticas (Munición/Score) */
+.stats-panel { top: 20px; right: 20px; flex-direction: column; align-items: flex-end; border-right: 5px solid #f1c40f; padding: 10px 20px; }
+.stat-row { display: flex; align-items: center; gap: 10px; }
+.big-num { font-size: 32px; font-weight: 900; color: #fff; text-shadow: 2px 2px 0 #000; }
+.label { font-size: 10px; color: #aaa; text-transform: uppercase; margin-right: 5px; }
+.icon { font-size: 20px; }
+.ammo-row .big-num { color: #f1c40f; } /* Amarillo para balas */
+.score-row .big-num { color: #ecf0f1; }
+.panel-sep { width: 100%; border: 0; border-top: 1px solid #444; margin: 5px 0; }
+
+/* Nivel Central */
+.level-badge {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.9); border: 2px solid #3498db;
+    padding: 5px 20px; border-radius: 0 0 10px 10px; text-align: center;
+}
+.lvl-label { display: block; font-size: 9px; color: #3498db; letter-spacing: 2px; }
+.lvl-num { font-size: 24px; font-weight: bold; color: #fff; }
+
+/* Botón Pausa */
 #pause-btn {
-    background: #333; color: #fff; border: 1px solid #fff;
-    cursor: pointer; pointer-events: auto; padding: 5px 15px;
-    font-family: inherit; font-weight: bold; margin-top: 5px;
+    position: absolute; top: 130px; right: 20px;
+    background: #333; color: white; border: 1px solid #777;
+    padding: 5px 15px; cursor: pointer; pointer-events: auto; font-weight: bold;
 }
 
-/* ALERTAS CENTRALES */
-#center-alerts {
-    position: absolute; top: 30%; left: 0; width: 100%;
-    display: flex; flex-direction: column; align-items: center; gap: 20px;
-    pointer-events: none;
+/* BANNER DE ALERTAS GIGANTE */
+.banner-container {
+    position: absolute; top: 35%; width: 100%; height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(200, 0, 0, 0.7); /* Rojo semitransparente */
+    border-top: 4px solid #fff; border-bottom: 4px solid #fff;
+    transform: scaleX(0); transition: transform 0.3s;
 }
-.alert-banner, .reward-banner {
-    padding: 15px 40px; font-size: 24px; font-weight: 900;
-    text-align: center; text-transform: uppercase; letter-spacing: 2px;
-    transform: scale(0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.banner-text {
+    font-size: 40px; font-weight: 900; color: #fff;
+    text-shadow: 0 0 20px #000; text-transform: uppercase; letter-spacing: 5px;
+    animation: flashText 0.2s infinite;
 }
-.alert-banner {
-    background: linear-gradient(90deg, transparent, #c00, transparent);
-    color: #fff; text-shadow: 0 0 10px #f00, 2px 2px #000;
-    border-top: 2px solid #f00; border-bottom: 2px solid #f00;
-}
-.reward-banner {
-    background: linear-gradient(90deg, transparent, #3498db, transparent);
-    color: #fff; text-shadow: 0 0 10px #3498db, 2px 2px #000;
-    border-top: 2px solid #3498db; border-bottom: 2px solid #3498db;
-}
-.alert-active { transform: scale(1) !important; animation: pulseAlert 0.5s infinite alternate; }
-@keyframes pulseAlert { from{opacity:1;} to{opacity:0.8;} }
+@keyframes flashText { 0% { opacity: 1; } 50% { opacity: 0.5; } }
+.banner-active { transform: scaleX(1); }
+.banner-green { background: rgba(46, 204, 113, 0.7) !important; border-color: #fff; } /* Para nivel */
 
-/* CONTROLES (IGUAL) */
+/* Efecto Sangre al Herir */
+#blood-screen {
+    position: absolute; inset: 0; pointer-events: none; z-index: 40;
+    box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: box-shadow 0.1s;
+}
+
+/* CONTROLES (Misma posición) */
 #touch-zone { position: absolute; inset: 0; z-index: 40; }
 #joystick-wrapper { position: absolute; width: 120px; height: 120px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: none; z-index: 45; }
 #joystick-stick { position: absolute; width: 50px; height: 50px; background: rgba(255,255,255,0.6); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
