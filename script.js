@@ -247,3 +247,4 @@ function animate() {
 
 document.getElementById('start-btn').addEventListener('click', startGame);
 menuScreen.style.display='flex'; gameUI.style.display='none';
+
