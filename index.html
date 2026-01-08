@@ -3,33 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Combate Total V24</title>
+    <title>Ciudad Z: V25 Final</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="grid-bg"></div>
     <div id="vignette"></div>
-    <div id="blood-screen"></div>
-    <div id="pulse-wave"></div> <div id="menu-screen" class="menu-overlay">
-        <div class="neon-decor left-decor"><img src="imagenes/zombie.png"></div>
-        <div class="neon-decor right-decor"><img src="imagenes/zombie.png"></div>
+    <div id="blood-screen"></div> <div id="pulse-wave"></div> <div id="menu-screen" class="menu-overlay">
+        
+        <div class="neon-decor left-decor">
+            <img src="imagenes/zombie.png" alt="">
+        </div>
+        <div class="neon-decor right-decor">
+            <img src="imagenes/zombie.png" alt="">
+        </div>
+
         <div class="main-layout">
+            
             <div class="hud-panel left-panel">
-                <h3 class="panel-header">📂 ACTUALIZACIÓN V24</h3>
-                <div class="data-section"><ul class="patch-notes"><li class="buff">[+] Puntería Mouse (PC)</li><li class="buff">[+] Auto-Aim (Móvil)</li><li class="buff">[+] Bomba de Nivel</li><li class="fix">[+] Suelo Táctico</li></ul></div>
+                <h3 class="panel-header">📂 SISTEMA V25.0</h3>
+                <div class="data-section">
+                    <p class="section-title">>> REGISTRO DE CAMBIOS</p>
+                    <ul class="patch-notes">
+                        <li class="buff">[+] Suelo Texturizado Oscuro</li>
+                        <li class="buff">[+] Cinta de Alerta (Restaurada)</li>
+                        <li class="buff">[+] Puntería Automática</li>
+                        <li class="fix">[!] Gráficos HD</li>
+                    </ul>
+                </div>
+                <div class="system-footer">ESTADO: LISTO PARA EL COMBATE</div>
             </div>
+
             <div class="center-stage">
-                <div class="boss-hologram"><img src="imagenes/boss.png"></div>
+                <div class="boss-hologram">
+                    <img src="imagenes/boss.png" alt="BOSS">
+                </div>
+                
                 <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-                <button id="start-btn">INFILTRARSE</button>
+                
+                <button id="start-btn">
+                    INICIAR MISIÓN
+                    <div class="btn-sub">NO HAY RETORNO</div>
+                </button>
             </div>
+
             <div class="hud-panel right-panel">
-                <h3 class="panel-header">📝 REGLAS DE COMBATE</h3>
-                <div class="intel-grid"><div class="intel-row"><span>META:</span> <span class="val red">ELIMINAR HOSTILES</span></div></div>
+                <h3 class="panel-header">📝 OPERACIÓN FINAL</h3>
+                <div class="intel-grid">
+                    <div class="intel-row">
+                        <span>UBICACIÓN:</span> <span class="val">ZONA CERO</span>
+                    </div>
+                    <div class="intel-row">
+                        <span>AMENAZA:</span> <span class="val red">EXTREMA</span>
+                    </div>
+                </div>
                 <hr class="panel-hr">
-                <div class="objective-box"><p class="obj-main">SOBREVIVE</p></div>
+                <div class="objective-box">
+                    <p class="obj-label">OBJETIVO:</p>
+                    <p class="obj-main">SOBREVIVE</p>
+                </div>
             </div>
+
+        </div>
+
+        <div class="bottom-ticker">
+            <p class="ticker-text">⚠️ ALERTA DE EMERGENCIA: LA INFECCIÓN SE EXPANDE... EVACUACIÓN FALLIDA... MANTENGA SU POSICIÓN Y DISPARE A MATAR... NIVEL DE PELIGRO: MÁXIMO... ⚠️</p>
         </div>
     </div>
 
