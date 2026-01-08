@@ -5,10 +5,9 @@ body {
     font-family: 'Courier New', monospace;
     overflow: hidden;
     touch-action: none;
-    user-select: none;
 }
 
-/* ===== MENÚ ===== */
+/* MENÚ */
 .menu-overlay {
     position: absolute;
     inset: 0;
@@ -25,35 +24,25 @@ body {
     color: #e74c3c;
 }
 
-button#start-btn {
-    padding: 20px 50px;
-    font-size: 24px;
-    background: #e74c3c;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-}
-
 .high-score-display {
     color: #f1c40f;
-    margin-bottom: 20px;
 }
 
-.instructions {
-    margin-top: 15px;
-    font-size: 14px;
-    opacity: 0.8;
+#start-btn {
+    padding: 15px 40px;
+    font-size: 22px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 10px;
 }
 
-/* ===== HUD ===== */
+/* HUD */
 .ui-container {
     position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 95%;
+    top: 10px;
+    left: 10px;
     z-index: 10;
-    pointer-events: none;
 }
 
 .top-bar {
@@ -62,46 +51,31 @@ button#start-btn {
 }
 
 .score-box, .level-box, .record-box {
-    background: rgba(0,0,0,0.6);
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-weight: bold;
+    background: rgba(0,0,0,0.7);
+    padding: 6px 10px;
+    border-radius: 6px;
 }
-
-.score-box { color: #f1c40f; }
-.level-box { color: #e74c3c; }
-.record-box { color: #9b59b6; }
 
 .stats {
     margin-top: 5px;
-    background: rgba(0,0,0,0.6);
-    padding: 5px;
-    border-radius: 5px;
-    max-width: 200px;
+    background: rgba(0,0,0,0.7);
+    padding: 6px;
+    border-radius: 6px;
 }
 
-#health { color: #2ecc71; }
-#ammo { color: #e67e22; }
-#cure { color: #3498db; }
-
-/* ===== CONTROLES ===== */
+/* CONTROLES */
 #mobile-controls {
     position: absolute;
-    bottom: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 20px;
+    inset: 0;
     z-index: 40;
-    pointer-events: none;
-}
-
-#mobile-controls button {
     pointer-events: auto;
 }
 
-/* ===== JOYSTICK ===== */
+/* JOYSTICK */
 #joystick-container {
+    position: absolute;
+    bottom: 40px;
+    left: 30px;
     width: 120px;
     height: 120px;
 }
@@ -109,7 +83,7 @@ button#start-btn {
 #joystick-base {
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.25), rgba(0,0,0,0.7));
+    background: radial-gradient(circle, rgba(255,255,255,0.25), rgba(0,0,0,0.8));
     border-radius: 50%;
     border: 2px solid rgba(255,255,255,0.4);
     position: relative;
@@ -125,10 +99,11 @@ button#start-btn {
     left: 35px;
 }
 
-/* ===== DISPARO ===== */
+/* BOTÓN DISPARO */
 .action-btn {
-    display: flex;
-    align-items: flex-end;
+    position: absolute;
+    bottom: 40px;
+    right: 30px;
 }
 
 #btn-fire {
@@ -137,10 +112,6 @@ button#start-btn {
     border-radius: 50%;
     background: rgba(231,76,60,0.4);
     border: 2px solid #e74c3c;
-    font-size: 22px;
     color: white;
-}
-
-#btn-fire:active {
-    background: rgba(231,76,60,0.9);
+    font-size: 22px;
 }
