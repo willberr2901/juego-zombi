@@ -1,66 +1,241 @@
+/* ===============================
+   CIUDAD Z - ESTILO PRO
+   =============================== */
+
+:root {
+    --red: #e74c3c;
+    --yellow: #f1c40f;
+    --green: #2ecc71;
+    --blue: #3498db;
+    --purple: #9b59b6;
+    --dark-bg: rgba(0,0,0,0.65);
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     padding: 0;
-    background-color: #111;
+    background: radial-gradient(circle at center, #222 0%, #000 70%);
     color: white;
     font-family: 'Courier New', Courier, monospace;
-    overflow: hidden; /* Importante para móvil */
-    touch-action: none; /* Desactiva gestos del navegador */
-    user-select: none; /* Evita seleccionar texto al tocar */
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
 }
 
-/* --- MENÚ --- */
+/* ===== MENÚ ===== */
 .menu-overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top, rgba(80,0,0,0.4), rgba(0,0,0,0.95));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     z-index: 50;
-}
-.menu-overlay h1 { font-size: 50px; color: #e74c3c; margin: 0; text-align: center;}
-.high-score-display { color: #f1c40f; font-size: 18px; margin-bottom: 20px; }
-button#start-btn {
-    padding: 20px 50px; font-size: 24px; background: #e74c3c; color: white;
-    border: none; border-radius: 10px; font-weight: bold;
+    text-align: center;
 }
 
-/* --- HUD (Interfaz) --- */
-.ui-container { position: absolute; top: 5px; left: 5px; z-index: 10; pointer-events: none; width: 95%; }
-.top-bar { display: flex; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; }
-.score-box, .level-box, .record-box {
-    background: rgba(0,0,0,0.6); padding: 5px 10px; border: 1px solid #555; border-radius: 5px; font-weight: bold; font-size: 14px;
+.menu-overlay h1 {
+    font-size: 52px;
+    color: var(--red);
+    margin: 0;
+    letter-spacing: 4px;
+    text-shadow: 0 0 15px rgba(231,76,60,0.6);
 }
-.score-box { color: #f1c40f; } .level-box { color: #e74c3c; } .record-box { color: #9b59b6; }
-.stats { background: rgba(0,0,0,0.6); padding: 5px; border-radius: 5px; font-size: 14px; max-width: 200px;}
-.stats p { margin: 2px 0; }
-span#health { color: #2ecc71; } span#ammo { color: #e67e22; } span#cure { color: #3498db; }
 
-/* --- CONTROLES MÓVILES --- */
+#menu-subtitle {
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.version {
+    font-size: 12px;
+    opacity: 0.6;
+    margin: 8px 0 15px;
+}
+
+.update-box {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 13px;
+    margin-bottom: 15px;
+    max-width: 260px;
+}
+
+.update-box strong {
+    color: var(--yellow);
+}
+
+.update-box ul {
+    padding-left: 15px;
+    margin: 5px 0 0;
+}
+
+.high-score-display {
+    color: var(--yellow);
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+#start-btn {
+    padding: 18px 55px;
+    font-size: 24px;
+    background: linear-gradient(145deg, #ff5a4a, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-weight: bold;
+    box-shadow: 0 8px 20px rgba(231,76,60,0.4);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+#start-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 10px rgba(231,76,60,0.3);
+}
+
+.instructions {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 15px;
+}
+
+/* ===== HUD ===== */
+.ui-container {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    pointer-events: none;
+    width: 95%;
+}
+
+.top-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.score-box,
+.level-box,
+.record-box {
+    background: var(--dark-bg);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    border: 1px solid #333;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
+}
+
+.score-box { color: var(--yellow); }
+.level-box { color: var(--red); }
+.record-box { color: var(--purple); }
+
+.status {
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--yellow);
+    text-shadow: 0 0 8px rgba(241,196,15,0.6);
+}
+
+.stats {
+    background: var(--dark-bg);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    max-width: 220px;
+    border: 1px solid #333;
+}
+
+.stats p {
+    margin: 3px 0;
+}
+
+#health { color: var(--green); }
+#ammo { color: #e67e22; }
+#cure { color: var(--blue); }
+
+#log {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* ===== CONTROLES MÓVILES ===== */
 #mobile-controls {
-    position: absolute; bottom: 20px; left: 0; width: 100%; height: 150px;
-    z-index: 40; pointer-events: none; /* Dejar pasar clics donde no hay botones */
-    display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    height: 160px;
+    z-index: 40;
+    pointer-events: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
 }
 
-/* Botones interactivos */
 #mobile-controls button {
-    pointer-events: auto; /* Activar toques en botones */
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    color: white; border-radius: 50%; width: 60px; height: 60px; font-size: 24px;
-    outline: none; -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
+    background: radial-gradient(circle at top, rgba(255,255,255,0.35), rgba(255,255,255,0.15));
+    border: 2px solid rgba(255,255,255,0.5);
+    color: white;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.6);
+    transition: transform 0.05s, background 0.05s;
 }
-#mobile-controls button:active { background: rgba(255, 255, 255, 0.5); }
 
-.dpad { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.dpad-middle { display: flex; gap: 60px; }
-.action-btn { display: flex; align-items: center; padding-bottom: 40px;}
-#btn-fire { 
-    width: 90px; height: 90px; border-radius: 50%; background: rgba(231, 76, 60, 0.3); border-color: #e74c3c; font-size: 16px; 
+#mobile-controls button:active {
+    transform: scale(0.9);
+    background: rgba(255,255,255,0.6);
 }
-#btn-fire:active { background: rgba(231, 76, 60, 0.8); }
 
-/* Ocultar controles en PC si se desea (opcional) */
+.dpad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.dpad-middle {
+    display: flex;
+    gap: 60px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+#btn-fire {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background: radial-gradient(circle at top, rgba(231,76,60,0.6), rgba(192,57,43,0.4));
+    border-color: var(--red);
+    font-size: 22px;
+    box-shadow: 0 0 20px rgba(231,76,60,0.6);
+}
+
+#btn-fire:active {
+    background: rgba(231,76,60,0.9);
+}
+
+/* ===== RESPONSIVE ===== */
 @media (min-width: 1024px) {
-    /* Descomenta la siguiente línea si quieres ocultarlos en PC */
+    /* Opcional: ocultar controles móviles en PC */
     /* #mobile-controls { display: none; } */
 }
