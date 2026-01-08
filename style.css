@@ -1,4 +1,4 @@
-/* style.css - TEMA DE TERROR V3.0 */
+/* style.css - V4.0 TORMENTA DE SANGRE */
 body {
     margin: 0; padding: 0;
     background: #000;
@@ -7,97 +7,94 @@ body {
     overflow: hidden;
     touch-action: none;
     user-select: none;
+    cursor: crosshair;
 }
 
-/* EFECTO DE TERROR (VIGNETTE) */
+/* EFECTOS DE TERROR */
 #vignette {
     position: absolute; inset: 0;
-    background: radial-gradient(circle, transparent 40%, #000 100%);
-    pointer-events: none;
-    z-index: 20;
+    background: radial-gradient(circle, transparent 50%, #000 120%);
+    pointer-events: none; z-index: 20;
+}
+
+#flash-overlay {
+    position: absolute; inset: 0;
+    background: red; opacity: 0;
+    pointer-events: none; z-index: 25;
+    mix-blend-mode: overlay;
+}
+
+/* Clase para activar el rayo */
+.flash-anim { animation: lightning 0.2s ease-out; }
+@keyframes lightning { 
+    0% { opacity: 0; } 50% { opacity: 0.6; background: #fff; } 
+    100% { opacity: 0; background: #f00; } 
 }
 
 /* MENÚ */
 .menu-overlay {
     position: absolute; inset: 0;
-    background: #000;
+    background: #050000;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     z-index: 100;
 }
 
 .menu-boss-img {
-    width: 130px; opacity: 0.8;
-    filter: drop-shadow(0 0 30px #500);
-    animation: pulse 3s infinite;
+    width: 140px; filter: drop-shadow(0 0 25px #f00);
+    animation: float 4s infinite ease-in-out;
 }
-@keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.05);} 100% {transform: scale(1);} }
+@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 
-h1 { font-size: 60px; color: #a00; text-shadow: 0 0 20px #f00; margin: 0; letter-spacing: 5px; }
-#menu-subtitle { color: #555; letter-spacing: 3px; font-size: 14px; margin-bottom: 30px; }
+h1 { font-size: 55px; color: #c00; text-shadow: 0 0 15px red; margin: 0; }
+#menu-subtitle { color: #666; letter-spacing: 2px; font-size: 14px; margin-bottom: 25px; }
 
 .update-log {
-    border-left: 2px solid #a00;
-    background: rgba(20, 0, 0, 0.8);
-    padding: 15px; width: 280px; margin-bottom: 20px;
-    text-align: left;
+    border: 1px solid #500; background: rgba(20,0,0,0.9);
+    padding: 15px; width: 280px; margin-bottom: 20px; text-align: left;
+    box-shadow: 0 0 15px rgba(255,0,0,0.2);
 }
-.update-log h3 { color: #d35400; margin: 0 0 10px 0; border-bottom: 1px solid #333; font-size: 14px; }
-.update-log ul { padding-left: 20px; font-size: 12px; color: #aaa; margin: 0; }
+.update-log h3 { color: #f39c12; margin: 0 0 8px 0; border-bottom: 1px solid #333; font-size: 14px; }
+.update-log ul { padding-left: 20px; font-size: 12px; color: #bbb; margin: 0; }
 
 #start-btn {
-    padding: 15px 60px; font-size: 24px;
-    background: #500; color: #fff; border: 1px solid #a00;
-    box-shadow: 0 0 20px #500; cursor: pointer;
-    font-family: 'Courier New', monospace; font-weight: bold;
-    transition: all 0.2s;
+    padding: 15px 50px; font-size: 22px;
+    background: #800; color: #fff; border: 2px solid #f00;
+    box-shadow: 0 0 25px #800; cursor: pointer; font-weight: bold;
+    animation: pulseBtn 2s infinite;
 }
-#start-btn:active { background: #f00; box-shadow: 0 0 40px #f00; }
+@keyframes pulseBtn { 0%{transform:scale(1);} 50%{transform:scale(1.05);} 100%{transform:scale(1);} }
 
 /* HUD */
 .ui-container { position: absolute; top: 10px; left: 10px; z-index: 30; width: 95%; pointer-events: none; }
-.top-bar { display: flex; gap: 15px; font-size: 20px; font-weight: bold; margin-bottom: 10px; }
-.score-box { color: #f1c40f; text-shadow: 2px 2px 0 #000; }
-.ammo-box { color: #e74c3c; text-shadow: 2px 2px 0 #000; }
+.top-bar { display: flex; gap: 20px; font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+.score-box { color: #f1c40f; } .ammo-box { color: #e74c3c; }
 
-.health-bar-container {
-    width: 200px; height: 10px; background: #333; border: 1px solid #555;
-}
-#health-bar {
-    width: 100%; height: 100%; background: #2ecc71; transition: width 0.2s;
-}
+.health-bar-container { width: 200px; height: 12px; background: #222; border: 1px solid #555; }
+#health-bar { width: 100%; height: 100%; background: #2ecc71; transition: width 0.2s; }
+#log { color: #aaa; font-size: 14px; text-shadow: 1px 1px 0 #000; margin-top: 5px; }
 
 /* JOYSTICK DINÁMICO */
-#dynamic-joystick-area {
-    position: absolute; top: 0; left: 0; width: 50%; height: 100%;
-    z-index: 40; /* Zona táctil izquierda invisible */
-}
-#joystick-container {
-    position: absolute; width: 100px; height: 100px;
-    pointer-events: none; z-index: 45;
-}
+#dynamic-joystick-area { position: absolute; top: 0; left: 0; width: 50%; height: 100%; z-index: 40; }
+#joystick-container { position: absolute; width: 100px; height: 100px; pointer-events: none; z-index: 45; }
 #joystick-base {
     width: 100%; height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3);
     border-radius: 50%; position: relative;
 }
 #joystick-stick {
-    width: 40px; height: 40px;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 50%; position: absolute;
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    width: 40px; height: 40px; background: #ddd; border-radius: 50%;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
 }
 
-/* BOTÓN DISPARO */
-.action-btn { position: absolute; bottom: 60px; right: 40px; z-index: 50; }
+.action-btn { position: absolute; bottom: 50px; right: 40px; z-index: 50; }
 #btn-fire {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: rgba(200, 0, 0, 0.3); border: 2px solid #f00;
-    color: white; font-size: 30px;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(200,0,0,0.4); border: 2px solid #f00;
+    color: white; font-size: 28px;
 }
-#btn-fire:active { background: rgba(255, 0, 0, 0.6); transform: scale(0.95); }
+#btn-fire:active { background: rgba(255,0,0,0.8); }
 
+/* Ocultar Joystick en PC */
 @media (min-width: 1024px) {
-    #dynamic-joystick-area, .action-btn { display: none; } /* Ocultar en PC */
+    #dynamic-joystick-area, .action-btn { display: none; }
 }
