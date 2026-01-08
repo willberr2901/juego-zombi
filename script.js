@@ -1,4 +1,4 @@
-/* script.js - V8.0 COMPATIBLE */
+/* script.js - V9.0 COMPATIBLE */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
@@ -21,8 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!audioCtx) return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = 'triangle'; 
-        osc.frequency.value = 60;
+        osc.type = 'triangle'; osc.frequency.value = 60;
         gain.gain.value = 0.05;
         osc.connect(gain); gain.connect(audioCtx.destination);
         osc.start();
@@ -42,8 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
         } else if (type === 'HIT') {
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(100, now);
+            osc.type = 'square'; osc.frequency.setValueAtTime(100, now);
             gain.gain.setValueAtTime(0.1, now);
             gain.gain.linearRampToValueAtTime(0, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
