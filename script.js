@@ -1,4 +1,4 @@
-/* Archivo: script.js - VERSIÓN FINAL MÓVIL + RECORD */
+/* Archivo: script.js - VERSIÓN CORREGIDA PARA ARCHIVOS EN ESPAÑOL */
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -29,12 +29,13 @@ function playSound(type) {
     } catch (e) {}
 }
 
-// --- IMÁGENES ---
-const playerImg = new Image(); playerImg.src = 'imagenes/player.png'; 
-const zombieImg = new Image(); zombieImg.src = 'imagenes/zombie.png';
-const survivorImg = new Image(); survivorImg.src = 'imagenes/survivor.png';
+// --- IMÁGENES (AQUÍ ESTÁ EL CAMBIO IMPORTANTE) ---
+// Ahora usamos los nombres en ESPAÑOL que tienes en tu carpeta
+const playerImg = new Image(); playerImg.src = 'imagenes/jugador.png'; 
+const zombieImg = new Image(); zombieImg.src = 'imagenes/zombi.png';
+const survivorImg = new Image(); survivorImg.src = 'imagenes/sobreviviente.png';
 const roadImg = new Image(); roadImg.src = 'imagenes/asfalto.png';
-const bossImg = new Image(); bossImg.src = 'imagenes/boss.png';
+const bossImg = new Image(); bossImg.src = 'imagenes/jefe.png';
 const mgImg = new Image(); mgImg.src = 'imagenes/mg.png';
 
 // --- VARIABLES GLOBALES ---
@@ -62,14 +63,13 @@ const uiHighScore = document.getElementById('ui-highscore');
 const menuHighScore = document.getElementById('menu-highscore');
 
 // --- CARGAR RECORD ---
-// Intentamos leer del almacenamiento local
 if (localStorage.getItem('zombieHighScore')) {
     highScore = parseInt(localStorage.getItem('zombieHighScore'));
     menuHighScore.innerText = highScore;
     uiHighScore.innerText = highScore;
 }
 
-// --- CLASES (Resumidas) ---
+// --- CLASES ---
 class FloatingText {
     constructor(x, y, text, color) { this.x = x; this.y = y; this.text = text; this.color = color; this.life = 60; this.opacity = 1; }
     update() { this.y -= 1; this.life--; this.opacity = this.life/60; }
@@ -116,63 +116,41 @@ class Survivor {
 }
 
 // --- CONTROLES (PC + MÓVIL) ---
-// PC
 window.addEventListener('keydown', e => keys[e.key] = true);
 window.addEventListener('keyup', e => keys[e.key] = false);
 window.addEventListener('mousedown', e => { if(!gameRunning) return; if(e.target.tagName !== 'BUTTON') shootBullet(e.clientX, e.clientY); });
 
-// MÓVIL (Botones en pantalla)
-const btnUp = document.getElementById('btn-up');
-const btnDown = document.getElementById('btn-down');
-const btnLeft = document.getElementById('btn-left');
-const btnRight = document.getElementById('btn-right');
+const btnUp = document.getElementById('btn-up'); const btnDown = document.getElementById('btn-down');
+const btnLeft = document.getElementById('btn-left'); const btnRight = document.getElementById('btn-right');
 const btnFire = document.getElementById('btn-fire');
 
 const addTouch = (elem, key) => {
     elem.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; });
     elem.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
-    elem.addEventListener('mousedown', (e) => keys[key] = true); // Para probar con mouse
+    elem.addEventListener('mousedown', (e) => keys[key] = true); 
     elem.addEventListener('mouseup', (e) => keys[key] = false);
 };
 addTouch(btnUp, 'w'); addTouch(btnDown, 's'); addTouch(btnLeft, 'a'); addTouch(btnRight, 'd');
 
-// Botón de disparo móvil (Auto-aim al zombi más cercano o frente)
 btnFire.addEventListener('touchstart', (e) => { e.preventDefault(); touchFiring = true; });
 btnFire.addEventListener('touchend', (e) => { e.preventDefault(); touchFiring = false; });
 btnFire.addEventListener('mousedown', () => touchFiring = true);
 btnFire.addEventListener('mouseup', () => touchFiring = false);
 
-
 function shootBullet(targetX, targetY) {
-    if(machineGunActive) {
-        bullets.push(new Bullet(targetX, targetY)); playSound('MG');
-    } else {
-        if(ammo > 0) { bullets.push(new Bullet(targetX, targetY)); ammo--; uiAmmo.innerText = ammo; playSound('SHOOT'); }
-    }
+    if(machineGunActive) { bullets.push(new Bullet(targetX, targetY)); playSound('MG'); } 
+    else { if(ammo > 0) { bullets.push(new Bullet(targetX, targetY)); ammo--; uiAmmo.innerText = ammo; playSound('SHOOT'); } }
 }
 
-// Auto-disparo para móvil
 function handleMobileShooting() {
     if(touchFiring) {
-        // Encontrar zombi más cercano para apuntar
-        let targetX = player.x, targetY = player.y - 100; // Default arriba
-        let minDist = 9999;
-        
-        // Prioridad: Boss -> Zombi más cercano
-        if(boss) {
-            targetX = boss.x; targetY = boss.y;
-        } else if(zombies.length > 0) {
-            zombies.forEach(z => {
-                let d = Math.hypot(player.x - z.x, player.y - z.y);
-                if(d < minDist) { minDist = d; targetX = z.x; targetY = z.y; }
-            });
-        }
-        
+        let targetX = player.x, targetY = player.y - 100; let minDist = 9999;
+        if(boss) { targetX = boss.x; targetY = boss.y; } 
+        else if(zombies.length > 0) { zombies.forEach(z => { let d = Math.hypot(player.x - z.x, player.y - z.y); if(d < minDist) { minDist = d; targetX = z.x; targetY = z.y; } }); }
         if (machineGunActive && frameCount % 5 === 0) shootBullet(targetX, targetY);
         else if (!machineGunActive && frameCount % 15 === 0) shootBullet(targetX, targetY);
     }
 }
-
 
 function createBlood(x, y) { for(let i=0;i<8;i++) particles.push(new Particle(x, y, '#900')); }
 
@@ -189,19 +167,10 @@ function startGame() {
 
 function endGame(win) {
     gameRunning=false; clearInterval(spawnZ); clearInterval(spawnS);
-    
-    // GUARDAR RECORD
-    if(score > highScore) {
-        highScore = score;
-        localStorage.setItem('zombieHighScore', highScore);
-        menuHighScore.innerText = highScore;
-        uiHighScore.innerText = highScore;
-    }
-    
+    if(score > highScore) { highScore = score; localStorage.setItem('zombieHighScore', highScore); menuHighScore.innerText = highScore; uiHighScore.innerText = highScore; }
     menuScreen.style.display='flex'; gameUI.style.display='none';
     const title = document.getElementById('menu-title');
-    title.innerText = win ? "¡VICTORIA!" : "GAME OVER";
-    title.style.color = win ? "#2ecc71" : "#e74c3c";
+    title.innerText = win ? "¡VICTORIA!" : "GAME OVER"; title.style.color = win ? "#2ecc71" : "#e74c3c";
     document.getElementById('start-btn').innerText = "REINTENTAR";
 }
 
@@ -212,33 +181,23 @@ function startSpawners() {
 }
 
 function update() {
-    frameCount++;
-    handleMobileShooting(); // Revisar si se dispara en móvil
-    
-    // Movimiento
+    frameCount++; handleMobileShooting();
     if(keys['w']||keys['ArrowUp']) player.y-=player.speed;
     if(keys['s']||keys['ArrowDown']) player.y+=player.speed;
     if(keys['a']||keys['ArrowLeft']) player.x-=player.speed;
     if(keys['d']||keys['ArrowRight']) player.x+=player.speed;
     player.x=Math.max(0,Math.min(canvas.width,player.x)); player.y=Math.max(0,Math.min(canvas.height,player.y));
-    
-    // Timer MG
     if(machineGunActive) { machineGunTimer--; if(machineGunTimer<=0) machineGunActive=false; }
-    
-    // Update Efectos
     for(let i=particles.length-1;i>=0;i--){ particles[i].update(); if(particles[i].life<=0) particles.splice(i,1); }
     for(let i=floatingTexts.length-1;i>=0;i--){ floatingTexts[i].update(); if(floatingTexts[i].life<=0) floatingTexts.splice(i,1); }
     
-    // COLISIONES (Bucle inverso)
     for(let i=bullets.length-1;i>=0;i--) {
         let b=bullets[i]; let hit=false;
-        // Zombis
         for(let j=zombies.length-1;j>=0;j--) {
             let z=zombies[j];
             if(Math.hypot(b.x-z.x,b.y-z.y) < b.radius+z.radius) {
                 createBlood(z.x, z.y); floatingTexts.push(new FloatingText(z.x, z.y, "+50", "#f1c40f"));
                 zombies.splice(j,1); hit=true; score+=50; uiScore.innerText=score; playSound('HIT'); 
-                // Subir nivel
                 if(Math.floor(score/500)+1 > level) { level++; uiLevel.innerText=level; if(level%5===0){boss=new Boss();zombies=[];} startSpawners(); }
                 break;
             }
@@ -250,11 +209,9 @@ function update() {
         if(hit || b.x<0||b.x>canvas.width||b.y<0||b.y>canvas.height) bullets.splice(i,1);
     }
     
-    // Daño Jugador
     zombies.forEach(z => { if(Math.hypot(player.x-z.x,player.y-z.y)<player.radius+z.radius) { player.health-=0.5; uiHealth.innerText=Math.floor(player.health); if(player.health<=0) endGame(false); } });
     if(boss && Math.hypot(player.x-boss.x,player.y-boss.y)<player.radius+boss.radius) { player.health-=1; uiHealth.innerText=Math.floor(player.health); if(player.health<=0) endGame(false); }
     
-    // Items
     for(let i=survivors.length-1;i>=0;i--) {
         let s=survivors[i];
         if(Math.hypot(player.x-s.x,player.y-s.y)<player.radius+s.radius) {
