@@ -3,213 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Mobile Edition</title>
-    <style>
-        /* ESTILOS (CSS) INCORPORADOS */
-        body { margin: 0; padding: 0; background: #111; color: white; font-family: 'Courier New', monospace; overflow: hidden; touch-action: none; user-select: none; }
-        
-        /* MENÚ */
-        .menu-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
-        .menu-overlay h1 { font-size: 50px; color: #e74c3c; margin: 0; text-shadow: 0 0 10px #c0392b; }
-        .high-score-display { color: #f1c40f; font-size: 18px; margin-bottom: 20px; }
-        #start-btn { padding: 15px 50px; font-size: 24px; background: #c0392b; color: white; border: 2px solid #e74c3c; border-radius: 10px; cursor: pointer; box-shadow: 0 0 15px #e74c3c; font-weight: bold; margin-bottom: 20px;}
-        #start-btn:active { transform: scale(0.95); }
-
-        /* CUADRO DE ACTUALIZACIONES (NOVEDADES) */
-        .updates-box {
-            background: rgba(255, 255, 255, 0.1); border: 1px solid #555; border-radius: 8px;
-            padding: 15px; max-width: 300px; text-align: left; margin-bottom: 20px;
-        }
-        .updates-box h3 { color: #3498db; margin-top: 0; border-bottom: 1px solid #555; padding-bottom: 5px; }
-        .updates-box ul { padding-left: 20px; font-size: 14px; color: #ddd; }
-        .updates-box li { margin-bottom: 5px; }
-
-        /* HUD */
-        .ui-container { position: absolute; top: 10px; left: 10px; z-index: 10; pointer-events: none; width: 95%; display: none; }
-        .top-bar { display: flex; gap: 10px; }
-        .score-box, .level-box { background: rgba(0,0,0,0.6); padding: 5px 10px; border: 1px solid #555; border-radius: 5px; font-weight: bold; }
-        .score-box { color: #f1c40f; } .level-box { color: #e74c3c; }
-        .stats { margin-top: 5px; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 5px; width: fit-content; }
-        span#health { color: #2ecc71; } span#ammo { color: #e67e22; }
-
-        /* CONTROLES (OCULTOS AL INICIO) */
-        #mobile-controls { position: absolute; inset: 0; z-index: 50; pointer-events: none; display: none; }
-        
-        /* JOYSTICK */
-        #joystick-container { position: absolute; bottom: 50px; left: 40px; width: 120px; height: 120px; pointer-events: auto; }
-        #joystick-base { width: 100%; height: 100%; background: radial-gradient(circle, rgba(255,255,255,0.1), rgba(0,0,0,0.5)); border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); position: relative; }
-        #joystick-stick { width: 50px; height: 50px; background: radial-gradient(circle, #ddd, #888); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 5px 10px rgba(0,0,0,0.5); }
-        
-        /* BOTÓN DISPARO */
-        .action-btn { position: absolute; bottom: 50px; right: 40px; pointer-events: auto; }
-        #btn-fire { width: 90px; height: 90px; border-radius: 50%; background: rgba(231,76,60,0.4); border: 2px solid #e74c3c; color: white; font-size: 24px; outline: none; }
-        #btn-fire:active { background: rgba(231,76,60,0.8); }
-    </style>
+    <title>Ciudad Z: Infección Total</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="menu-screen" class="menu-overlay">
-        <h1>CIUDAD Z</h1>
-        <p class="high-score-display">🏆 RÉCORD: <span id="menu-highscore">0</span></p>
+        <img src="imagenes/boss.png" alt="Boss" class="menu-boss-img">
         
-        <div class="updates-box">
-            <h3>🔔 NOVEDADES V2.0</h3>
+        <h1 id="menu-title">CIUDAD Z</h1>
+        <p id="menu-subtitle">EL FINAL SE ACERCA</p>
+        
+        <div class="update-log">
+            <h3>⚠️ REPORTE V2.0</h3>
             <ul>
-                <li>🎮 <b>Nuevo Joystick:</b> Control total 360°</li>
-                <li>🧟 <b>Gráficos:</b> ¡Zombis reales!</li>
-                <li>🔥 <b>Acción:</b> Botón de fuego rápido</li>
-                <li>💀 <b>Jefe:</b> Sobrevive al Nivel 5</li>
+                <li>🕹️ <b>Nuevo Control:</b> Joystick 360°</li>
+                <li>🧟 <b>Amenaza:</b> Hordas y Jefes</li>
+                <li>🎨 <b>Interfaz:</b> Modo Oscuro Pro</li>
             </ul>
         </div>
 
-        <button id="start-btn">JUGAR AHORA</button>
+        <p class="high-score-display">🏆 RÉCORD: <span id="menu-highscore">0</span></p>
+        <button id="start-btn">SOBREVIVIR</button>
+        
+        <div class="instructions">
+            <p>Móvil: Joystick Izq. + Disparo Der.</p>
+        </div>
     </div>
 
-    <div id="game-ui" class="ui-container">
+    <div id="game-ui" class="ui-container" style="display:none;">
         <div class="top-bar">
             <div class="score-box">PTS: <span id="score">0</span></div>
             <div class="level-box">NIV: <span id="level">1</span></div>
         </div>
+
         <div class="stats">
             <p>❤️ <span id="health">100</span>% | 🔫 <span id="ammo">12</span></p>
-            <p id="log">Sobrevive...</p>
+            <p id="log">Busca suministros...</p>
         </div>
     </div>
 
     <div id="mobile-controls">
         <div id="joystick-container">
-            <div id="joystick-base"><div id="joystick-stick"></div></div>
+            <div id="joystick-base">
+                <div id="joystick-stick"></div>
+            </div>
         </div>
-        <div class="action-btn"><button id="btn-fire">🔥</button></div>
+        
+        <div class="action-btn">
+            <button id="btn-fire">🔥</button>
+        </div>
     </div>
 
     <canvas id="gameCanvas"></canvas>
-
-    <script>
-        /* LÓGICA DEL JUEGO (JS) */
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        // AUDIO
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext();
-        function playSound(type) {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
-                osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-                const now = audioCtx.currentTime;
-                if (type === 'SHOOT') { osc.type='square'; osc.frequency.setValueAtTime(400,now); osc.frequency.exponentialRampToValueAtTime(100,now+0.1); gainNode.gain.setValueAtTime(0.05,now); gainNode.gain.exponentialRampToValueAtTime(0.01,now+0.1); osc.start(now); osc.stop(now+0.1); }
-            } catch (e) {}
-        }
-
-        // IMÁGENES
-        const playerImg = new Image(); playerImg.src = 'imagenes/player.png'; 
-        const zombieImg = new Image(); zombieImg.src = 'imagenes/zombie.png';
-        const survivorImg = new Image(); survivorImg.src = 'imagenes/survivor.png';
-        const roadImg = new Image(); roadImg.src = 'imagenes/asfalto.png';
-        const bossImg = new Image(); bossImg.src = 'imagenes/boss.png';
-
-        // VARIABLES
-        let gameRunning = false; let score = 0; let level = 1; let ammo = 12;
-        let zombies = [], bullets = [], survivors = [];
-        let joyX = 0, joyY = 0, active = false; const joyRadius = 40;
-        let spawnZ, spawnS;
-
-        // JUGADOR
-        const player = { x: canvas.width/2, y: canvas.height/2, radius: 20, speed: 5, health: 100 };
-        const menuScreen = document.getElementById("menu-screen");
-        const gameUI = document.getElementById("game-ui");
-        const mobileControls = document.getElementById("mobile-controls"); // Referencia a controles
-
-        // --- JOYSTICK LOGIC (PC + MÓVIL) ---
-        const stick = document.getElementById("joystick-stick");
-        const base = document.getElementById("joystick-base");
-        
-        function handleInput(x, y) {
-            const rect = base.getBoundingClientRect();
-            let dx = x - (rect.left + rect.width/2);
-            let dy = y - (rect.top + rect.height/2);
-            const dist = Math.hypot(dx, dy);
-            if (dist > joyRadius) { dx = (dx/dist)*joyRadius; dy = (dy/dist)*joyRadius; }
-            stick.style.transform = `translate(${dx}px, ${dy}px)`;
-            joyX = dx/joyRadius; joyY = dy/joyRadius;
-        }
-
-        // Mouse (PC)
-        base.addEventListener("mousedown", (e) => { active = true; handleInput(e.clientX, e.clientY); });
-        window.addEventListener("mousemove", (e) => { if(active) handleInput(e.clientX, e.clientY); });
-        window.addEventListener("mouseup", () => { active = false; joyX=0; joyY=0; stick.style.transform = `translate(0,0)`; });
-
-        // Touch (Móvil)
-        base.addEventListener("touchstart", (e) => { e.preventDefault(); active = true; handleInput(e.touches[0].clientX, e.touches[0].clientY); });
-        base.addEventListener("touchmove", (e) => { e.preventDefault(); if(active) handleInput(e.touches[0].clientX, e.touches[0].clientY); });
-        base.addEventListener("touchend", () => { active = false; joyX=0; joyY=0; stick.style.transform = `translate(0,0)`; });
-
-        // DISPARO
-        document.getElementById("btn-fire").addEventListener("click", (e) => {
-            e.preventDefault();
-            if(ammo > 0) {
-                bullets.push({x: player.x, y: player.y, vx: (joyX||0)*15 || 0, vy: (joyY||-1)*15});
-                ammo--; document.getElementById('ammo').innerText = ammo; playSound('SHOOT');
-            }
-        });
-
-        // UPDATE & DRAW
-        function update() {
-            player.x += joyX * player.speed; player.y += joyY * player.speed;
-            player.x = Math.max(0, Math.min(canvas.width, player.x));
-            player.y = Math.max(0, Math.min(canvas.height, player.y));
-
-            // Balas y Zombis
-            bullets.forEach((b, i) => {
-                b.x += b.vx || 0; b.y += b.vy || -15; // Corrección: si no se mueve, dispara arriba
-                zombies.forEach((z, j) => {
-                    if (Math.hypot(b.x - z.x, b.y - z.y) < 30) {
-                        zombies.splice(j, 1); bullets.splice(i, 1);
-                        score += 50; document.getElementById('score').innerText = score;
-                    }
-                });
-            });
-
-            // Spawners y Colisiones básicas
-            zombies.forEach(z => {
-                const dx = player.x - z.x, dy = player.y - z.y;
-                const dist = Math.hypot(dx, dy);
-                z.x += (dx/dist) * (1 + level*0.1); z.y += (dy/dist) * (1 + level*0.1);
-                if(dist < 30) { player.health -= 0.5; document.getElementById('health').innerText = Math.floor(player.health); }
-            });
-            if(player.health <= 0) location.reload();
-        }
-
-        function draw() {
-            if(roadImg.complete) { const p=ctx.createPattern(roadImg, 'repeat'); ctx.fillStyle=p; ctx.fillRect(0,0,canvas.width,canvas.height); }
-            else ctx.clearRect(0,0,canvas.width,canvas.height);
-            
-            if(playerImg.complete) ctx.drawImage(playerImg, player.x-32, player.y-32, 64, 64);
-            zombies.forEach(z => { if(zombieImg.complete) ctx.drawImage(zombieImg, z.x-32, z.y-32, 64, 64); });
-            bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x, b.y, 5, 0, Math.PI*2); ctx.fillStyle='yellow'; ctx.fill(); });
-        }
-
-        function loop() { if(gameRunning) { update(); draw(); requestAnimationFrame(loop); } }
-
-        // INICIAR JUEGO
-        document.getElementById("start-btn").onclick = () => {
-            menuScreen.style.display = "none";    // Ocultar menú
-            gameUI.style.display = "block";       // Mostrar HUD
-            mobileControls.style.display = "block"; // MOSTRAR JOYSTICK (Corrección visual)
-            gameRunning = true;
-            
-            // Iniciar spawners
-            spawnZ = setInterval(() => zombies.push({x: Math.random()*canvas.width, y: -50}), 1500);
-            
-            loop();
-        };
-
-        // Récord
-        if(localStorage.getItem('zScore')) document.getElementById('menu-highscore').innerText = localStorage.getItem('zScore');
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
