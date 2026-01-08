@@ -1,4 +1,4 @@
-/* script.js - V10.0 CÓDIGO LIMPIO Y SIN ERRORES */
+/* script.js - V11.0 CÓDIGO FINAL */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // --- AUDIO ---
+    // --- AUDIO DE TERROR ---
     let audioCtx;
     function initAudio() {
         if (!audioCtx) {
@@ -21,9 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!audioCtx) return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = 'triangle'; 
-        osc.frequency.value = 50; 
-        gain.gain.value = 0.05;
+        // Tono muy grave y molesto (Drone)
+        osc.type = 'sawtooth'; osc.frequency.value = 30;
+        gain.gain.value = 0.08;
         osc.connect(gain); gain.connect(audioCtx.destination);
         osc.start();
     }
@@ -36,13 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = audioCtx.currentTime;
 
         if (type === 'SHOOT') {
-            osc.frequency.setValueAtTime(500, now);
-            osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
-            gain.gain.setValueAtTime(0.05, now);
+            osc.frequency.setValueAtTime(300, now); // Disparo más grave
+            osc.frequency.exponentialRampToValueAtTime(50, now + 0.1);
+            gain.gain.setValueAtTime(0.1, now);
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
         } else if (type === 'HIT') {
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now);
+            osc.type = 'square'; osc.frequency.setValueAtTime(80, now);
             gain.gain.setValueAtTime(0.1, now);
             gain.gain.linearRampToValueAtTime(0, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
@@ -79,8 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
             joyStartY = t.clientY;
             dragging = true;
             joyWrapper.style.display = "block";
-            joyWrapper.style.left = (joyStartX - 50) + "px";
-            joyWrapper.style.top = (joyStartY - 50) + "px";
+            joyWrapper.style.left = (joyStartX - 55) + "px";
+            joyWrapper.style.top = (joyStartY - 55) + "px";
             joyStick.style.transform = `translate(-50%, -50%)`;
             joyX = 0; joyY = 0;
         });
@@ -118,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
             playSound('SHOOT');
         }
     }
-    
     const btnFire = document.getElementById("btn-fire");
     if(btnFire) btnFire.addEventListener("touchstart", (e)=>{e.preventDefault();shoot();});
     document.addEventListener("mousedown", (e)=>{ if(gameRunning && e.target.tagName !== 'BUTTON') shoot(); });
@@ -155,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if(boss && Math.hypot(b.x-boss.x, b.y-boss.y) < 60) {
                 boss.hp--; bullets.splice(i,1);
-                if(boss.hp <= 0) { boss=null; score+=500; killCount=0; document.getElementById("log").innerText="JEFE DERROTADO"; }
+                if(boss.hp <= 0) { boss=null; score+=500; killCount=0; document.getElementById("log").innerText="AMENAZA ELIMINADA"; }
             }
         }
 
@@ -185,19 +184,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function spawnBoss() {
         boss = { x: canvas.width/2, y: -100, hp: 50, maxHp: 50 };
-        document.getElementById("log").innerText = "¡ALERTA BIOLÓGICA!";
+        document.getElementById("log").innerText = "¡¡EL JEFE ESTÁ AQUÍ!!";
     }
 
     function draw() {
         if(imgGround.complete) {
             const ptrn = ctx.createPattern(imgGround, 'repeat');
             ctx.fillStyle = ptrn; ctx.fillRect(0,0,canvas.width,canvas.height);
-        } else { ctx.fillStyle='#111'; ctx.fillRect(0,0,canvas.width,canvas.height); }
+        } else { ctx.fillStyle='#100'; ctx.fillRect(0,0,canvas.width,canvas.height); }
 
         items.forEach(it => {
-            ctx.shadowBlur = 15; ctx.shadowColor = "#4a90e2";
+            ctx.shadowBlur = 15; ctx.shadowColor = "#f00";
             if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40);
-            else { ctx.fillStyle='#4a90e2'; ctx.fillRect(it.x-15, it.y-15, 30, 30); }
+            else { ctx.fillStyle='#f00'; ctx.fillRect(it.x-15, it.y-15, 30, 30); }
             ctx.shadowBlur = 0;
         });
 
@@ -205,14 +204,14 @@ document.addEventListener('DOMContentLoaded', () => {
         zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
         
         if(boss && imgBoss.complete) {
-            ctx.shadowBlur = 25; ctx.shadowColor = "#4a90e2";
+            ctx.shadowBlur = 30; ctx.shadowColor = "#f00";
             ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128);
             ctx.shadowBlur = 0;
-            ctx.fillStyle='#333'; ctx.fillRect(boss.x-50, boss.y-80, 100, 8);
-            ctx.fillStyle='#e74c3c'; ctx.fillRect(boss.x-50, boss.y-80, 100*(boss.hp/boss.maxHp), 8);
+            ctx.fillStyle='#300'; ctx.fillRect(boss.x-50, boss.y-80, 100, 8);
+            ctx.fillStyle='#f00'; ctx.fillRect(boss.x-50, boss.y-80, 100*(boss.hp/boss.maxHp), 8);
         }
 
-        bullets.forEach(b => { ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill(); });
+        bullets.forEach(b => { ctx.fillStyle='#ff0'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill(); });
     }
 
     function loop() { if(gameRunning) { update(); draw(); requestAnimationFrame(loop); } }
