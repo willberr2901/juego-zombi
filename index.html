@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Expediente Final</title>
+    <title>Ciudad Z: HUD Táctico V22</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,99 +12,59 @@
     <div id="vignette"></div>
 
     <div id="menu-screen" class="menu-overlay">
-        
-        <div class="neon-decor left-decor">
-            <img src="imagenes/zombie.png" alt="">
-        </div>
-        <div class="neon-decor right-decor">
-            <img src="imagenes/zombie.png" alt="">
-        </div>
-
+        <div class="neon-decor left-decor"><img src="imagenes/zombie.png" alt=""></div>
+        <div class="neon-decor right-decor"><img src="imagenes/zombie.png" alt=""></div>
         <div class="main-layout">
-            
             <div class="hud-panel left-panel">
-                <h3 class="panel-header">📂 SISTEMA V21.0</h3>
-                
-                <div class="data-section">
-                    <p class="section-title">>> GRÁFICOS</p>
-                    <ul class="patch-notes">
-                        <li class="buff">[+] Motor de Neón V3</li>
-                        <li class="buff">[+] Sombras Dinámicas</li>
-                        <li class="buff">[+] Interfaz HD</li>
-                    </ul>
-                </div>
-
-                <div class="data-section">
-                    <p class="section-title">>> JUGABILIDAD</p>
-                    <ul class="patch-notes">
-                        <li class="nerf">[-] Velocidad Zombi: +15%</li>
-                        <li class="nerf">[-] Munición Inicial: Baja</li>
-                        <li class="buff">[+] Daño Crítico: Alto</li>
-                    </ul>
-                </div>
-                
-                <div class="system-footer">
-                    PING: 24ms | FPS: 60
-                </div>
+                <h3 class="panel-header">📂 SISTEMA V22.0</h3>
+                <div class="data-section"><p class="section-title">>> NUEVO HUD TÁCTICO</p><ul class="patch-notes"><li class="buff">[+] Visor de Combate</li><li class="buff">[+] Alertas Visuales</li><li class="buff">[+] Recompensa de Nivel</li></ul></div>
+                <div class="system-footer">ESTADO: LISTO PARA EL COMBATE</div>
             </div>
-
             <div class="center-stage">
-                <div class="boss-hologram">
-                    <img src="imagenes/boss.png" alt="BOSS">
-                </div>
-                
+                <div class="boss-hologram"><img src="imagenes/boss.png" alt="BOSS"></div>
                 <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-                
-                <button id="start-btn">
-                    INICIAR PROTOCOLO
-                    <div class="btn-sub">NO HAY VUELTA ATRÁS</div>
-                </button>
+                <button id="start-btn">INICIAR PROTOCOLO</button>
             </div>
-
             <div class="hud-panel right-panel">
                 <h3 class="panel-header">📝 DATOS DE MISIÓN</h3>
-                
-                <div class="intel-grid">
-                    <div class="intel-row">
-                        <span>UBICACIÓN:</span> <span class="val">SECTOR 7</span>
-                    </div>
-                    <div class="intel-row">
-                        <span>INFECCIÓN:</span> <span class="val red">98.4%</span>
-                    </div>
-                    <div class="intel-row">
-                        <span>ESTADO:</span> <span class="val red">CUARENTENA</span>
-                    </div>
-                    <div class="intel-row">
-                        <span>HABITANTES:</span> <span class="val">0 VIVOS</span>
-                    </div>
-                </div>
-
+                <div class="intel-grid"><div class="intel-row"><span>UBICACIÓN:</span> <span class="val">ZONA CERO</span></div><div class="intel-row"><span>ESTADO:</span> <span class="val red">HOSTIL</span></div></div>
                 <hr class="panel-hr">
-
-                <div class="objective-box">
-                    <p class="obj-label">ORDEN PRIORITARIA:</p>
-                    <p class="obj-main">SOBREVIVIR A TODA COSTA</p>
-                </div>
+                <div class="objective-box"><p class="obj-label">OBJETIVO:</p><p class="obj-main">SOBREVIVIR</p></div>
             </div>
-
         </div>
-
-        <div class="bottom-ticker">
-            <p class="ticker-text">⚠️ ALERTA: NIVELES DE RADIACIÓN EN AUMENTO... ZONA RESTRINGIDA... DISPARAR A MATAR... BUSQUE REFUGIO INMEDIATAMENTE... ⚠️</p>
-        </div>
+        <div class="bottom-ticker"><p class="ticker-text">⚠️ ALERTA BIOHAZARD... HUD TÁCTICO ACTIVADO... MUNICIÓN LIMITADA... PREPÁRESE PARA IMPACTO... ⚠️</p></div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
-        <div class="top-bar">
-            <div class="stat">💀 <span id="score">0</span></div>
-            <div class="stat">NIV: <span id="level">1</span></div>
-            <div class="stat">📦 <span id="ammo">12</span></div>
-            <button id="pause-btn">II</button>
+        
+        <div class="hud-section top-left">
+            <div class="vitals-gauge">
+                <div class="heart-icon blink-fast">❤</div>
+                <div class="hp-bar-frame">
+                    <div id="health-bar"></div>
+                    <div class="hp-text"><span id="health-num">100</span>%</div>
+                </div>
+            </div>
         </div>
-        <div class="health-wrap">
-            <div class="hp-icon">✚</div>
-            <div class="hp-border"><div id="health-bar"></div></div>
+
+        <div class="hud-section top-right">
+            <div class="tactical-gauge ammo-gauge">
+                <span class="gauge-icon">🔫</span> <span id="ammo">12</span> <small>BALAS</small>
+            </div>
+            <div class="tactical-gauge score-gauge">
+                 <span id="score">0</span> <small>BAJAS</small>
+            </div>
+             <div class="tactical-gauge level-gauge">
+                 NIV <span id="level">1</span>
+            </div>
+             <button id="pause-btn">PAUSA ||</button>
         </div>
+
+        <div id="center-alerts">
+            <div id="boss-alert" class="alert-banner hidden">⚠️ ¡AMENAZA MAYOR DETECTADA! ⚠️</div>
+            <div id="levelup-alert" class="reward-banner hidden">⭐ ¡NIVEL ASCENDIDO! MUNICIÓN RECARGADA ⭐</div>
+        </div>
+
     </div>
 
     <div id="touch-zone"></div>
