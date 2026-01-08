@@ -3,28 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Terror Total</title>
+    <title>Ciudad Z: Niebla Mortal</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="vignette"></div> <div id="red-flash"></div> <div id="menu-screen" class="menu-overlay">
+    <div class="fog-container">
+        <div class="fog-img fog1"></div>
+        <div class="fog-img fog2"></div>
+    </div>
+    <div id="vignette"></div>
+
+    <div id="menu-screen" class="menu-overlay">
+        
+        <div class="menu-decor left-zombie">
+            <img src="imagenes/zombie.png" alt="Z">
+        </div>
+        <div class="menu-decor right-zombie">
+            <img src="imagenes/zombie.png" alt="Z">
+        </div>
+
         <div class="boss-frame">
             <img src="imagenes/boss.png" alt="Boss" class="menu-boss-img">
         </div>
         
-        <h1 class="glitch-title">CIUDAD Z</h1>
-        <p class="subtitle">NO MIRES ATRÁS</p>
+        <h1 class="horror-title">CIUDAD Z</h1>
+        <p class="subtitle">LA NIEBLA TE CONSUMIRÁ</p>
 
-        <div class="menu-info">
+        <div class="menu-panel">
             <p>🏆 RÉCORD: <span id="menu-highscore">0</span></p>
         </div>
 
-        <button id="start-btn">SOBREVIVIR</button>
+        <button id="start-btn">ENTRAR A LA NIEBLA</button>
         
         <div class="controls-hint">
-            <p>📱 MÓVIL: Toca cualquier lado para moverte</p>
-            <p>💻 PC: Usa W-A-S-D y Mouse</p>
+            <p>Recomendado: Jugar con Audífonos 🎧</p>
         </div>
     </div>
 
@@ -37,10 +50,11 @@
             <div class="health-icon">✚</div>
             <div class="health-bar-bg"><div id="health-bar"></div></div>
         </div>
-        <p id="log">Encuentra suministros...</p>
+        <p id="log">Busca suministros en la niebla...</p>
     </div>
 
-    <div id="touch-zone"></div> <div id="joystick-wrapper" style="display:none;">
+    <div id="touch-zone"></div>
+    <div id="joystick-wrapper" style="display:none;">
         <div id="joystick-stick"></div>
     </div>
 
