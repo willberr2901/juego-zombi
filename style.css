@@ -1,43 +1,26 @@
-/* style.css - V9.0 ALTA VISIBILIDAD */
+/* style.css - V10.0 ESTÉTICA BIOHAZARD FRÍA */
 body {
     margin: 0; padding: 0;
-    background: #000;
-    color: #fff; /* Texto blanco brillante */
-    font-family: 'Arial Black', sans-serif;
+    background: #020205; /* Negro azulado profundo */
+    color: #e0e0e0;
+    font-family: 'Arial Narrow', 'Impact', sans-serif; /* Fuente industrial alta */
     overflow: hidden;
     touch-action: none;
     user-select: none;
 }
 
-/* --- AMBIENTE DE FONDO (MUCHO MÁS BRILLANTE) --- */
-.ambient-light {
+/* --- FONDO Y ATMÓSFERA --- */
+.bg-texture {
     position: absolute; inset: 0;
-    /* Usamos un rojo mucho más claro (#900000) en el centro */
-    background: radial-gradient(circle at center, #900000 0%, #400000 40%, #000000 90%);
+    /* Gradiente frío simulando metal oscuro */
+    background: radial-gradient(circle at center, #0a1525 0%, #020305 80%);
     z-index: 1;
-    /* La animación ahora es más sutil para no oscurecer */
-    animation: pulseLight 4s infinite ease-in-out;
 }
-@keyframes pulseLight { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
 
-/* Efecto de líneas de TV (Más visibles) */
-.scanlines {
+.vignette-cold {
     position: absolute; inset: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.03), /* Líneas blancas muy tenues */
-        rgba(255,255,255,0.03) 1px,
-        transparent 1px,
-        transparent 3px
-    );
+    background: radial-gradient(circle, transparent 50%, #000 130%);
     z-index: 2; pointer-events: none;
-}
-
-#vignette {
-    position: absolute; inset: 0;
-    /* Viñeta menos agresiva para ver las esquinas */
-    background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 110%);
-    z-index: 5; pointer-events: none;
 }
 
 /* --- MENÚ PRINCIPAL --- */
@@ -47,110 +30,110 @@ body {
     z-index: 100;
 }
 
-/* SILUETAS DE ZOMBIS (AHORA CON LUZ DE BORDE) */
-.silhouette {
-    position: absolute; bottom: -15px;
-    width: 240px; 
-    opacity: 1; /* Opacidad al máximo */
-    z-index: 10; pointer-events: none;
-    /* TRUCO VISUAL: Sombra negra + sombra roja brillante detrás para perfilar */
-    filter: brightness(0) drop-shadow(0 -5px 15px rgba(255, 0, 0, 0.5)); 
-}
-.left-walker { left: -40px; transform: scaleX(-1); }
-.right-walker { right: -40px; }
-
-/* JEFE CENTRAL (MÁS BRILLO) */
-.boss-display { position: relative; z-index: 20; margin-bottom: 10px; }
-.boss-img {
-    width: 160px;
-    filter: drop-shadow(0 0 35px #ff0000) contrast(1.2); /* Más resplandor */
-    animation: float 5s infinite ease-in-out;
-}
-@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
-
-/* TÍTULO */
-.title-container { text-align: center; z-index: 20; margin-bottom: 40px; }
-.main-title {
-    font-size: 60px; margin: 0; color: #fff;
-    text-transform: uppercase; letter-spacing: -2px;
-    text-shadow: 0 5px 15px rgba(0,0,0,1);
-}
-.blood-text { color: #ff0000; text-shadow: 0 0 25px #ff0000; font-size: 85px; }
-
-.subtitle {
-    color: #ccc; font-size: 14px; letter-spacing: 6px;
-    margin-top: -5px; text-transform: uppercase;
-    border-top: 2px solid #900; display: inline-block; padding-top: 10px;
-}
-
-/* BOTÓN PRO (MÁS VISIBLE) */
-#start-btn {
-    padding: 18px 60px; font-size: 24px;
-    background: rgba(150, 0, 0, 0.3); /* Fondo rojo semitransparente */
-    color: #fff;
-    border: 3px solid #f00;
-    font-family: 'Arial Black', sans-serif;
+/* TÍTULO INDUSTRIAL */
+.title-block { text-align: center; margin-bottom: 30px; z-index: 20; }
+h1 {
+    font-size: 70px; margin: 0; color: #d0dae6;
     text-transform: uppercase; letter-spacing: 2px;
-    cursor: pointer; z-index: 30;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-    transition: all 0.2s;
+    /* Efecto metálico frío */
+    text-shadow: 0 2px 5px rgba(0,0,0,0.8), 0 0 20px rgba(74, 144, 226, 0.3);
 }
-#start-btn:hover { background: #f00; box-shadow: 0 0 40px #f00; }
-#start-btn:active { transform: scale(0.95); }
-
-.stats-panel { margin-bottom: 20px; color: #ddd; font-size: 14px; z-index: 20; font-weight: bold; }
-.footer-hint { position: absolute; bottom: 15px; color: #777; font-size: 11px; z-index: 20; }
-
-/* --- HUD DE JUEGO --- */
-.ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
-.top-bar { position: absolute; top: 15px; left: 15px; display: flex; flex-direction: column; gap: 5px; }
-
-.hud-item {
-    font-size: 18px; font-weight: bold; color: #fff;
-    text-shadow: 2px 2px 0 #000; font-family: 'Courier New', monospace;
+.accent-blue { color: #4a90e2; font-size: 85px; } /* Azul tecnológico */
+.subtitle-line {
+    font-size: 14px; letter-spacing: 8px; color: #6a7a8a;
+    border-top: 1px solid #4a90e2; padding-top: 10px; margin-top: 5px;
 }
-.score { color: #f1c40f; } .ammo { color: #ddd; }
 
-.health-wrap {
-    position: absolute; top: 15px; right: 15px;
-    width: 180px; height: 18px; background: #111; border: 2px solid #fff; transform: skewX(-15deg);
+/* ENTIDADES (ILUMINACIÓN DRAMÁTICA AZUL) */
+.side-decor {
+    position: absolute; bottom: -10px; width: 200px; opacity: 0.8;
+    z-index: 10; pointer-events: none;
+    /* Sombra azul fría para integrarlos al fondo */
+    filter: contrast(1.2) drop-shadow(0 0 15px rgba(40, 100, 200, 0.5));
+}
+.left-z { left: -30px; transform: scaleX(-1); }
+.right-z { right: -30px; }
+
+.boss-showcase { margin-bottom: 20px; z-index: 20; }
+.boss-img-cold {
+    width: 160px;
+    /* Iluminación azul intensa desde abajo */
+    filter: contrast(1.3) brightness(1.1) drop-shadow(0 10px 30px rgba(74, 144, 226, 0.6));
+    animation: hoverCold 6s infinite ease-in-out;
+}
+@keyframes hoverCold { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+
+/* PANELES Y BOTONES PRO */
+.status-panel {
+    background: rgba(10, 20, 35, 0.8);
+    border-left: 3px solid #4a90e2;
+    padding: 10px 20px; font-size: 12px; letter-spacing: 1px;
+    margin-bottom: 30px; z-index: 20; color: #a0b0c0;
+}
+
+#start-btn {
+    padding: 18px 60px; font-size: 20px;
+    background: linear-gradient(180deg, #2a4a6a, #1a2a3a);
+    color: #fff; border: 1px solid #4a90e2;
+    font-family: inherit; letter-spacing: 3px; cursor: pointer; z-index: 30;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5); transition: all 0.2s;
+}
+#start-btn:hover {
+    background: #4a90e2; box-shadow: 0 0 30px rgba(74, 144, 226, 0.5);
+}
+#start-btn:active { transform: scale(0.98); }
+
+.footer-version { position: absolute; bottom: 15px; color: #3a4a5a; font-size: 10px; z-index: 20; }
+
+/* --- HUD DE JUEGO ELEGANTE --- */
+.ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; color: #fff; }
+
+.top-left { position: absolute; top: 20px; left: 20px; }
+.hud-row { display: flex; align-items: center; margin-bottom: 5px; background: rgba(0,0,0,0.6); padding: 5px 10px; border-radius: 4px; }
+.hud-label { font-size: 10px; color: #888; margin-right: 10px; letter-spacing: 1px; }
+.score-row { border-left: 2px solid #f1c40f; }
+.ammo-row { border-left: 2px solid #4a90e2; }
+#score, #ammo { font-size: 20px; font-weight: bold; }
+
+.top-right { position: absolute; top: 20px; right: 20px; text-align: right; }
+.health-label { font-size: 10px; color: #888; letter-spacing: 2px; margin-bottom: 5px; }
+.health-bar-frame {
+    width: 200px; height: 12px; background: #111;
+    border: 1px solid #333; padding: 2px;
 }
 #health-bar {
-    width: 100%; height: 100%; background: linear-gradient(90deg, #f00, #ff4d4d);
-    box-shadow: 0 0 15px #f00; transition: width 0.2s;
-}
-.hp-icon {
-    position: absolute; left: -25px; top: -3px;
-    color: #f00; font-size: 22px; font-weight: bold; transform: skewX(15deg);
-    text-shadow: 0 0 10px #f00;
+    width: 100%; height: 100%;
+    /* Gradiente de salud estilo médico (verde a azul) */
+    background: linear-gradient(90deg, #2ecc71, #3498db);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5); transition: width 0.3s;
 }
 
 #log {
     position: absolute; bottom: 100px; width: 100%; text-align: center;
-    color: #fff; text-shadow: 0 2px 4px #000; font-size: 16px; font-weight: bold;
+    color: #a0b0c0; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;
 }
 
-/* CONTROLES */
+/* CONTROLES (Joystick Azul) */
 #touch-zone { position: absolute; inset: 0; z-index: 60; }
 #joystick-wrapper {
     position: absolute; width: 100px; height: 100px;
-    border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%;
-    pointer-events: none; z-index: 65;
+    border: 2px solid rgba(74, 144, 226, 0.3); border-radius: 50%;
+    pointer-events: none; z-index: 65; background: rgba(74, 144, 226, 0.05);
 }
 #joystick-stick {
     position: absolute; width: 40px; height: 40px;
-    background: #fff; border-radius: 50%;
+    background: rgba(74, 144, 226, 0.8); border-radius: 50%;
     top: 50%; left: 50%; transform: translate(-50%, -50%);
-    box-shadow: 0 0 15px white;
+    box-shadow: 0 0 15px rgba(74, 144, 226, 0.6);
 }
 
 .action-btn { position: absolute; bottom: 40px; right: 40px; z-index: 70; }
 #btn-fire {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: rgba(255, 0, 0, 0.3);
-    border: 3px solid #f00; cursor: pointer; box-shadow: 0 0 20px #f00;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(200, 50, 50, 0.2);
+    border: 2px solid rgba(255, 100, 100, 0.5); cursor: pointer;
 }
-#btn-fire::after { content: '🔥'; font-size: 35px; color: #fff; }
-#btn-fire:active { background: #f00; transform: scale(0.95); }
+#btn-fire::after { content: '⚡'; font-size: 30px; color: #fff; }
+#btn-fire:active { background: rgba(255, 50, 50, 0.6); transform: scale(0.95); }
 
 @media (min-width: 1024px) { #touch-zone, .action-btn { display: none; } }

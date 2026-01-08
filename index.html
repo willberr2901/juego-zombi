@@ -3,50 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Visibilidad Total</title>
+    <title>Ciudad Z: Biohazard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="ambient-light"></div> <div class="scanlines"></div> <div id="vignette"></div> <div id="menu-screen" class="menu-overlay">
+    <div class="bg-texture"></div>
+    <div class="vignette-cold"></div>
+
+    <div id="menu-screen" class="menu-overlay">
         
-        <div class="silhouette left-walker">
+        <div class="side-decor left-z">
             <img src="imagenes/zombie.png" alt="">
         </div>
-        <div class="silhouette right-walker">
+        <div class="side-decor right-z">
             <img src="imagenes/zombie.png" alt="">
         </div>
 
-        <div class="boss-display">
-            <img src="imagenes/boss.png" alt="BOSS" class="boss-img">
-        </div>
-        
-        <div class="title-container">
-            <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-            <p class="subtitle">ZONA DE CUARENTENA</p>
+        <div class="title-block">
+            <h1>CIUDAD <span class="accent-blue">Z</span></h1>
+            <div class="subtitle-line">PROYECTO: SUPERVIVENCIA</div>
         </div>
 
-        <div class="stats-panel">
-            <p>MEJOR PUNTAJE: <span id="menu-highscore" style="color:#fff">0</span></p>
+        <div class="boss-showcase">
+            <img src="imagenes/boss.png" alt="CLINICAL BOSS" class="boss-img-cold">
         </div>
 
-        <button id="start-btn">JUGAR AHORA</button>
-        
-        <div class="footer-hint">
-            V9.0 ALTA VISIBILIDAD
+        <div class="status-panel">
+            <p>ESTADO DEL SUJETO: <span style="color:#4a90e2">NO INFECTADO</span></p>
+            <p>MEJOR REGISTRO: <span id="menu-highscore">0</span></p>
         </div>
+
+        <button id="start-btn">INICIAR PROTOCOLO</button>
+        
+        <div class="footer-version">V10.0 COLD STORAGE</div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
-        <div class="top-bar">
-            <div class="hud-item score">💀 <span id="score">0</span></div>
-            <div class="hud-item ammo">❚❚❚ <span id="ammo">12</span></div>
+        <div class="top-left">
+            <div class="hud-row score-row">
+                <span class="hud-label">SCORE</span> <span id="score">0</span>
+            </div>
+            <div class="hud-row ammo-row">
+                <span class="hud-label">AMMO</span> <span id="ammo">12</span>
+            </div>
         </div>
-        <div class="health-wrap">
-            <div class="hp-icon">✚</div>
-            <div class="hp-track"><div id="health-bar"></div></div>
+        
+        <div class="top-right">
+            <div class="health-label">VITALS</div>
+            <div class="health-bar-frame">
+                <div id="health-bar"></div>
+            </div>
         </div>
-        <p id="log">Sobrevive a la horda...</p>
+        
+        <p id="log">Área contaminada. Proceda con cautela.</p>
     </div>
 
     <div id="touch-zone"></div>

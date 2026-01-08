@@ -1,4 +1,4 @@
-/* script.js - V9.0 COMPATIBLE */
+/* script.js - V10.0 CÓDIGO LIMPIO Y SIN ERRORES */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!audioCtx) return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = 'triangle'; osc.frequency.value = 60;
+        osc.type = 'triangle'; 
+        osc.frequency.value = 50; 
         gain.gain.value = 0.05;
         osc.connect(gain); gain.connect(audioCtx.destination);
         osc.start();
@@ -35,13 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = audioCtx.currentTime;
 
         if (type === 'SHOOT') {
-            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.setValueAtTime(500, now);
             osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
             gain.gain.setValueAtTime(0.05, now);
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
         } else if (type === 'HIT') {
-            osc.type = 'square'; osc.frequency.setValueAtTime(100, now);
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now);
             gain.gain.setValueAtTime(0.1, now);
             gain.gain.linearRampToValueAtTime(0, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
@@ -70,33 +71,35 @@ document.addEventListener('DOMContentLoaded', () => {
     let joyStartX = 0, joyStartY = 0;
     let dragging = false;
 
-    touchZone.addEventListener("touchstart", e => {
-        e.preventDefault();
-        const t = e.touches[0];
-        joyStartX = t.clientX;
-        joyStartY = t.clientY;
-        dragging = true;
-        joyWrapper.style.display = "block";
-        joyWrapper.style.left = (joyStartX - 50) + "px";
-        joyWrapper.style.top = (joyStartY - 50) + "px";
-        joyStick.style.transform = `translate(-50%, -50%)`;
-        joyX = 0; joyY = 0;
-    });
+    if(touchZone) {
+        touchZone.addEventListener("touchstart", e => {
+            e.preventDefault();
+            const t = e.touches[0];
+            joyStartX = t.clientX;
+            joyStartY = t.clientY;
+            dragging = true;
+            joyWrapper.style.display = "block";
+            joyWrapper.style.left = (joyStartX - 50) + "px";
+            joyWrapper.style.top = (joyStartY - 50) + "px";
+            joyStick.style.transform = `translate(-50%, -50%)`;
+            joyX = 0; joyY = 0;
+        });
 
-    touchZone.addEventListener("touchmove", e => {
-        e.preventDefault(); if (!dragging) return;
-        const t = e.touches[0];
-        let dx = t.clientX - joyStartX;
-        let dy = t.clientY - joyStartY;
-        const dist = Math.hypot(dx, dy);
-        if (dist > 50) { const r = 50/dist; dx*=r; dy*=r; }
-        joyStick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-        joyX = dx/50; joyY = dy/50;
-    });
+        touchZone.addEventListener("touchmove", e => {
+            e.preventDefault(); if (!dragging) return;
+            const t = e.touches[0];
+            let dx = t.clientX - joyStartX;
+            let dy = t.clientY - joyStartY;
+            const dist = Math.hypot(dx, dy);
+            if (dist > 50) { const r = 50/dist; dx*=r; dy*=r; }
+            joyStick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+            joyX = dx/50; joyY = dy/50;
+        });
 
-    touchZone.addEventListener("touchend", () => {
-        dragging = false; joyWrapper.style.display = "none"; joyX = 0; joyY = 0;
-    });
+        touchZone.addEventListener("touchend", () => {
+            dragging = false; joyWrapper.style.display = "none"; joyX = 0; joyY = 0;
+        });
+    }
 
     // --- DISPARO & MOUSE ---
     let mouseX = 0, mouseY = 0;
@@ -115,7 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
             playSound('SHOOT');
         }
     }
-    document.getElementById("btn-fire").addEventListener("touchstart", (e)=>{e.preventDefault();shoot();});
+    
+    const btnFire = document.getElementById("btn-fire");
+    if(btnFire) btnFire.addEventListener("touchstart", (e)=>{e.preventDefault();shoot();});
     document.addEventListener("mousedown", (e)=>{ if(gameRunning && e.target.tagName !== 'BUTTON') shoot(); });
 
     // TECLADO
@@ -180,19 +185,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function spawnBoss() {
         boss = { x: canvas.width/2, y: -100, hp: 50, maxHp: 50 };
-        document.getElementById("log").innerText = "¡JEFE EN CAMINO!";
+        document.getElementById("log").innerText = "¡ALERTA BIOLÓGICA!";
     }
 
     function draw() {
         if(imgGround.complete) {
             const ptrn = ctx.createPattern(imgGround, 'repeat');
             ctx.fillStyle = ptrn; ctx.fillRect(0,0,canvas.width,canvas.height);
-        } else { ctx.fillStyle='#222'; ctx.fillRect(0,0,canvas.width,canvas.height); }
+        } else { ctx.fillStyle='#111'; ctx.fillRect(0,0,canvas.width,canvas.height); }
 
         items.forEach(it => {
-            ctx.shadowBlur = 10; ctx.shadowColor = "white";
+            ctx.shadowBlur = 15; ctx.shadowColor = "#4a90e2";
             if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40);
-            else { ctx.fillStyle='lime'; ctx.fillRect(it.x-15, it.y-15, 30, 30); }
+            else { ctx.fillStyle='#4a90e2'; ctx.fillRect(it.x-15, it.y-15, 30, 30); }
             ctx.shadowBlur = 0;
         });
 
@@ -200,25 +205,28 @@ document.addEventListener('DOMContentLoaded', () => {
         zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
         
         if(boss && imgBoss.complete) {
-            ctx.shadowBlur = 20; ctx.shadowColor = "red";
+            ctx.shadowBlur = 25; ctx.shadowColor = "#4a90e2";
             ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128);
             ctx.shadowBlur = 0;
-            ctx.fillStyle='red'; ctx.fillRect(boss.x-50, boss.y-80, 100, 8);
-            ctx.fillStyle='lime'; ctx.fillRect(boss.x-50, boss.y-80, 100*(boss.hp/boss.maxHp), 8);
+            ctx.fillStyle='#333'; ctx.fillRect(boss.x-50, boss.y-80, 100, 8);
+            ctx.fillStyle='#e74c3c'; ctx.fillRect(boss.x-50, boss.y-80, 100*(boss.hp/boss.maxHp), 8);
         }
 
-        bullets.forEach(b => { ctx.fillStyle='#ff0'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill(); });
+        bullets.forEach(b => { ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill(); });
     }
 
     function loop() { if(gameRunning) { update(); draw(); requestAnimationFrame(loop); } }
 
-    document.getElementById("start-btn").onclick = () => {
-        initAudio();
-        document.getElementById("menu-screen").style.display = "none";
-        document.getElementById("game-ui").style.display = "block";
-        gameRunning = true;
-        setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+Math.random()}); }, 900);
-        setInterval(() => items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}), 8000);
-        loop();
-    };
+    const startBtn = document.getElementById("start-btn");
+    if(startBtn) {
+        startBtn.onclick = () => {
+            initAudio();
+            document.getElementById("menu-screen").style.display = "none";
+            document.getElementById("game-ui").style.display = "block";
+            gameRunning = true;
+            setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+Math.random()}); }, 900);
+            setInterval(() => items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}), 8000);
+            loop();
+        };
+    }
 });
