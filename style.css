@@ -1,62 +1,237 @@
-body {
-    margin: 0;
-    padding: 0;
-    background: #111;
-    color: white;
-    font-family: 'Courier New', monospace;
-    overflow: hidden;
-    touch-action: none; /* Vital para móviles */
-    user-select: none;
+/* Archivo: script.js - VERSIÓN FINAL CON JOYSTICK + IMÁGENES */
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// --- AUDIO ---
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioContext();
+function playSound(type) {
+    try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
+        osc.connect(gainNode); gainNode.connect(audioCtx.destination); const now = audioCtx.currentTime;
+        if (type === 'SHOOT') { osc.type = 'square'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.1); gainNode.gain.setValueAtTime(0.05, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1); osc.start(now); osc.stop(now + 0.1); }
+        else if (type === 'HIT') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now); gainNode.gain.setValueAtTime(0.1, now); gainNode.gain.linearRampToValueAtTime(0, now + 0.2); osc.start(now); osc.stop(now + 0.2); }
+    } catch (e) {}
 }
 
-/* MENÚ */
-.menu-overlay {
-    position: absolute; inset: 0; background: rgba(0,0,0,0.95);
-    display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 50;
-}
-.menu-overlay h1 { font-size: 48px; color: #e74c3c; margin: 0; text-align: center; }
-.high-score-display { color: #f1c40f; font-size: 18px; margin-bottom: 20px; }
-#start-btn {
-    padding: 15px 40px; font-size: 22px; background: #e74c3c; color: white; border: none; border-radius: 10px; margin-top: 20px;
+// --- IMÁGENES (Asegúrate de que existan en la carpeta imagenes/) ---
+const playerImg = new Image(); playerImg.src = 'imagenes/player.png'; 
+const zombieImg = new Image(); zombieImg.src = 'imagenes/zombie.png';
+const survivorImg = new Image(); survivorImg.src = 'imagenes/survivor.png';
+const roadImg = new Image(); roadImg.src = 'imagenes/asfalto.png';
+const bossImg = new Image(); bossImg.src = 'imagenes/boss.png';
+const mgImg = new Image(); mgImg.src = 'imagenes/mg.png';
+
+// --- VARIABLES ---
+let gameRunning = false;
+let score = 0; let level = 1; let ammo = 12; const maxAmmo = 30;
+let zombies = []; let survivors = []; let bullets = []; let floatingTexts = []; let particles = [];
+let boss = null;
+let spawnZ, spawnS;
+
+// --- JUGADOR ---
+const player = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    radius: 20,
+    speed: 5,
+    health: 100,
+    cureProgress: 0
+};
+
+// --- UI ELEMENTS ---
+const menuScreen = document.getElementById("menu-screen");
+const gameUI = document.getElementById("game-ui");
+const uiScore = document.getElementById('score');
+const uiLevel = document.getElementById('level');
+const uiAmmo = document.getElementById('ammo');
+const uiHealth = document.getElementById('health');
+const uiCure = document.getElementById('cure');
+const uiLog = document.getElementById('log');
+
+// ===== LÓGICA DEL JOYSTICK (INTEGRADA) =====
+const joystickBase = document.getElementById("joystick-base");
+const joystickStick = document.getElementById("joystick-stick");
+const btnFire = document.getElementById("btn-fire");
+
+let joyX = 0;
+let joyY = 0;
+let active = false;
+const maxRadius = 40; // Radio máximo del joystick
+
+joystickBase.addEventListener("touchstart", e => { e.preventDefault(); active = true; });
+joystickBase.addEventListener("touchmove", e => {
+    if (!active) return;
+    e.preventDefault();
+    const rect = joystickBase.getBoundingClientRect();
+    const touch = e.touches[0];
+    
+    // Calcular posición relativa al centro
+    let x = touch.clientX - (rect.left + rect.width / 2);
+    let y = touch.clientY - (rect.top + rect.height / 2);
+    
+    const dist = Math.hypot(x, y);
+    
+    // Limitar al círculo
+    if (dist > maxRadius) {
+        x = (x / dist) * maxRadius;
+        y = (y / dist) * maxRadius;
+    }
+    
+    // Mover el stick visualmente
+    joystickStick.style.transform = `translate(${x}px, ${y}px)`;
+    
+    // Normalizar valores entre -1 y 1 para el movimiento
+    joyX = x / maxRadius;
+    joyY = y / maxRadius;
+});
+
+joystickBase.addEventListener("touchend", () => {
+    active = false;
+    joyX = 0;
+    joyY = 0;
+    joystickStick.style.transform = `translate(0px, 0px)`;
+});
+
+// Botón de Disparo
+btnFire.addEventListener("touchstart", (e) => { e.preventDefault(); shootBullet(); });
+btnFire.addEventListener("mousedown", (e) => { e.preventDefault(); shootBullet(); });
+
+
+// --- CLASES DEL JUEGO ---
+class Bullet {
+    constructor() {
+        this.x = player.x; this.y = player.y; this.radius = 5; this.speed = 15;
+        // Disparar en dirección del joystick, o hacia arriba por defecto
+        let dirX = joyX;
+        let dirY = joyY;
+        
+        // Si no se mueve el joystick, dispara hacia arriba o a la derecha
+        if (dirX === 0 && dirY === 0) { dirY = -1; }
+        
+        // Normalizar velocidad
+        const len = Math.hypot(dirX, dirY);
+        this.vx = (dirX / len) * this.speed;
+        this.vy = (dirY / len) * this.speed;
+    }
+    update() { this.x += this.vx; this.y += this.vy; }
+    draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2); ctx.fillStyle = '#f1c40f'; ctx.fill(); }
 }
 
-/* HUD */
-.ui-container { position: absolute; top: 10px; left: 10px; z-index: 10; pointer-events: none; width: 95%; }
-.top-bar { display: flex; gap: 10px; }
-.score-box, .level-box, .record-box { background: rgba(0,0,0,0.7); padding: 6px 10px; border-radius: 6px; border: 1px solid #555; }
-.score-box { color: #f1c40f; } .level-box { color: #e74c3c; }
-.stats { margin-top: 5px; background: rgba(0,0,0,0.7); padding: 6px; border-radius: 6px; width: fit-content; }
-span#health { color: #2ecc71; } span#ammo { color: #e67e22; } span#cure { color: #3498db; }
-
-/* --- CONTROLES MÓVILES --- */
-#mobile-controls {
-    position: absolute; inset: 0; z-index: 40; pointer-events: none;
+class Zombie {
+    constructor() {
+        const s = Math.floor(Math.random()*4);
+        if(s===0){this.x=-64;this.y=Math.random()*canvas.height} else if(s===1){this.x=canvas.width+64;this.y=Math.random()*canvas.height} else if(s===2){this.x=Math.random()*canvas.width;this.y=-64} else{this.x=Math.random()*canvas.width;this.y=canvas.height+64}
+        this.radius=20; this.speed = (Math.random()*1.5+1)+(level*0.1); 
+    }
+    update() { 
+        const dx=player.x-this.x; const dy=player.y-this.y; const dist=Math.sqrt(dx*dx+dy*dy); 
+        this.x+=(dx/dist)*this.speed; this.y+=(dy/dist)*this.speed; 
+    }
+    draw() { 
+        if(zombieImg.complete && zombieImg.naturalHeight!==0) ctx.drawImage(zombieImg, this.x-32, this.y-32, 64, 64); 
+        else {ctx.beginPath();ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);ctx.fillStyle='red';ctx.fill();} 
+    }
 }
 
-/* JOYSTICK ESTILOS */
-#joystick-container {
-    position: absolute; bottom: 50px; left: 40px; width: 120px; height: 120px; pointer-events: auto;
-}
-#joystick-base {
-    width: 100%; height: 100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1), rgba(0,0,0,0.5));
-    border-radius: 50%; border: 2px solid rgba(255,255,255,0.3);
-    position: relative;
-    touch-action: none;
-}
-#joystick-stick {
-    width: 50px; height: 50px;
-    background: radial-gradient(circle, #ddd, #888);
-    border-radius: 50%; position: absolute;
-    top: 50%; left: 50%; transform: translate(-50%, -50%); /* Centrado inicial */
-    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+class Survivor {
+    constructor() { this.x=Math.random()*(canvas.width-100)+50; this.y=Math.random()*(canvas.height-100)+50; this.radius=20; this.type = Math.random() < 0.5 ? 'MUNICION' : 'MEDICINA'; }
+    draw() { 
+        if(survivorImg.complete) ctx.drawImage(survivorImg,this.x-32,this.y-32,64,64);
+        else {ctx.beginPath();ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);ctx.fillStyle='green';ctx.fill();}
+    }
 }
 
-/* BOTÓN DISPARO */
-.action-btn { position: absolute; bottom: 50px; right: 40px; pointer-events: auto; }
-#btn-fire {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: rgba(231,76,60,0.4); border: 2px solid #e74c3c;
-    color: white; font-size: 24px; outline: none;
+// --- FUNCIONES ---
+function shootBullet() {
+    if(ammo > 0) {
+        bullets.push(new Bullet());
+        ammo--;
+        uiAmmo.innerText = ammo;
+        playSound('SHOOT');
+    } else {
+        uiLog.innerText = "¡SIN BALAS!";
+    }
 }
-#btn-fire:active { background: rgba(231,76,60,0.8); }
+
+function startSpawners() {
+    clearInterval(spawnZ); clearInterval(spawnS);
+    spawnZ = setInterval(() => { if(gameRunning) zombies.push(new Zombie()); }, 1500 - (level * 50));
+    spawnS = setInterval(() => { if(gameRunning && survivors.length < 3) survivors.push(new Survivor()); }, 5000);
+}
+
+function update() {
+    // MOVIMIENTO JUGADOR (JOYSTICK)
+    player.x += joyX * player.speed;
+    player.y += joyY * player.speed;
+    player.x = Math.max(0, Math.min(canvas.width, player.x));
+    player.y = Math.max(0, Math.min(canvas.height, player.y));
+
+    // Balas
+    for(let i=bullets.length-1; i>=0; i--) {
+        let b = bullets[i];
+        b.update();
+        for(let j=zombies.length-1; j>=0; j--) {
+            let z = zombies[j];
+            if(Math.hypot(b.x-z.x, b.y-z.y) < b.radius+z.radius) {
+                zombies.splice(j, 1); bullets.splice(i, 1);
+                score += 50; uiScore.innerText = score;
+                break;
+            }
+        }
+        if(b.x<0 || b.x>canvas.width || b.y<0 || b.y>canvas.height) bullets.splice(i,1);
+    }
+
+    // Zombis
+    zombies.forEach(z => z.update());
+    zombies.forEach(z => {
+        if(Math.hypot(player.x-z.x, player.y-z.y) < player.radius+z.radius) {
+            player.health -= 0.5; uiHealth.innerText = Math.floor(player.health);
+            if(player.health <= 0) { gameRunning = false; alert("GAME OVER"); location.reload(); }
+        }
+    });
+
+    // Items
+    for(let i=survivors.length-1; i>=0; i--) {
+        let s = survivors[i];
+        if(Math.hypot(player.x-s.x, player.y-s.y) < player.radius+s.radius) {
+            if(s.type === 'MUNICION') { ammo+=12; uiAmmo.innerText = ammo; }
+            else { player.health = Math.min(100, player.health + 20); uiHealth.innerText = Math.floor(player.health); }
+            survivors.splice(i, 1);
+        }
+    }
+}
+
+function draw() {
+    if(roadImg.complete) { const p = ctx.createPattern(roadImg, 'repeat'); ctx.fillStyle = p; ctx.fillRect(0,0,canvas.width,canvas.height); }
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    survivors.forEach(s => s.draw());
+    bullets.forEach(b => b.draw());
+    zombies.forEach(z => z.draw());
+
+    if(playerImg.complete) ctx.drawImage(playerImg, player.x-32, player.y-32, 64, 64);
+    else { ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2); ctx.fillStyle = "#3498db"; ctx.fill(); }
+}
+
+function animate() {
+    if (!gameRunning) return;
+    update();
+    draw();
+    requestAnimationFrame(animate);
+}
+
+// INICIAR JUEGO
+document.getElementById("start-btn").onclick = () => {
+    menuScreen.style.display = "none";
+    gameUI.style.display = "block";
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    gameRunning = true;
+    startSpawners();
+    animate();
+};
