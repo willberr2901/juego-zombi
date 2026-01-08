@@ -3,66 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: V20 Final</title>
+    <title>Ciudad Z: Expediente Final</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="dark-bg"></div>
+    <div class="grid-bg"></div>
     <div id="vignette"></div>
 
     <div id="menu-screen" class="menu-overlay">
         
-        <div class="layout-container">
+        <div class="neon-decor left-decor">
+            <img src="imagenes/zombie.png" alt="">
+        </div>
+        <div class="neon-decor right-decor">
+            <img src="imagenes/zombie.png" alt="">
+        </div>
+
+        <div class="main-layout">
             
-            <div class="side-zombie z-left">
-                <img src="imagenes/zombie.png" alt="">
-            </div>
-            <div class="side-zombie z-right">
-                <img src="imagenes/zombie.png" alt="">
+            <div class="hud-panel left-panel">
+                <h3 class="panel-header">📂 SISTEMA V21.0</h3>
+                
+                <div class="data-section">
+                    <p class="section-title">>> GRÁFICOS</p>
+                    <ul class="patch-notes">
+                        <li class="buff">[+] Motor de Neón V3</li>
+                        <li class="buff">[+] Sombras Dinámicas</li>
+                        <li class="buff">[+] Interfaz HD</li>
+                    </ul>
+                </div>
+
+                <div class="data-section">
+                    <p class="section-title">>> JUGABILIDAD</p>
+                    <ul class="patch-notes">
+                        <li class="nerf">[-] Velocidad Zombi: +15%</li>
+                        <li class="nerf">[-] Munición Inicial: Baja</li>
+                        <li class="buff">[+] Daño Crítico: Alto</li>
+                    </ul>
+                </div>
+                
+                <div class="system-footer">
+                    PING: 24ms | FPS: 60
+                </div>
             </div>
 
-            <div class="info-panel p-left">
-                <h3 class="panel-title">PARCHE V20.0</h3>
-                <ul class="details-list">
-                    <li class="ok">[+] Estructura Rígida</li>
-                    <li class="ok">[+] Neón Croquis Real</li>
-                    <li class="bad">[-] Caos Visual</li>
-                </ul>
-                <div class="alert-box">ESTADO: PÁNICO</div>
-            </div>
-
-            <div class="center-content">
-                <div class="boss-glow">
+            <div class="center-stage">
+                <div class="boss-hologram">
                     <img src="imagenes/boss.png" alt="BOSS">
                 </div>
                 
-                <h1 class="horror-title">CIUDAD <span class="red-x">Z</span></h1>
+                <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
                 
-                <button id="start-btn">SOBREVIVIR</button>
+                <button id="start-btn">
+                    INICIAR PROTOCOLO
+                    <div class="btn-sub">NO HAY VUELTA ATRÁS</div>
+                </button>
             </div>
 
-            <div class="info-panel p-right">
-                <h3 class="panel-title">INFORME DE MISIÓN</h3>
-                <p class="lore">"La contención ha fallado. Eres el último recurso."</p>
-                <hr class="red-hr">
-                <p class="objective-title">OBJETIVO ACTUAL:</p>
-                <p class="objective-text">ELIMINAR LA AMENAZA</p>
+            <div class="hud-panel right-panel">
+                <h3 class="panel-header">📝 DATOS DE MISIÓN</h3>
+                
+                <div class="intel-grid">
+                    <div class="intel-row">
+                        <span>UBICACIÓN:</span> <span class="val">SECTOR 7</span>
+                    </div>
+                    <div class="intel-row">
+                        <span>INFECCIÓN:</span> <span class="val red">98.4%</span>
+                    </div>
+                    <div class="intel-row">
+                        <span>ESTADO:</span> <span class="val red">CUARENTENA</span>
+                    </div>
+                    <div class="intel-row">
+                        <span>HABITANTES:</span> <span class="val">0 VIVOS</span>
+                    </div>
+                </div>
+
+                <hr class="panel-hr">
+
+                <div class="objective-box">
+                    <p class="obj-label">ORDEN PRIORITARIA:</p>
+                    <p class="obj-main">SOBREVIVIR A TODA COSTA</p>
+                </div>
             </div>
 
+        </div>
+
+        <div class="bottom-ticker">
+            <p class="ticker-text">⚠️ ALERTA: NIVELES DE RADIACIÓN EN AUMENTO... ZONA RESTRINGIDA... DISPARAR A MATAR... BUSQUE REFUGIO INMEDIATAMENTE... ⚠️</p>
         </div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
         <div class="top-bar">
-            <div class="stat-item">💀 <span id="score">0</span></div>
-            <div class="stat-item">NIV: <span id="level">1</span></div>
-            <div class="stat-item">📦 <span id="ammo">12</span></div>
+            <div class="stat">💀 <span id="score">0</span></div>
+            <div class="stat">NIV: <span id="level">1</span></div>
+            <div class="stat">📦 <span id="ammo">12</span></div>
             <button id="pause-btn">II</button>
         </div>
         <div class="health-wrap">
             <div class="hp-icon">✚</div>
-            <div class="hp-track"><div id="health-bar"></div></div>
+            <div class="hp-border"><div id="health-bar"></div></div>
         </div>
     </div>
 
