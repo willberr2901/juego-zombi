@@ -1,83 +1,103 @@
-/* style.css - V2.1 CLEAN */
+/* style.css - TEMA DE TERROR V3.0 */
 body {
     margin: 0; padding: 0;
     background: #000;
-    color: white;
+    color: #ddd;
     font-family: 'Courier New', monospace;
     overflow: hidden;
     touch-action: none;
     user-select: none;
 }
 
+/* EFECTO DE TERROR (VIGNETTE) */
+#vignette {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle, transparent 40%, #000 100%);
+    pointer-events: none;
+    z-index: 20;
+}
+
 /* MENÚ */
 .menu-overlay {
     position: absolute; inset: 0;
-    background: radial-gradient(circle, #220000, #000000);
+    background: #000;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     z-index: 100;
 }
 
 .menu-boss-img {
-    width: 120px; height: 120px;
-    filter: drop-shadow(0 0 20px red);
-    margin-bottom: 10px;
+    width: 130px; opacity: 0.8;
+    filter: drop-shadow(0 0 30px #500);
+    animation: pulse 3s infinite;
 }
+@keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.05);} 100% {transform: scale(1);} }
 
-h1 {
-    font-size: 50px; color: #e74c3c;
-    text-shadow: 0 0 10px #c0392b;
-    margin: 0;
-}
+h1 { font-size: 60px; color: #a00; text-shadow: 0 0 20px #f00; margin: 0; letter-spacing: 5px; }
+#menu-subtitle { color: #555; letter-spacing: 3px; font-size: 14px; margin-bottom: 30px; }
 
 .update-log {
-    background: rgba(50, 0, 0, 0.5);
-    border: 1px solid #e74c3c;
-    padding: 15px; border-radius: 8px;
-    width: 280px; margin: 20px 0;
+    border-left: 2px solid #a00;
+    background: rgba(20, 0, 0, 0.8);
+    padding: 15px; width: 280px; margin-bottom: 20px;
     text-align: left;
 }
-.update-log h3 { margin-top: 0; color: #f1c40f; font-size: 16px; border-bottom: 1px solid #555; }
-.update-log ul { padding-left: 20px; color: #ccc; font-size: 13px; margin-bottom: 0;}
+.update-log h3 { color: #d35400; margin: 0 0 10px 0; border-bottom: 1px solid #333; font-size: 14px; }
+.update-log ul { padding-left: 20px; font-size: 12px; color: #aaa; margin: 0; }
 
 #start-btn {
-    padding: 15px 50px; font-size: 24px;
-    background: #c0392b; color: white;
-    border: 2px solid #fff; border-radius: 5px;
-    cursor: pointer; font-weight: bold;
-    box-shadow: 0 0 15px red;
+    padding: 15px 60px; font-size: 24px;
+    background: #500; color: #fff; border: 1px solid #a00;
+    box-shadow: 0 0 20px #500; cursor: pointer;
+    font-family: 'Courier New', monospace; font-weight: bold;
+    transition: all 0.2s;
 }
-#start-btn:active { transform: scale(0.95); }
+#start-btn:active { background: #f00; box-shadow: 0 0 40px #f00; }
 
-/* HUD & JUEGO */
-.ui-container { position: absolute; top: 10px; left: 10px; z-index: 10; width: 95%; pointer-events: none; }
-.top-bar { display: flex; gap: 10px; }
-.score-box, .level-box { background: rgba(0,0,0,0.7); padding: 5px 10px; border: 1px solid #555; border-radius: 5px; font-weight: bold; }
-.score-box { color: #f1c40f; } .level-box { color: #e74c3c; }
-.stats { margin-top: 5px; background: rgba(0,0,0,0.7); padding: 5px; border-radius: 5px; width: fit-content; }
+/* HUD */
+.ui-container { position: absolute; top: 10px; left: 10px; z-index: 30; width: 95%; pointer-events: none; }
+.top-bar { display: flex; gap: 15px; font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+.score-box { color: #f1c40f; text-shadow: 2px 2px 0 #000; }
+.ammo-box { color: #e74c3c; text-shadow: 2px 2px 0 #000; }
 
-/* CONTROLES MÓVILES */
-#mobile-controls { position: absolute; inset: 0; z-index: 50; pointer-events: none; }
-#joystick-container { position: absolute; bottom: 50px; left: 40px; width: 120px; height: 120px; pointer-events: auto; }
+.health-bar-container {
+    width: 200px; height: 10px; background: #333; border: 1px solid #555;
+}
+#health-bar {
+    width: 100%; height: 100%; background: #2ecc71; transition: width 0.2s;
+}
+
+/* JOYSTICK DINÁMICO */
+#dynamic-joystick-area {
+    position: absolute; top: 0; left: 0; width: 50%; height: 100%;
+    z-index: 40; /* Zona táctil izquierda invisible */
+}
+#joystick-container {
+    position: absolute; width: 100px; height: 100px;
+    pointer-events: none; z-index: 45;
+}
 #joystick-base {
     width: 100%; height: 100%;
     background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%; position: relative;
 }
 #joystick-stick {
-    width: 50px; height: 50px;
-    background: #bbb; border-radius: 50%;
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-}
-.action-btn { position: absolute; bottom: 50px; right: 40px; pointer-events: auto; }
-#btn-fire {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: rgba(231, 76, 60, 0.5); border: 2px solid #e74c3c;
-    color: white; font-size: 30px;
+    width: 40px; height: 40px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%; position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
-/* Ocultar Joystick en PC */
+/* BOTÓN DISPARO */
+.action-btn { position: absolute; bottom: 60px; right: 40px; z-index: 50; }
+#btn-fire {
+    width: 90px; height: 90px; border-radius: 50%;
+    background: rgba(200, 0, 0, 0.3); border: 2px solid #f00;
+    color: white; font-size: 30px;
+}
+#btn-fire:active { background: rgba(255, 0, 0, 0.6); transform: scale(0.95); }
+
 @media (min-width: 1024px) {
-    #mobile-controls { display: none !important; }
+    #dynamic-joystick-area, .action-btn { display: none; } /* Ocultar en PC */
 }
