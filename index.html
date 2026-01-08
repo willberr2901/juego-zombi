@@ -12,23 +12,19 @@
         <img src="imagenes/boss.png" alt="Boss" class="menu-boss-img">
         
         <h1 id="menu-title">CIUDAD Z</h1>
-        <p id="menu-subtitle">EL FINAL SE ACERCA</p>
+        <p id="menu-subtitle">LA ÚLTIMA DEFENSA</p>
         
         <div class="update-log">
-            <h3>⚠️ REPORTE V2.0</h3>
+            <h3>⚠️ REPORTE V2.1</h3>
             <ul>
-                <li>🕹️ <b>Nuevo Control:</b> Joystick 360°</li>
-                <li>🧟 <b>Amenaza:</b> Hordas y Jefes</li>
-                <li>🎨 <b>Interfaz:</b> Modo Oscuro Pro</li>
+                <li>🖥️ <b>PC:</b> Usa W-A-S-D + Mouse</li>
+                <li>📱 <b>Móvil:</b> Joystick + Táctil</li>
+                <li>🧠 <b>Sistema:</b> Detección automática</li>
             </ul>
         </div>
 
         <p class="high-score-display">🏆 RÉCORD: <span id="menu-highscore">0</span></p>
-        <button id="start-btn">SOBREVIVIR</button>
-        
-        <div class="instructions">
-            <p>Móvil: Joystick Izq. + Disparo Der.</p>
-        </div>
+        <button id="start-btn">INICIAR MISIÓN</button>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
@@ -36,10 +32,9 @@
             <div class="score-box">PTS: <span id="score">0</span></div>
             <div class="level-box">NIV: <span id="level">1</span></div>
         </div>
-
         <div class="stats">
             <p>❤️ <span id="health">100</span>% | 🔫 <span id="ammo">12</span></p>
-            <p id="log">Busca suministros...</p>
+            <p id="log">Sobrevive...</p>
         </div>
     </div>
 
@@ -49,7 +44,6 @@
                 <div id="joystick-stick"></div>
             </div>
         </div>
-        
         <div class="action-btn">
             <button id="btn-fire">🔥</button>
         </div>
