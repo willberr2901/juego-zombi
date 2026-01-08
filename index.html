@@ -3,66 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: HUD Táctico V22</title>
+    <title>Ciudad Z: HUD Combate</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="grid-bg"></div>
     <div id="vignette"></div>
-
-    <div id="menu-screen" class="menu-overlay">
-        <div class="neon-decor left-decor"><img src="imagenes/zombie.png" alt=""></div>
-        <div class="neon-decor right-decor"><img src="imagenes/zombie.png" alt=""></div>
+    <div id="blood-screen"></div> <div id="menu-screen" class="menu-overlay">
+        <div class="neon-decor left-decor"><img src="imagenes/zombie.png"></div>
+        <div class="neon-decor right-decor"><img src="imagenes/zombie.png"></div>
         <div class="main-layout">
             <div class="hud-panel left-panel">
-                <h3 class="panel-header">📂 SISTEMA V22.0</h3>
-                <div class="data-section"><p class="section-title">>> NUEVO HUD TÁCTICO</p><ul class="patch-notes"><li class="buff">[+] Visor de Combate</li><li class="buff">[+] Alertas Visuales</li><li class="buff">[+] Recompensa de Nivel</li></ul></div>
-                <div class="system-footer">ESTADO: LISTO PARA EL COMBATE</div>
+                <h3 class="panel-header">📂 SISTEMA V23.0</h3>
+                <div class="data-section"><p class="section-title">>> MEJORAS DE COMBATE</p><ul class="patch-notes"><li class="buff">[+] HUD Militar</li><li class="buff">[+] Alertas de Pánico</li><li class="fix">[+] Legibilidad 100%</li></ul></div>
             </div>
             <div class="center-stage">
-                <div class="boss-hologram"><img src="imagenes/boss.png" alt="BOSS"></div>
+                <div class="boss-hologram"><img src="imagenes/boss.png"></div>
                 <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-                <button id="start-btn">INICIAR PROTOCOLO</button>
+                <button id="start-btn">INICIAR MISIÓN</button>
             </div>
             <div class="hud-panel right-panel">
-                <h3 class="panel-header">📝 DATOS DE MISIÓN</h3>
-                <div class="intel-grid"><div class="intel-row"><span>UBICACIÓN:</span> <span class="val">ZONA CERO</span></div><div class="intel-row"><span>ESTADO:</span> <span class="val red">HOSTIL</span></div></div>
+                <h3 class="panel-header">📝 REPORTE</h3>
+                <div class="intel-grid"><div class="intel-row"><span>ESTADO:</span> <span class="val red">CRÍTICO</span></div></div>
                 <hr class="panel-hr">
-                <div class="objective-box"><p class="obj-label">OBJETIVO:</p><p class="obj-main">SOBREVIVIR</p></div>
+                <div class="objective-box"><p class="obj-main">SOBREVIVE</p></div>
             </div>
         </div>
-        <div class="bottom-ticker"><p class="ticker-text">⚠️ ALERTA BIOHAZARD... HUD TÁCTICO ACTIVADO... MUNICIÓN LIMITADA... PREPÁRESE PARA IMPACTO... ⚠️</p></div>
+        <div class="bottom-ticker"><p class="ticker-text">⚠️ ALERTA: HUD DE COMBATE ACTIVADO... PREPÁRESE PARA LA HORDA... ⚠️</p></div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
         
-        <div class="hud-section top-left">
-            <div class="vitals-gauge">
-                <div class="heart-icon blink-fast">❤</div>
-                <div class="hp-bar-frame">
+        <div class="combat-panel health-panel">
+            <div class="icon-box">✚</div>
+            <div class="bars-container">
+                <div class="bar-label">SALUD DEL AGENTE</div>
+                <div class="health-bar-frame">
                     <div id="health-bar"></div>
-                    <div class="hp-text"><span id="health-num">100</span>%</div>
                 </div>
             </div>
+            <div class="health-number"><span id="health-num">100</span>%</div>
         </div>
 
-        <div class="hud-section top-right">
-            <div class="tactical-gauge ammo-gauge">
-                <span class="gauge-icon">🔫</span> <span id="ammo">12</span> <small>BALAS</small>
+        <div class="combat-panel stats-panel">
+            <div class="stat-row ammo-row">
+                <span class="big-num" id="ammo">12</span>
+                <span class="label">MUNICIÓN</span>
+                <span class="icon">🔫</span>
             </div>
-            <div class="tactical-gauge score-gauge">
-                 <span id="score">0</span> <small>BAJAS</small>
+            <hr class="panel-sep">
+            <div class="stat-row score-row">
+                <span class="big-num" id="score">0</span>
+                <span class="label">BAJAS</span>
+                <span class="icon">💀</span>
             </div>
-             <div class="tactical-gauge level-gauge">
-                 NIV <span id="level">1</span>
-            </div>
-             <button id="pause-btn">PAUSA ||</button>
         </div>
 
-        <div id="center-alerts">
-            <div id="boss-alert" class="alert-banner hidden">⚠️ ¡AMENAZA MAYOR DETECTADA! ⚠️</div>
-            <div id="levelup-alert" class="reward-banner hidden">⭐ ¡NIVEL ASCENDIDO! MUNICIÓN RECARGADA ⭐</div>
+        <div class="level-badge">
+            <span class="lvl-label">NIVEL DE AMENAZA</span>
+            <span class="lvl-num" id="level">1</span>
+        </div>
+
+        <button id="pause-btn">PAUSA</button>
+
+        <div id="combat-banner" class="banner-container">
+            <div class="banner-text" id="banner-msg">¡JEFE APROXIMÁNDOSE!</div>
         </div>
 
     </div>
