@@ -3,50 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Infección Total</title>
+    <title>Ciudad Z: Pesadilla</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <div id="vignette"></div>
+
     <div id="menu-screen" class="menu-overlay">
         <img src="imagenes/boss.png" alt="Boss" class="menu-boss-img">
-        
         <h1 id="menu-title">CIUDAD Z</h1>
-        <p id="menu-subtitle">LA ÚLTIMA DEFENSA</p>
+        <p id="menu-subtitle">NO HAGAS RUIDO...</p>
         
         <div class="update-log">
-            <h3>⚠️ REPORTE DE MISIÓN</h3>
+            <h3>🩸 ACTUALIZACIÓN V3.0</h3>
             <ul>
-                <li>🖥️ <b>PC:</b> Teclado (WASD) + Mouse</li>
-                <li>📱 <b>Móvil:</b> Joystick Virtual</li>
-                <li>🛠️ <b>Sistema:</b> V2.1 Estable</li>
+                <li>👻 <b>Joystick Dinámico:</b> Toca donde quieras</li>
+                <li>📦 <b>Suministros:</b> Busca las cajas de ayuda</li>
+                <li>🔊 <b>Audio 3D:</b> Ambiente de terror</li>
             </ul>
         </div>
 
-        <p class="high-score-display">🏆 RÉCORD: <span id="menu-highscore">0</span></p>
-        <button id="start-btn">INICIAR MISIÓN</button>
+        <p class="high-score-display">RECORD: <span id="menu-highscore">0</span></p>
+        <button id="start-btn">SOBREVIVIR</button>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
         <div class="top-bar">
             <div class="score-box">PTS: <span id="score">0</span></div>
-            <div class="level-box">NIV: <span id="level">1</span></div>
+            <div class="ammo-box">🔫 <span id="ammo">12</span></div>
         </div>
-        <div class="stats">
-            <p>❤️ <span id="health">100</span>% | 🔫 <span id="ammo">12</span></p>
-            <p id="log">Sobrevive...</p>
+        <div class="health-bar-container">
+            <div id="health-bar"></div>
         </div>
+        <p id="log">Sobrevive...</p>
     </div>
 
-    <div id="mobile-controls">
-        <div id="joystick-container">
-            <div id="joystick-base">
-                <div id="joystick-stick"></div>
-            </div>
+    <div id="dynamic-joystick-area"></div> <div id="joystick-container" style="display:none;">
+        <div id="joystick-base">
+            <div id="joystick-stick"></div>
         </div>
-        <div class="action-btn">
-            <button id="btn-fire">🔥</button>
-        </div>
+    </div>
+    
+    <div class="action-btn">
+        <button id="btn-fire">🔥</button>
     </div>
 
     <canvas id="gameCanvas"></canvas>
