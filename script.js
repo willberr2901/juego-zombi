@@ -1,4 +1,4 @@
-/* script.js - V13.0 FINAL (SIN RUIDO, CON FLECHAS) */
+/* script.js - V15.0 ESTABLE Y SIN ERRORES */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // --- AUDIO (SOLO EFECTOS) ---
+    // --- AUDIO (SOLO SFX) ---
     let audioCtx;
     function initAudio() {
         if (!audioCtx) {
@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
             audioCtx = new AC();
         }
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        // YA NO LLAMAMOS A NINGÚN SONIDO DE FONDO AQUÍ
     }
 
     function playSound(type) {
@@ -30,10 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
             gain.gain.setValueAtTime(0.1, now);
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
-        } else if (type === 'ALARM') {
-            osc.type = 'square'; osc.frequency.setValueAtTime(150, now);
-            gain.gain.setValueAtTime(0.2, now);
-            osc.start(now); osc.stop(now + 0.5);
         }
     }
 
@@ -45,10 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const imgBoss = new Image(); imgBoss.src = 'imagenes/boss.png';
 
     // --- VARIABLES ---
-    let gameRunning = false, isPaused = false;
-    let score = 0, level = 1, ammo = 12, killCount = 0;
+    let gameRunning = false;
+    let score = 0, level = 1, ammo = 12;
     let zombies = [], bullets = [], items = [], boss = null;
-    const player = { x: canvas.width/2, y: canvas.height/2, hp: 100, maxHp: 100, speed: 5 };
+    const player = { x: canvas.width/2, y: canvas.height/2, hp: 100, speed: 5 };
 
     // --- CONTROLES MÓVIL ---
     const touchZone = document.getElementById("touch-zone");
@@ -58,14 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(touchZone) {
         touchZone.addEventListener("touchstart", e => {
-            if(isPaused) return; e.preventDefault();
+            e.preventDefault();
             const t = e.touches[0]; startX = t.clientX; startY = t.clientY; dragging = true;
             joyWrapper.style.display = "block";
             joyWrapper.style.left = (startX-60)+"px"; joyWrapper.style.top = (startY-60)+"px";
             joyStick.style.transform = `translate(-50%, -50%)`; joyX=0; joyY=0;
         });
         touchZone.addEventListener("touchmove", e => {
-            if(!dragging || isPaused) return; e.preventDefault();
+            if(!dragging) return; e.preventDefault();
             const t = e.touches[0];
             let dx = t.clientX-startX; let dy = t.clientY-startY;
             const dist = Math.hypot(dx, dy);
@@ -76,28 +71,26 @@ document.addEventListener('DOMContentLoaded', () => {
         touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
     }
 
-    // --- CONTROLES PC (TECLAS Y FLECHAS) ---
+    // --- CONTROLES PC ---
     const keys = {};
     window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
     window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
     
-    // Disparo PC
     window.addEventListener("mousedown", e => {
-        if(gameRunning && !isPaused && e.target.tagName !== 'BUTTON') shoot();
+        if(gameRunning && e.target.tagName !== 'BUTTON') shoot();
     });
 
-    // --- LÓGICA JUEGO ---
     function shoot() {
-        if(isPaused || ammo <= 0) return;
+        if(ammo <= 0) return;
         let vx = joyX*15, vy = joyY*15;
-        if(!dragging) vy = -15; // PC dispara arriba por defecto
+        if(!dragging) vy = -15; 
         bullets.push({x: player.x, y: player.y, vx: vx, vy: vy});
         ammo--; updateHUD(); playSound('SHOOT');
     }
     document.getElementById("btn-fire").addEventListener("touchstart", (e)=>{e.preventDefault(); shoot();});
 
+    // --- LÓGICA JUEGO ---
     function update() {
-        // Movimiento (Soporte WASD y Flechas)
         let dx = joyX, dy = joyY;
         if(!dragging) {
             if(keys['d'] || keys['arrowright']) dx=1; 
@@ -109,31 +102,27 @@ document.addEventListener('DOMContentLoaded', () => {
         player.x = Math.max(0, Math.min(canvas.width, player.x));
         player.y = Math.max(0, Math.min(canvas.height, player.y));
 
-        // Balas
         for(let i=bullets.length-1; i>=0; i--){
             let b = bullets[i]; b.x += b.vx; b.y += b.vy;
             for(let j=zombies.length-1; j>=0; j--){
                 if(Math.hypot(b.x-zombies[j].x, b.y-zombies[j].y) < 30) {
                     zombies.splice(j,1); bullets.splice(i,1);
-                    score+=10; killCount++; updateHUD();
-                    if(killCount % 10 === 0 && !boss) spawnBossSequence();
+                    score+=10; updateHUD();
+                    if(score % 500 === 0 && !boss) spawnBoss();
                     break;
                 }
             }
             if(boss && Math.hypot(b.x-boss.x, b.y-boss.y) < 60) {
                 boss.hp--; bullets.splice(i,1);
-                if(boss.hp <= 0) { boss=null; score+=500; updateHUD(); }
+                if(boss.hp <= 0) { boss=null; score+=1000; updateHUD(); }
             }
         }
 
-        // Zombis
         zombies.forEach(z => {
             let angle = Math.atan2(player.y - z.y, player.x - z.x);
             z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
             if(Math.hypot(player.x-z.x, player.y-z.y) < 30) {
                 player.hp -= 0.5; updateHUD();
-                document.getElementById("damage-overlay").style.opacity = 0.5;
-                setTimeout(()=>document.getElementById("damage-overlay").style.opacity=0, 100);
             }
         });
 
@@ -148,7 +137,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 ammo += 10; items.splice(i,1); updateHUD();
             }
         }
-        if(player.hp <= 0) gameOver();
+        if(player.hp <= 0) location.reload();
+    }
+
+    function spawnBoss() { boss = { x: canvas.width/2, y: -100, hp: 50, maxHp: 50 }; }
+
+    function updateHUD() {
+        document.getElementById("score").innerText = score;
+        document.getElementById("ammo").innerText = ammo;
+        document.getElementById("health").innerText = Math.floor(player.hp);
     }
 
     function draw() {
@@ -160,75 +157,19 @@ document.addEventListener('DOMContentLoaded', () => {
         items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
         if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
         zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
-        
-        if(boss && imgBoss.complete) {
-            ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128);
-            ctx.fillStyle='red'; ctx.fillRect(boss.x-50, boss.y-80, 100, 10);
-            ctx.fillStyle='lime'; ctx.fillRect(boss.x-50, boss.y-80, 100*(boss.hp/boss.maxHp), 10);
-        }
+        if(boss && imgBoss.complete) { ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); }
         bullets.forEach(b => { ctx.fillStyle='yellow'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill(); });
     }
 
-    // --- GAMEPLAY HELPERS ---
-    function spawnBossSequence() {
-        const warning = document.getElementById("boss-warning");
-        warning.classList.add("warning-active");
-        playSound('ALARM');
-        setTimeout(() => {
-            warning.classList.remove("warning-active");
-            boss = { x: canvas.width/2, y: -100, hp: 50 + (level*10), maxHp: 50 + (level*10) };
-            level++; updateHUD();
-        }, 3000);
-    }
+    function loop() { if(gameRunning) { update(); draw(); requestAnimationFrame(loop); } }
 
-    function updateHUD() {
-        document.getElementById("score").innerText = score;
-        document.getElementById("level").innerText = level;
-        document.getElementById("ammo").innerText = ammo;
-        document.getElementById("health-bar").style.width = Math.max(0, player.hp) + "%";
-    }
-
-    function startGame() {
+    document.getElementById("start-btn").onclick = () => {
         initAudio();
-        score=0; level=1; ammo=12; killCount=0; player.hp=100;
-        zombies=[]; bullets=[]; items=[]; boss=null; isPaused=false; gameRunning=true;
-        document.getElementById("menu-screen").style.display="none";
-        document.getElementById("modal-screen").style.display="none";
-        document.getElementById("game-ui").style.display="block";
-        updateHUD(); requestAnimationFrame(loop);
-    }
-
-    function togglePause() {
-        if(!gameRunning) return;
-        isPaused = !isPaused;
-        const modal = document.getElementById("modal-screen");
-        if(isPaused) {
-            modal.style.display="flex"; document.getElementById("modal-title").innerText="PAUSA";
-            document.getElementById("modal-btn").innerText="CONTINUAR";
-        } else {
-            modal.style.display="none"; requestAnimationFrame(loop);
-        }
-    }
-
-    function gameOver() {
-        gameRunning=false;
-        const modal = document.getElementById("modal-screen");
-        modal.style.display="flex"; document.getElementById("modal-title").innerText="FIN DEL JUEGO";
-        document.getElementById("modal-score").innerText="PUNTOS: "+score;
-        document.getElementById("modal-btn").innerText="REINICIAR";
-    }
-
-    function loop() { if(gameRunning && !isPaused) { update(); draw(); requestAnimationFrame(loop); } }
-
-    // BOTONES
-    document.getElementById("start-btn").onclick = startGame;
-    document.getElementById("pause-btn").onclick = togglePause;
-    document.getElementById("modal-btn").onclick = () => {
-        if(document.getElementById("modal-btn").innerText === "REINICIAR") startGame();
-        else togglePause();
+        document.getElementById("menu-screen").style.display = "none";
+        document.getElementById("game-ui").style.display = "block";
+        gameRunning = true;
+        setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.1}); }, 1000);
+        setInterval(() => items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}), 8000);
+        loop();
     };
-
-    // SPAWNERS
-    setInterval(() => { if(gameRunning && !isPaused && !boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
-    setInterval(() => { if(gameRunning && !isPaused) items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}); }, 8000);
 });
