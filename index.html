@@ -3,60 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Biohazard</title>
+    <title>Ciudad Z: PÁNICO</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="bg-texture"></div>
-    <div class="vignette-cold"></div>
-
-    <div id="menu-screen" class="menu-overlay">
+    <div class="noise-overlay"></div> <div class="blood-vignette"></div> <div id="menu-screen" class="menu-overlay">
         
-        <div class="side-decor left-z">
+        <div class="demon-shadow left-demon">
             <img src="imagenes/zombie.png" alt="">
         </div>
-        <div class="side-decor right-z">
+        <div class="demon-shadow right-demon">
             <img src="imagenes/zombie.png" alt="">
         </div>
 
-        <div class="title-block">
-            <h1>CIUDAD <span class="accent-blue">Z</span></h1>
-            <div class="subtitle-line">PROYECTO: SUPERVIVENCIA</div>
+        <div class="boss-glitch-container">
+            <img src="imagenes/boss.png" alt="DEATH" class="boss-terror">
         </div>
-
-        <div class="boss-showcase">
-            <img src="imagenes/boss.png" alt="CLINICAL BOSS" class="boss-img-cold">
-        </div>
-
-        <div class="status-panel">
-            <p>ESTADO DEL SUJETO: <span style="color:#4a90e2">NO INFECTADO</span></p>
-            <p>MEJOR REGISTRO: <span id="menu-highscore">0</span></p>
-        </div>
-
-        <button id="start-btn">INICIAR PROTOCOLO</button>
         
-        <div class="footer-version">V10.0 COLD STORAGE</div>
+        <div class="terror-title-box">
+            <h1 class="glitch-text" data-text="CIUDAD Z">CIUDAD Z</h1>
+            <p class="warning-text">⚠️ INFECCIÓN CRÍTICA ⚠️</p>
+        </div>
+
+        <button id="start-btn">SOBREVIVIR</button>
+        
+        <div class="footer-warning">NO APAGUES LA LUZ</div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
-        <div class="top-left">
-            <div class="hud-row score-row">
-                <span class="hud-label">SCORE</span> <span id="score">0</span>
-            </div>
-            <div class="hud-row ammo-row">
-                <span class="hud-label">AMMO</span> <span id="ammo">12</span>
-            </div>
+        <div class="top-bar">
+            <div class="hud-stat red-pulse">💀 <span id="score">0</span></div>
+            <div class="hud-stat">🛑 <span id="ammo">12</span></div>
         </div>
-        
-        <div class="top-right">
-            <div class="health-label">VITALS</div>
-            <div class="health-bar-frame">
-                <div id="health-bar"></div>
-            </div>
+        <div class="hp-container">
+            <div id="health-bar"></div>
         </div>
-        
-        <p id="log">Área contaminada. Proceda con cautela.</p>
+        <p id="log">CORRE...</p>
     </div>
 
     <div id="touch-zone"></div>
