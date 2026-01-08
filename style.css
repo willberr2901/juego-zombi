@@ -1,105 +1,89 @@
-/* style.css - DISEÑO PRO ZOMBIE */
+/* style.css - ADAPTABLE PC/MÓVIL */
 body {
     margin: 0; padding: 0;
-    background: #050505; /* Casi negro */
+    background: #050505;
     color: white;
     font-family: 'Courier New', monospace;
     overflow: hidden;
     touch-action: none;
     user-select: none;
+    cursor: crosshair; /* Cursor de mira en PC */
 }
 
 /* MENÚ TENEBROSO */
 .menu-overlay {
     position: absolute; inset: 0;
-    background: radial-gradient(circle, rgba(20,0,0,0.9), rgba(0,0,0,1));
+    background: radial-gradient(circle, rgba(20,0,0,0.95), #000);
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    z-index: 50;
-    border: 5px solid #300;
+    z-index: 50; border: 5px solid #400;
 }
 
-/* Imagen del Boss flotando */
 .menu-boss-img {
-    width: 120px; height: 120px;
-    animation: float 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.5));
-    margin-bottom: -10px;
+    width: 140px; height: 140px;
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6));
 }
-
-@keyframes float { 0% {transform: translateY(0px);} 50% {transform: translateY(-15px);} 100% {transform: translateY(0px);} }
+@keyframes float { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-15px);} }
 
 .menu-overlay h1 {
-    font-size: 55px; color: #c0392b;
-    text-shadow: 0 0 10px #ff0000;
-    margin: 5px 0; letter-spacing: 5px;
-    font-weight: 900;
+    font-size: 60px; color: #c0392b;
+    text-shadow: 0 0 15px #ff0000;
+    margin: 10px 0; font-weight: 900;
 }
 
-#menu-subtitle { color: #7f8c8d; letter-spacing: 2px; font-size: 14px; margin-bottom: 20px; }
-
-/* CUADRO DE ACTUALIZACIONES */
+/* CUADRO DE ACTUALIZACIONES PRO */
 .update-log {
-    background: rgba(255, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.7);
     border: 1px solid #c0392b;
-    padding: 15px; border-radius: 5px;
-    width: 280px; text-align: left;
-    margin-bottom: 20px;
-    box-shadow: 0 0 20px rgba(192, 57, 43, 0.2);
+    padding: 15px; border-radius: 8px;
+    width: 300px; text-align: left;
+    margin-bottom: 25px;
+    box-shadow: 0 0 15px rgba(192, 57, 43, 0.3);
 }
-.update-log h3 { color: #f1c40f; margin: 0 0 10px 0; font-size: 16px; border-bottom: 1px solid #555; }
-.update-log ul { padding-left: 20px; margin: 0; font-size: 13px; color: #bdc3c7; }
+.update-log h3 { color: #f39c12; margin: 0 0 10px 0; border-bottom: 1px solid #555; font-size: 16px; }
+.update-log ul { padding-left: 20px; margin: 0; color: #bdc3c7; font-size: 13px; }
 .update-log li { margin-bottom: 5px; }
 
 #start-btn {
-    padding: 15px 60px; font-size: 24px;
-    background: linear-gradient(to bottom, #c0392b, #922b21);
-    color: white; border: 2px solid #e74c3c; border-radius: 5px;
+    padding: 15px 50px; font-size: 26px;
+    background: #c0392b; color: white;
+    border: 2px solid #e74c3c; border-radius: 5px;
     cursor: pointer; font-weight: bold;
-    box-shadow: 0 0 15px #c0392b;
-    transition: transform 0.1s;
+    box-shadow: 0 0 20px #c0392b;
 }
 #start-btn:active { transform: scale(0.95); }
 
-/* HUD DE JUEGO */
+/* HUD */
 .ui-container { position: absolute; top: 10px; left: 10px; z-index: 10; width: 95%; pointer-events: none; }
-.top-bar { display: flex; gap: 10px; }
-.score-box, .level-box { background: rgba(0,0,0,0.8); padding: 5px 12px; border: 1px solid #555; border-radius: 4px; font-weight: bold; }
+.top-bar { display: flex; gap: 15px; }
+.score-box, .level-box { background: rgba(0,0,0,0.8); padding: 8px 15px; border: 1px solid #555; border-radius: 4px; font-weight: bold; font-size: 18px;}
 .score-box { color: #f1c40f; } .level-box { color: #e74c3c; }
-.stats { margin-top: 5px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 4px; width: fit-content; border-left: 3px solid #e74c3c; }
+.stats { margin-top: 10px; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 4px; border-left: 4px solid #e74c3c; width: fit-content; }
 
-/* JOYSTICK REAL */
+/* --- CONTROL MÓVIL (JOYSTICK) --- */
 #mobile-controls { position: absolute; inset: 0; z-index: 40; pointer-events: none; }
-
-#joystick-container {
-    position: absolute; bottom: 40px; left: 30px;
-    width: 140px; height: 140px;
-    pointer-events: auto; /* IMPORTANTE: Permite tocar */
-}
-
+#joystick-container { position: absolute; bottom: 50px; left: 50px; width: 140px; height: 140px; pointer-events: auto; }
 #joystick-base {
     width: 100%; height: 100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.05), rgba(0,0,0,0.8));
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%; position: relative;
+    background: radial-gradient(circle, rgba(255,255,255,0.1), rgba(0,0,0,0.8));
+    border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; position: relative;
 }
-
 #joystick-stick {
     width: 60px; height: 60px;
-    background: radial-gradient(circle, #95a5a6, #2c3e50);
-    border-radius: 50%;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.8);
-    border: 1px solid #7f8c8d;
+    background: radial-gradient(circle, #ecf0f1, #7f8c8d);
+    border-radius: 50%; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); box-shadow: 0 5px 10px black;
 }
-
-/* BOTÓN DE FUEGO */
-.action-btn { position: absolute; bottom: 50px; right: 40px; pointer-events: auto; }
+.action-btn { position: absolute; bottom: 50px; right: 50px; pointer-events: auto; }
 #btn-fire {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: rgba(192, 57, 43, 0.6);
-    border: 3px solid #e74c3c; color: white; font-size: 30px;
-    outline: none; box-shadow: 0 0 10px #c0392b;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(192, 57, 43, 0.6); border: 3px solid #e74c3c;
+    color: white; font-size: 35px; outline: none;
 }
-#btn-fire:active { background: rgba(231, 76, 60, 0.9); transform: scale(0.95); }
+#btn-fire:active { background: rgba(231, 76, 60, 0.9); }
+
+/* --- ⚠️ REGLA INTELIGENTE PARA PC --- */
+/* Si la pantalla es ancha (Computador), OCULTA los controles móviles */
+@media (min-width: 1024px) {
+    #mobile-controls { display: none !important; }
+}
