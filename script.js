@@ -1,4 +1,4 @@
-/* script.js - V15.0 ESTABLE Y SIN ERRORES */
+/* script.js - V16.0 READY */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // --- AUDIO (SOLO SFX) ---
     let audioCtx;
     function initAudio() {
         if (!audioCtx) {
@@ -32,20 +31,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ASSETS ---
     const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
     const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
     const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
     const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png';
     const imgBoss = new Image(); imgBoss.src = 'imagenes/boss.png';
 
-    // --- VARIABLES ---
     let gameRunning = false;
     let score = 0, level = 1, ammo = 12;
     let zombies = [], bullets = [], items = [], boss = null;
     const player = { x: canvas.width/2, y: canvas.height/2, hp: 100, speed: 5 };
 
-    // --- CONTROLES MÓVIL ---
     const touchZone = document.getElementById("touch-zone");
     const joyWrapper = document.getElementById("joystick-wrapper");
     const joyStick = document.getElementById("joystick-stick");
@@ -71,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
         touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
     }
 
-    // --- CONTROLES PC ---
     const keys = {};
     window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
     window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
@@ -89,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById("btn-fire").addEventListener("touchstart", (e)=>{e.preventDefault(); shoot();});
 
-    // --- LÓGICA JUEGO ---
     function update() {
         let dx = joyX, dy = joyY;
         if(!dragging) {
@@ -108,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(Math.hypot(b.x-zombies[j].x, b.y-zombies[j].y) < 30) {
                     zombies.splice(j,1); bullets.splice(i,1);
                     score+=10; updateHUD();
-                    if(score % 500 === 0 && !boss) spawnBoss();
+                    if(score % 500 === 0 && !boss) boss = { x: canvas.width/2, y: -100, hp: 50, maxHp: 50 };
                     break;
                 }
             }
@@ -140,12 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if(player.hp <= 0) location.reload();
     }
 
-    function spawnBoss() { boss = { x: canvas.width/2, y: -100, hp: 50, maxHp: 50 }; }
-
     function updateHUD() {
         document.getElementById("score").innerText = score;
         document.getElementById("ammo").innerText = ammo;
-        document.getElementById("health").innerText = Math.floor(player.hp);
+        document.getElementById("health-bar").style.width = player.hp + "%";
     }
 
     function draw() {
@@ -157,7 +149,11 @@ document.addEventListener('DOMContentLoaded', () => {
         items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
         if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
         zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
-        if(boss && imgBoss.complete) { ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); }
+        if(boss && imgBoss.complete) { 
+            ctx.shadowBlur = 20; ctx.shadowColor = "red";
+            ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); 
+            ctx.shadowBlur = 0;
+        }
         bullets.forEach(b => { ctx.fillStyle='yellow'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill(); });
     }
 
