@@ -3,51 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Neón Mortal</title>
+    <title>Ciudad Z: V19</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="bg-grid"></div>
+    <div class="grid-bg"></div>
     <div id="vignette"></div>
 
     <div id="menu-screen" class="menu-overlay">
         
-        <div class="neon-zombie left-z">
+        <div class="neon-decor left-decor">
             <img src="imagenes/zombie.png" alt="">
         </div>
-        <div class="neon-zombie right-z">
+        <div class="neon-decor right-decor">
             <img src="imagenes/zombie.png" alt="">
         </div>
 
-        <div class="interface-grid">
+        <div class="main-layout">
             
-            <div class="info-box left-box">
-                <h3 class="box-title">🛠️ PARCHE V18.0</h3>
-                <ul class="update-list">
-                    <li>[+] Zombis Neón</li>
-                    <li>[+] Interfaz Sangrienta</li>
-                    <li>[+] IA Mejorada</li>
+            <div class="hud-panel left-panel">
+                <h3 class="panel-header">📂 ACTUALIZACIÓN V19</h3>
+                <ul class="patch-notes">
+                    <li class="buff">[MEJORA] Visión Nocturna</li>
+                    <li class="buff">[MEJORA] Daño de Armas</li>
+                    <li class="nerf">[PELIGRO] Zombis Rápidos</li>
                 </ul>
+                <div class="system-msg">ESTADO: <span class="blink">INFECTADO</span></div>
             </div>
 
-            <div class="center-content">
-                <div class="boss-frame">
-                    <img src="imagenes/boss.png" alt="BOSS" class="boss-glow">
+            <div class="center-stage">
+                <div class="boss-hologram">
+                    <img src="imagenes/boss.png" alt="BOSS">
                 </div>
                 
-                <h1 class="neon-title">CIUDAD <span class="blink-red">Z</span></h1>
+                <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
                 
-                <button id="start-btn">ENTRAR A LA ZONA</button>
+                <button id="start-btn">SOBREVIVIR</button>
             </div>
 
-            <div class="info-box right-box">
-                <h3 class="box-title">⚠️ REPORTE DE MISIÓN</h3>
-                <p class="story-text">
-                    "Año 2026. El virus Z ha consumido la ciudad. Tu helicóptero cayó en la zona cero."
-                </p>
-                <div class="mission-goal">
-                    OBJETIVO: SOBREVIVIR
+            <div class="hud-panel right-panel">
+                <h3 class="panel-header">📝 REPORTE DE MISIÓN</h3>
+                <div class="lore-content">
+                    <p>"El helicóptero de extracción ha sido derribado. Estás solo en la zona cero."</p>
+                    <hr>
+                    <p class="objective">OBJETIVO PRINCIPAL:</p>
+                    <p class="objective-desc">RESISTIR LAS OLEADAS</p>
                 </div>
             </div>
 
@@ -55,25 +56,21 @@
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
-        <div class="hud-top">
-            <div class="hud-item">💀 <span id="score">0</span></div>
-            <div class="hud-item">NIV: <span id="level">1</span></div>
-            <div class="hud-item">📦 <span id="ammo">12</span></div>
+        <div class="top-bar">
+            <div class="stat">💀 <span id="score">0</span></div>
+            <div class="stat">NIV: <span id="level">1</span></div>
+            <div class="stat">📦 <span id="ammo">12</span></div>
             <button id="pause-btn">II</button>
         </div>
-        <div class="health-display">
+        <div class="health-wrap">
             <div class="hp-icon">✚</div>
-            <div class="hp-bar-bg"><div id="health-bar"></div></div>
+            <div class="hp-border"><div id="health-bar"></div></div>
         </div>
     </div>
 
     <div id="touch-zone"></div>
-    <div id="joystick-wrapper" style="display:none;">
-        <div id="joystick-stick"></div>
-    </div>
-    <div class="action-btn">
-        <button id="btn-fire">🔥</button>
-    </div>
+    <div id="joystick-wrapper" style="display:none;"><div id="joystick-stick"></div></div>
+    <div class="action-btn"><button id="btn-fire">🔥</button></div>
 
     <canvas id="gameCanvas"></canvas>
     <script src="script.js"></script>
