@@ -3,66 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Bio-Terror</title>
+    <title>Ciudad Z: Cuarentena</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="scanlines"></div> <div class="blood-bg"></div> <div id="menu-screen" class="menu-overlay">
+    <div class="fog-layer"></div>
+    <div class="vignette-overlay"></div>
+
+    <div id="menu-screen" class="menu-overlay">
         
-        <div class="cyber-panel left-panel">
-            <h3 class="glitch-header">ERROR_LOG_V16</h3>
-            <ul class="data-list">
-                <li class="plus"><span>[+]</span> Menú Bio-Terror</li>
-                <li class="plus"><span>[+]</span> Iluminación Roja</li>
-                <li class="minus"><span>[-]</span> Errores Visuales</li>
-            </ul>
-            <div class="warning-box">
-                ⚠️ NIVEL DE AMENAZA: <span class="blink">EXTREMO</span>
-            </div>
+        <div class="hazard-line top-line">
+            <span>CAUTION</span> <span>BIOHAZARD</span> <span>CAUTION</span> <span>BIOHAZARD</span>
         </div>
 
-        <div class="center-stage">
-            <div class="boss-glow-fx">
-                <img src="imagenes/boss.png" alt="BOSS" class="boss-img">
+        <div class="main-interface">
+            
+            <div class="glass-panel left-panel">
+                <div class="panel-header">📝 REPORTE V17</div>
+                <div class="panel-content">
+                    <p class="status-item">☣️ VIRUS: <span class="red">ACTIVO</span></p>
+                    <p class="status-item">🛡️ DEFENSA: <span class="red">CRÍTICA</span></p>
+                    <hr>
+                    <ul class="changelog">
+                        <li>[+] Interfaz de Cristal</li>
+                        <li>[+] Ambiente de Humo</li>
+                        <li>[+] Cintas de Peligro</li>
+                    </ul>
+                </div>
             </div>
-            
-            <h1 class="toxic-title">CIUDAD <span class="bleed">Z</span></h1>
-            
-            <button id="start-btn">INICIAR CAOS</button>
+
+            <div class="center-stage">
+                <div class="boss-circle">
+                    <img src="imagenes/boss.png" alt="BOSS" class="boss-img">
+                </div>
+                
+                <h1 class="atomic-title">CIUDAD <span class="z-mark">Z</span></h1>
+                
+                <button id="start-btn">
+                    <span class="btn-text">INICIAR PROTOCOLO</span>
+                    <span class="btn-warning">⚠️ NO HAY RETORNO</span>
+                </button>
+            </div>
+
+            <div class="glass-panel right-panel">
+                <div class="panel-header">📂 MISION_404</div>
+                <div class="panel-content">
+                    <p class="lore">
+                        "La contención ha fallado en el Sector 7. Eres nuestra última línea de defensa."
+                    </p>
+                    <div class="objective-box">
+                        <span class="obj-title">OBJETIVO:</span>
+                        <span class="obj-desc">ELIMINAR AL PACIENTE CERO</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="cyber-panel right-panel">
-            <h3 class="glitch-header">CONFIDENCIAL</h3>
-            <p class="lore-text">
-                "No queda nadie. Solo tú y ellos. La cura se ha perdido."
-            </p>
-            <div class="objective-display">
-                <p>OBJETIVO PRIMARIO:</p>
-                <span>MATAR AL PACIENTE CERO</span>
-            </div>
+        <div class="hazard-line bottom-line">
+            <span>QUARANTINE ZONE</span> <span>AUTHORIZED PERSONNEL ONLY</span>
         </div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
-        <div class="hud-top-bar">
-            <div class="hud-slot">💀 <span id="score">0</span></div>
-            <div class="hud-slot">NIV: <span id="level">1</span></div>
-            <div class="hud-slot">🛑 <span id="ammo">12</span></div>
+        <div class="hud-top">
+            <div class="hud-box">💀 <span id="score">0</span></div>
+            <div class="hud-box">NIV: <span id="level">1</span></div>
+            <div class="hud-box">🔫 <span id="ammo">12</span></div>
+            <button id="pause-btn">||</button>
         </div>
-        <div class="health-system">
-            <div class="hp-border"><div id="health-bar"></div></div>
+        <div class="health-area">
+            <div class="hp-icon">✚</div>
+            <div class="hp-bar-frame"><div id="health-bar"></div></div>
         </div>
-        <button id="pause-btn" class="mini-btn">II</button>
     </div>
 
     <div id="touch-zone"></div>
-    <div id="joystick-wrapper" style="display:none;">
-        <div id="joystick-stick"></div>
-    </div>
-    <div class="action-btn">
-        <button id="btn-fire">🔥</button>
-    </div>
+    <div id="joystick-wrapper" style="display:none;"><div id="joystick-stick"></div></div>
+    <div class="action-btn"><button id="btn-fire"></button></div>
 
     <canvas id="gameCanvas"></canvas>
     <script src="script.js"></script>
