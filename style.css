@@ -1,46 +1,35 @@
-/* style.css - V32.0 VISIBILIDAD FORZADA */
+/* style.css - V33.0 RAW */
 body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Courier New', monospace; overflow: hidden; touch-action: none; user-select: none; }
 
-/* CAPAS Y Z-INDEX (CRÍTICO) */
+/* CANVAS ES LA BASE */
 #gameCanvas {
     position: absolute; inset: 0;
-    z-index: 1; /* El juego está en la capa 1 */
-    background: #111; /* Color de respaldo si no carga nada */
+    z-index: 0; /* Al fondo */
+    background: #222; /* Gris si no carga nada */
+    display: block;
 }
 
-#vignette {
-    position: absolute; inset: 0; pointer-events: none;
-    z-index: 5; /* Efectos encima del juego */
-    background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 100%);
-}
-
-#blood-screen { position: absolute; inset: 0; pointer-events: none; z-index: 6; box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: box-shadow 0.1s; }
-#pulse-wave { position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(50, 255, 50, 0.6); transform: translate(-50%, -50%); pointer-events: none; z-index: 4; box-shadow: 0 0 50px #0f0; }
+/* EFECTOS ENCIMA */
+#vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle, transparent 30%, #000 100%); }
+#blood-screen { position: absolute; inset: 0; pointer-events: none; z-index: 40; box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: box-shadow 0.1s; }
+#pulse-wave { position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(50, 255, 50, 0.6); transform: translate(-50%, -50%); pointer-events: none; z-index: 30; box-shadow: 0 0 50px #0f0; }
 .pulse-active { animation: shockwave 0.5s ease-out; }
 @keyframes shockwave { 0% { width: 0; height: 0; opacity: 0.8; } 100% { width: 200vw; height: 200vw; opacity: 0; } }
 
-/* MENÚ (Capa 100) */
-.menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.95); }
+/* MENU */
+.menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); }
+.main-layout { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1400px; padding: 0 20px; margin-bottom: 40px; }
 .neon-decor { position: absolute; bottom: 0; width: 350px; z-index: 10; pointer-events: none; opacity: 0.9; filter: brightness(0) drop-shadow(0 -5px 15px #ff0000); }
 .left-decor { left: -60px; transform: scaleX(-1); } .right-decor { right: -60px; }
 
-.main-layout { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 40px; width: 100%; max-width: 1400px; padding: 0 20px; margin-bottom: 40px; }
 .hud-panel { width: 260px; height: 380px; background: rgba(10, 0, 0, 0.85); border: 1px solid #700; border-top: 4px solid #f00; padding: 20px; border-radius: 4px; box-shadow: 0 0 25px rgba(150, 0, 0, 0.3); display: flex; flex-direction: column; }
 .panel-header { margin: 0 0 15px 0; color: #f00; font-size: 16px; border-bottom: 2px solid #300; padding-bottom: 8px; text-align: center; text-shadow: 0 0 5px #f00; }
-
-/* Historial */
-.scroll-box { height: 300px; overflow-y: auto; padding-right: 5px; scrollbar-width: thin; scrollbar-color: #f00 #111; }
-.history-list { list-style: none; padding: 0; margin: 0; font-size: 11px; color: #ccc; }
+.history-list { list-style: none; padding: 0; font-size: 11px; color: #ccc; }
 .history-list li { margin-bottom: 4px; padding-left: 5px; }
 .ver-header { color: #f1c40f; margin-top: 10px; font-weight: bold; border-bottom: 1px dashed #555; }
 .fix { color: #ff0; border-left: 2px solid #ff0; } .buff { color: #4f4; border-left: 2px solid #4f4; } .del { color: #888; border-left: 2px solid #888; text-decoration: line-through; }
 
-.intel-grid { font-size: 12px; display: flex; flex-direction: column; gap: 10px; }
-.intel-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #333; }
-.val { color: #fff; font-weight: bold; } .red { color: #f00; }
-.objective-box { text-align: center; background: rgba(50,0,0,0.4); padding: 10px; border: 1px solid #500; margin-top: 20px; }
-.obj-main { font-size: 18px; color: #fff; font-weight: bold; margin: 0; text-shadow: 0 0 5px #f00; }
-
+/* CENTRO Y BOTONES */
 .center-stage { text-align: center; min-width: 350px; }
 .boss-hologram img { width: 180px; filter: drop-shadow(0 0 40px #f00) contrast(1.2); animation: float 4s infinite ease-in-out; }
 @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
@@ -50,11 +39,17 @@ body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Couri
 #start-btn:hover { background: #f00; color: #000; box-shadow: 0 0 50px #f00; }
 .btn-sub { font-size: 10px; margin-top: 5px; opacity: 0.8; font-weight: normal; }
 
+.intel-grid { font-size: 12px; display: flex; flex-direction: column; gap: 10px; }
+.intel-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #333; }
+.val { color: #fff; font-weight: bold; } .red { color: #f00; }
+.objective-box { text-align: center; background: rgba(50,0,0,0.4); padding: 10px; border: 1px solid #500; margin-top: 20px; }
+.obj-main { font-size: 18px; color: #fff; font-weight: bold; margin: 0; text-shadow: 0 0 5px #f00; }
+
 .bottom-ticker { position: absolute; bottom: 0; left: 0; width: 100%; height: 35px; background: #100; border-top: 2px solid #f00; display: flex; align-items: center; overflow: hidden; white-space: nowrap; z-index: 150; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
 .ticker-text { color: #f00; font-weight: bold; font-size: 16px; animation: ticker 25s linear infinite; padding-left: 100%; }
 @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-150%); } }
 
-/* HUD JUEGO (Capa 50) */
+/* HUD JUEGO */
 .ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
 .combat-panel { position: absolute; background: rgba(0, 0, 0, 0.9); border: 2px solid #444; border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px #000; backdrop-filter: blur(5px); }
 .health-panel { top: 20px; left: 20px; border-left: 5px solid #e74c3c; width: 300px; }
@@ -79,7 +74,7 @@ body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Couri
 .banner-active { transform: scaleX(1); }
 .banner-green { background: rgba(46, 204, 113, 0.8) !important; border-color: #fff; }
 
-/* CONTROLES (Capa 60) */
+/* CONTROLES */
 #touch-zone { position: absolute; inset: 0; z-index: 60; }
 #joystick-wrapper { position: absolute; width: 120px; height: 120px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: none; z-index: 65; }
 #joystick-stick { position: absolute; width: 50px; height: 50px; background: rgba(255,255,255,0.6); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
