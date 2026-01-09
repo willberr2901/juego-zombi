@@ -1,9 +1,10 @@
-/* script.js - V28.1 CORRECCIÓN NOMBRE IMAGEN (asfalto.png) */
+/* script.js - V30.0 CORRECCIÓN FINAL (asfalto.png) */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     
+    // Ajustar pantalla
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+    // Audio
     let audioCtx;
     function initAudio() {
         if (!audioCtx) {
@@ -39,9 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- AQUÍ ESTÁ EL CAMBIO: Apunta a 'asfalto.png' ---
-    const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png'; 
-    
+    // --- CARGA DE IMÁGENES ---
+    // Aquí está la corrección: asfalto.png
+    const imgGround = new Image(); 
+    imgGround.src = 'imagenes/asfalto.png'; 
+
     const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
     const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
     const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
@@ -52,12 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let zombies = [], bullets = [], items = [], boss = null;
     const player = { x: canvas.width/2, y: canvas.height/2, hp: 100, maxHp: 100, speed: 5 };
 
+    // Mouse PC
     let mouseX = 0, mouseY = 0;
     window.addEventListener('mousemove', e => {
         const rect = canvas.getBoundingClientRect();
         mouseX = e.clientX - rect.left; mouseY = e.clientY - rect.top;
     });
 
+    // Lógica Juego
     function getNearestZombie() {
         let nearest = null, minDist = Infinity;
         zombies.forEach(z => {
@@ -158,18 +164,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if(player.hp <= 0) location.reload();
     }
 
+    // --- FUNCIÓN DE DIBUJO ROBUSTA ---
     function draw() {
-        if(imgGround.complete) {
-            // Dibuja la imagen estirada
+        // 1. SIEMPRE pintar un fondo base gris oscuro (Seguridad)
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 2. Intentar dibujar la imagen encima
+        if (imgGround.complete && imgGround.naturalWidth > 0) {
             ctx.drawImage(imgGround, 0, 0, canvas.width, canvas.height);
-            
-            // Capa de oscuridad (Filtro)
-            ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            // Filtro oscuro para ambiente
+            ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; 
             ctx.fillRect(0,0,canvas.width,canvas.height);
         } else {
-            // Fondo de respaldo si falla la imagen
-            ctx.fillStyle='#111'; 
-            ctx.fillRect(0,0,canvas.width,canvas.height);
+            // Si la imagen falla, dibujamos la rejilla táctica
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = 0; x < canvas.width; x += 100) { ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
+            for (let y = 0; y < canvas.height; y += 100) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
+            ctx.stroke();
         }
 
         items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
