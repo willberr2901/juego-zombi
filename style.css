@@ -1,97 +1,81 @@
-/* style.css - V35.0 PRO EDITION */
-body { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Arial', sans-serif; overflow: hidden; user-select: none; }
+/* style.css - V36.0 MASTER */
+body { margin: 0; padding: 0; background: #111; color: #fff; font-family: 'Arial Black', sans-serif; overflow: hidden; user-select: none; }
 
-/* EFECTOS GLOBALES */
-#vignette { position: absolute; inset: 0; pointer-events: none; z-index: 5; background: radial-gradient(circle, transparent 50%, #000 100%); }
-#blood-screen { position: absolute; inset: 0; pointer-events: none; z-index: 40; box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: box-shadow 0.1s; }
-#pulse-wave { position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(0, 255, 0, 0.4); transform: translate(-50%, -50%); pointer-events: none; z-index: 30; }
-.pulse-active { animation: shockwave 0.5s ease-out; }
-@keyframes shockwave { 0% { width: 0; opacity: 1; } 100% { width: 200vw; height: 200vw; opacity: 0; } }
+/* CANVAS (FONDO) */
+#gameCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: #2c3e50; /* Color gris por si falla la imagen */ }
 
-/* --- MENÚ PRINCIPAL (V21) --- */
-.menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.95); flex-direction: column; }
-.main-layout { display: flex; gap: 40px; align-items: center; width: 100%; max-width: 1200px; padding: 20px; }
-.hud-panel { width: 250px; background: rgba(20,20,20,0.9); border: 1px solid #444; border-top: 3px solid #c00; padding: 20px; border-radius: 5px; }
-.panel-header { color: #c00; border-bottom: 1px solid #444; font-weight: bold; margin-bottom: 10px; }
-.patch-notes { list-style: none; padding: 0; color: #aaa; font-size: 12px; }
-.patch-notes li { margin-bottom: 5px; } .buff { color: #0f0; }
-.center-stage { text-align: center; }
-.boss-hologram img { width: 180px; filter: drop-shadow(0 0 30px #c00); animation: float 3s infinite ease-in-out; }
-@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
-.main-title { font-size: 60px; font-weight: 900; margin: 10px 0; } .blood-text { color: #c00; text-shadow: 0 0 20px #c00; }
-#start-btn { padding: 15px 40px; font-size: 20px; background: #c00; color: #fff; border: none; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px #c00; }
-#start-btn:hover { background: #fff; color: #c00; }
-.intro-lore { font-size: 11px; color: #ccc; font-style: italic; margin-bottom: 10px; }
-.obj-main { font-size: 18px; font-weight: bold; color: #fff; }
-.neon-decor { position: absolute; bottom: 0; width: 300px; z-index: -1; opacity: 0.6; filter: brightness(0) drop-shadow(0 0 10px #c00); }
-.left-decor { left: -50px; transform: scaleX(-1); } .right-decor { right: -50px; }
+/* EFECTOS */
+#damage-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 20; box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: 0.1s; }
+#flash-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 21; background: #fff; opacity: 0; transition: 0.1s; }
 
-/* --- HUD DE JUEGO PRO --- */
-.ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+/* --- MENÚ INICIO --- */
+.menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.95); }
+.decor-zombie { position: absolute; bottom: 0; width: 300px; opacity: 0.5; filter: drop-shadow(0 0 20px #f00); pointer-events: none; }
+.left-z { left: -50px; transform: scaleX(-1); } .right-z { right: -50px; }
 
-/* Tarjetas Generales */
-.hud-card {
-    position: absolute; background: rgba(0, 0, 0, 0.85);
-    border: 2px solid #555; border-radius: 8px; padding: 10px 15px;
-    display: flex; align-items: center; gap: 15px;
-    backdrop-filter: blur(5px); box-shadow: 0 5px 15px #000;
-}
+.menu-content { text-align: center; z-index: 10; width: 90%; max-width: 600px; }
+.game-title { font-size: 80px; margin: 0; text-shadow: 0 5px 0 #333; letter-spacing: -2px; }
+.red-z { color: #e74c3c; text-shadow: 0 0 30px #e74c3c; }
+.game-subtitle { font-size: 20px; color: #aaa; letter-spacing: 5px; margin-bottom: 30px; }
 
-/* Tarjeta Salud */
-.health-card { top: 20px; left: 20px; border-left: 5px solid #e74c3c; width: 320px; }
-.icon-pulse { font-size: 28px; animation: beat 1s infinite; }
-@keyframes beat { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
-.bar-container { flex-grow: 1; }
-.bar-label { font-size: 10px; color: #aaa; margin-bottom: 3px; font-weight: bold; letter-spacing: 1px; }
-.hp-track { width: 100%; height: 18px; background: #222; border: 1px solid #444; border-radius: 2px; overflow: hidden; }
-#health-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #c0392b, #e74c3c); transition: width 0.2s; }
-.big-text { font-size: 24px; font-weight: 900; }
+.mission-brief { background: rgba(30,30,30,0.9); border: 2px solid #555; padding: 20px; margin-bottom: 30px; border-radius: 10px; }
+.mission-brief h3 { color: #f1c40f; margin-top: 0; border-bottom: 1px solid #555; padding-bottom: 10px; }
+.mission-brief p { font-size: 14px; color: #ccc; font-weight: normal; font-family: monospace; }
+.gold { color: #f1c40f; font-weight: bold; }
 
-/* Tarjeta Estadísticas */
-.stats-card { top: 20px; right: 20px; flex-direction: column; align-items: flex-end; border-right: 5px solid #f1c40f; padding: 10px 20px; gap: 5px; }
-.stat-line { display: flex; align-items: center; gap: 10px; }
-.ammo-num { font-size: 32px; font-weight: 900; color: #f1c40f; }
-.score-num { font-size: 20px; font-weight: bold; color: #fff; }
-.label { font-size: 10px; color: #aaa; font-weight: bold; }
-.stat-separator { width: 100%; height: 1px; background: #444; margin: 5px 0; }
-.level-indicator { font-size: 12px; color: #3498db; font-weight: bold; letter-spacing: 2px; margin-top: 5px; }
+.big-btn { padding: 20px 60px; font-size: 24px; background: #c0392b; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 900; box-shadow: 0 0 30px #c0392b; transition: 0.2s; }
+.big-btn:hover { transform: scale(1.05); background: #fff; color: #c0392b; }
 
-/* Barra de Jefe */
-.boss-card {
-    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-    width: 400px; background: rgba(0,0,0,0.9); border: 2px solid #8e44ad;
-    padding: 10px; display: flex; align-items: center; gap: 10px; border-radius: 5px;
-}
-.boss-icon { font-size: 24px; }
-.boss-bar-track { flex-grow: 1; height: 20px; background: #222; position: relative; }
-#boss-health-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #8e44ad, #9b59b6); transition: width 0.2s; }
-.boss-name { position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 10px; font-weight: bold; line-height: 20px; text-shadow: 1px 1px #000; }
+.ticker-bar { position: absolute; bottom: 0; width: 100%; background: #c0392b; color: white; white-space: nowrap; overflow: hidden; padding: 5px 0; }
+.ticker-bar p { animation: ticker 20s linear infinite; margin: 0; font-size: 18px; }
+@keyframes ticker { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-/* Botón Pausa */
-#pause-btn { position: absolute; top: 140px; right: 20px; background: #333; color: #fff; border: 1px solid #777; padding: 8px; cursor: pointer; pointer-events: auto; border-radius: 4px; font-weight: bold; }
+/* --- HUD JUEGO --- */
+.ui-layer { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
 
-/* Alerta Gigante */
-.alert-overlay {
-    position: absolute; top: 40%; left: 0; width: 100%; text-align: center;
-    pointer-events: none; opacity: 0; transition: opacity 0.5s;
-    background: rgba(0,0,0,0.6); padding: 20px 0; border-top: 2px solid #fff; border-bottom: 2px solid #fff;
-}
-.alert-visible { opacity: 1; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-#alert-title { font-size: 40px; color: #f1c40f; margin: 0; text-shadow: 0 0 20px #f1c40f; }
-#alert-sub { font-size: 20px; color: #fff; margin: 5px 0; letter-spacing: 3px; }
+.hud-box { position: absolute; background: rgba(0,0,0,0.8); border: 2px solid #fff; padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
+
+/* Salud */
+.health-box { top: 20px; left: 20px; width: 300px; border-color: #e74c3c; }
+.icon { font-size: 30px; color: #e74c3c; }
+.bar-wrap { flex-grow: 1; height: 20px; background: #333; border: 1px solid #555; }
+.bar-fill { width: 100%; height: 100%; background: #e74c3c; transition: width 0.2s; }
+.value { font-size: 20px; width: 60px; text-align: right; }
+
+/* Munición */
+.stats-box { top: 20px; right: 20px; flex-direction: column; align-items: flex-end; border-color: #f1c40f; }
+.stat-row { display: flex; align-items: center; gap: 10px; }
+.stat-val { font-size: 30px; }
+.yellow { color: #f1c40f; } .white { color: #fff; }
+.stat-label { font-size: 10px; color: #aaa; }
+.sep { width: 100%; height: 1px; background: #555; margin: 5px 0; }
+.level-tag { font-size: 12px; color: #3498db; margin-top: 5px; }
+
+/* Barra Jefe */
+.boss-box { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); width: 50%; background: rgba(0,0,0,0.9); border: 3px solid #8e44ad; padding: 5px; display: flex; align-items: center; gap: 10px; }
+.boss-bar-wrap { flex-grow: 1; height: 25px; background: #222; position: relative; }
+.boss-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #8e44ad, #9b59b6); transition: width 0.2s; }
+.boss-name { position: absolute; top: 2px; left: 10px; font-size: 14px; text-shadow: 1px 1px #000; }
+
+/* Pausa */
+#pause-btn { position: absolute; top: 150px; right: 20px; pointer-events: auto; padding: 10px; background: #333; color: white; border: 1px solid white; cursor: pointer; font-weight: bold; }
+
+/* Alertas */
+.message-overlay { position: absolute; top: 40%; width: 100%; text-align: center; background: rgba(0,0,0,0.7); padding: 20px; transform: scaleY(0); transition: transform 0.3s; border-top: 5px solid #fff; border-bottom: 5px solid #fff; }
+.show-msg { transform: scaleY(1); }
+#msg-title { font-size: 50px; margin: 0; color: #f1c40f; text-shadow: 0 0 20px #f1c40f; }
+#msg-sub { font-size: 20px; letter-spacing: 5px; margin: 0; }
 
 /* Menú Pausa */
-.pause-box { background: #111; border: 2px solid #fff; padding: 30px; text-align: center; border-radius: 10px; box-shadow: 0 0 50px rgba(255,255,255,0.2); }
-.pause-title { color: #fff; font-size: 30px; margin-bottom: 20px; letter-spacing: 5px; }
-.menu-btn { display: block; width: 220px; padding: 12px; margin: 10px auto; background: #333; color: #fff; border: 1px solid #555; cursor: pointer; font-weight: bold; }
-.menu-btn:hover { background: #fff; color: #000; }
-.red-btn { border-color: #c00; color: #c00; } .red-btn:hover { background: #c00; color: #fff; }
+.pause-panel { background: #111; border: 2px solid white; padding: 40px; text-align: center; border-radius: 10px; }
+.menu-btn { display: block; width: 200px; padding: 15px; margin: 10px auto; background: #333; color: white; border: 1px solid #777; cursor: pointer; font-weight: bold; }
+.menu-btn:hover { background: white; color: black; }
+.red { border-color: #c00; color: #c00; } .red:hover { background: #c00; color: white; }
 
 /* Controles */
 #touch-zone { position: absolute; inset: 0; z-index: 60; }
-#joystick-wrapper { position: absolute; width: 120px; height: 120px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: none; z-index: 65; }
-#joystick-stick { position: absolute; width: 50px; height: 50px; background: rgba(255,255,255,0.6); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-.action-btn { position: absolute; bottom: 50px; right: 30px; z-index: 70; pointer-events: auto; }
-#btn-fire { width: 90px; height: 90px; border-radius: 50%; background: rgba(200, 0, 0, 0.5); border: 2px solid #fff; cursor: pointer; color: white; font-size: 35px; }
-@media (min-width: 1024px) { #touch-zone, .action-btn { display: none; } }
-@media (max-width: 900px) { .main-layout { flex-direction: column; } .boss-card { width: 90%; } }
+#joy-base { position: absolute; width: 120px; height: 120px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: none; z-index: 65; }
+#joy-stick { position: absolute; width: 50px; height: 50px; background: rgba(255,255,255,0.6); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#fire-btn-zone { position: absolute; bottom: 50px; right: 30px; z-index: 70; pointer-events: auto; }
+#fire-btn { width: 90px; height: 90px; border-radius: 50%; background: rgba(231, 76, 60, 0.5); border: 3px solid #fff; color: white; font-size: 40px; cursor: pointer; }
+@media (min-width: 1024px) { #touch-zone, #fire-btn-zone { display: none; } }
