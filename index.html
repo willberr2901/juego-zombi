@@ -3,45 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: V25 Final</title>
+    <title>Ciudad Z: V27 Historial</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="grid-bg"></div>
     <div id="vignette"></div>
-    <div id="blood-screen"></div> <div id="pulse-wave"></div> <div id="menu-screen" class="menu-overlay">
+    <div id="blood-screen"></div>
+    <div id="pulse-wave"></div>
+
+    <div id="menu-screen" class="menu-overlay">
         
-        <div class="neon-decor left-decor">
-            <img src="imagenes/zombie.png" alt="">
-        </div>
-        <div class="neon-decor right-decor">
-            <img src="imagenes/zombie.png" alt="">
-        </div>
+        <div class="neon-decor left-decor"><img src="imagenes/zombie.png" alt=""></div>
+        <div class="neon-decor right-decor"><img src="imagenes/zombie.png" alt=""></div>
 
         <div class="main-layout">
             
             <div class="hud-panel left-panel">
-                <h3 class="panel-header">📂 SISTEMA V25.0</h3>
-                <div class="data-section">
-                    <p class="section-title">>> NOVEDADES TÁCTICAS</p>
-                    <ul class="patch-notes">
-                        <li class="buff">[+] Suelo Texturizado Oscuro</li>
-                        <li class="buff">[+] Cinta de Alerta (Restaurada)</li>
-                        <li class="buff">[+] HUD de Combate Real</li>
-                        <li class="fix">[!] Puntería Corregida</li>
+                <h3 class="panel-header">📂 REGISTRO DE DESARROLLO</h3>
+                <div class="scroll-box">
+                    <ul class="history-list">
+                        <li class="ver-header">>> VERSIÓN ACTUAL (V27)</li>
+                        <li class="buff">[+] Suelo Generado por Código</li>
+                        <li class="buff">[+] Historial Visible</li>
+                        
+                        <li class="ver-header">>> VERSIÓN V25</li>
+                        <li class="buff">[+] Cinta de Noticias</li>
+                        <li class="fix">[!] Zombis Más Grandes</li>
+
+                        <li class="ver-header">>> VERSIÓN V24</li>
+                        <li class="buff">[+] Puntería Automática</li>
+                        <li class="buff">[+] Bomba Nuclear</li>
+
+                        <li class="ver-header">>> VERSIÓN V23</li>
+                        <li class="del">[-] HUD Simple Eliminado</li>
+                        <li class="buff">[+] Visor Táctico Añadido</li>
                     </ul>
                 </div>
-                <div class="system-footer">ESTADO: LISTO PARA EL COMBATE</div>
             </div>
 
             <div class="center-stage">
-                <div class="boss-hologram">
-                    <img src="imagenes/boss.png" alt="BOSS">
-                </div>
-                
+                <div class="boss-hologram"><img src="imagenes/boss.png" alt="BOSS"></div>
                 <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-                
                 <button id="start-btn">
                     INICIAR MISIÓN
                     <div class="btn-sub">NO HAY RETORNO</div>
@@ -49,55 +53,47 @@
             </div>
 
             <div class="hud-panel right-panel">
-                <h3 class="panel-header">📝 REPORTE FINAL</h3>
+                <h3 class="panel-header">📝 REPORTE DE INTELIGENCIA</h3>
                 <div class="intel-grid">
-                    <div class="intel-row">
-                        <span>UBICACIÓN:</span> <span class="val">ZONA CERO</span>
-                    </div>
-                    <div class="intel-row">
-                        <span>PELIGRO:</span> <span class="val red">EXTREMO</span>
-                    </div>
+                    <div class="intel-row"><span>UBICACIÓN:</span> <span class="val">SECTOR 7</span></div>
+                    <div class="intel-row"><span>AMENAZA:</span> <span class="val red">PANDEMIA</span></div>
+                    <div class="intel-row"><span>ESTADO:</span> <span class="val">SOLO</span></div>
                 </div>
                 <hr class="panel-hr">
                 <div class="objective-box">
-                    <p class="obj-label">OBJETIVO:</p>
-                    <p class="obj-main">SOBREVIVIR</p>
+                    <p class="obj-label">OBJETIVO PRIMARIO:</p>
+                    <p class="obj-main">SOBREVIVIR AL CAOS</p>
                 </div>
             </div>
-
         </div>
 
         <div class="bottom-ticker">
-            <p class="ticker-text">⚠️ ALERTA DE EMERGENCIA: LA INFECCIÓN SE EXPANDE... EVACUACIÓN FALLIDA... MANTENGA SU POSICIÓN Y DISPARE A MATAR... NIVEL DE PELIGRO: MÁXIMO... ⚠️</p>
+            <p class="ticker-text">⚠️ ULTIMA HORA: EL SUELO TÁCTICO HA SIDO REPARADO... LOS SISTEMAS DE VISUALIZACIÓN ESTÁN EN LÍNEA... PREPÁRESE PARA EL COMBATE... ⚠️</p>
         </div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
-        
         <div class="combat-panel health-panel">
             <div class="icon-box">✚</div>
             <div class="bars-container">
                 <div class="bar-label">SIGNOS VITALES</div>
-                <div class="health-bar-frame">
-                    <div id="health-bar"></div>
-                </div>
+                <div class="health-bar-frame"><div id="health-bar"></div></div>
             </div>
             <div class="health-number"><span id="health-num">100</span>%</div>
         </div>
 
         <div class="combat-panel stats-panel">
             <div class="stat-row ammo-row">
-                <span class="big-num" id="ammo">12</span> <span class="label">MUNICIÓN</span> 🔫
+                <span class="big-num" id="ammo">12</span> <span class="label">BALAS</span> 🔫
             </div>
             <hr class="panel-sep">
             <div class="stat-row">
-                <span class="big-num" id="kills-left">10</span> <span class="label">PARA NIVEL SIG.</span> 💀
+                <span class="big-num" id="kills-left">10</span> <span class="label">META</span> 💀
             </div>
         </div>
 
         <div class="level-badge">
-            <span class="lvl-label">ZONA DE PELIGRO</span>
-            <span class="lvl-num" id="level">1</span>
+            <span class="lvl-label">ZONA</span> <span class="lvl-num" id="level">1</span>
         </div>
 
         <button id="pause-btn">PAUSA</button>
