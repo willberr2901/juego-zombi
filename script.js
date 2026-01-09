@@ -1,20 +1,20 @@
-/* script.js - V30.0 CORRECCIÓN FINAL (asfalto.png) */
+/* script.js - V31.0 ARRANQUE SEGURO */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     
-    // Ajustar pantalla
+    // Función de ajuste de pantalla
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resize);
-    resize();
+    resize(); // Ejecutar al inicio
 
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // Audio
+    // SISTEMA DE AUDIO
     let audioCtx;
     function initAudio() {
         if (!audioCtx) {
@@ -41,29 +41,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- CARGA DE IMÁGENES ---
-    // Aquí está la corrección: asfalto.png
-    const imgGround = new Image(); 
-    imgGround.src = 'imagenes/asfalto.png'; 
-
+    // CARGA DE IMÁGENES
+    const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png'; // NOMBRE CONFIRMADO
     const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
     const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
     const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
     const imgBoss = new Image(); imgBoss.src = 'imagenes/boss.png';
 
-    let gameRunning = false, score = 0, level = 1, ammo = 12, maxAmmo = 12;
+    // VARIABLES GLOBALES
+    let gameRunning = false;
+    let score = 0, level = 1, ammo = 12, maxAmmo = 12;
     let killCount = 0, killsForNextLevel = 10;
     let zombies = [], bullets = [], items = [], boss = null;
-    const player = { x: canvas.width/2, y: canvas.height/2, hp: 100, maxHp: 100, speed: 5 };
+    
+    // Objeto Jugador (Se reinicia al empezar)
+    let player = { x: 0, y: 0, hp: 100, maxHp: 100, speed: 5 };
 
-    // Mouse PC
+    // INPUTS
     let mouseX = 0, mouseY = 0;
     window.addEventListener('mousemove', e => {
         const rect = canvas.getBoundingClientRect();
         mouseX = e.clientX - rect.left; mouseY = e.clientY - rect.top;
     });
 
-    // Lógica Juego
+    const k = {};
+    window.addEventListener("keydown", e => k[e.key.toLowerCase()] = true);
+    window.addEventListener("keyup", e => k[e.key.toLowerCase()] = false);
+
+    const touchZone = document.getElementById("touch-zone");
+    const joyWrapper = document.getElementById("joystick-wrapper");
+    const joyStick = document.getElementById("joystick-stick");
+    let joyX = 0, joyY = 0, dragging = false, startX, startY;
+
+    if(touchZone) {
+        touchZone.addEventListener("touchstart", e => { e.preventDefault(); const t = e.touches[0]; startX = t.clientX; startY = t.clientY; dragging = true; joyWrapper.style.display = "block"; joyWrapper.style.left = (startX-60)+"px"; joyWrapper.style.top = (startY-60)+"px"; joyStick.style.transform = `translate(-50%, -50%)`; joyX=0; joyY=0; });
+        touchZone.addEventListener("touchmove", e => { if(!dragging) return; e.preventDefault(); const t = e.touches[0]; let dx = t.clientX-startX; let dy = t.clientY-startY; const dist = Math.hypot(dx, dy); if(dist>50) { const r=50/dist; dx*=r; dy*=r; } joyStick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; joyX=dx/50; joyY=dy/50; });
+        touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
+    }
+
+    // --- FUNCIONES DEL JUEGO ---
+
     function getNearestZombie() {
         let nearest = null, minDist = Infinity;
         zombies.forEach(z => {
@@ -123,13 +140,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("btn-fire").addEventListener("touchstart", (e)=>{e.preventDefault(); shoot();});
     window.addEventListener("mousedown", e => { if(gameRunning && e.target.tagName !== 'BUTTON') shoot(); });
 
+    // --- LOOP PRINCIPAL ---
     function update() {
+        // Movimiento Jugador
         let dx = joyX, dy = joyY;
-        const keys = {}; 
-        if(!dragging) { if(keys['d']) dx=1; }
+        if(!dragging) {
+            if(k['d']||k['arrowright']) dx=1; if(k['a']||k['arrowleft']) dx=-1;
+            if(k['s']||k['arrowdown']) dy=1; if(k['w']||k['arrowup']) dy=-1;
+        }
         player.x += dx * player.speed; player.y += dy * player.speed;
-        player.x = Math.max(0, Math.min(canvas.width, player.x)); player.y = Math.max(0, Math.min(canvas.height, player.y));
+        
+        // Límites de pantalla
+        player.x = Math.max(0, Math.min(canvas.width, player.x));
+        player.y = Math.max(0, Math.min(canvas.height, player.y));
 
+        // Balas
         for(let i=bullets.length-1; i>=0; i--){
             let b = bullets[i]; b.x += b.vx; b.y += b.vy;
             if(b.x<0||b.x>canvas.width||b.y<0||b.y>canvas.height) { bullets.splice(i,1); continue; }
@@ -146,38 +171,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(boss.hp <= 0) { boss=null; score+=1000; levelUp(); }
             }
         }
+
+        // Zombis
         zombies.forEach(z => {
-            let angle = Math.atan2(player.y - z.y, player.x - z.x); z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
+            let angle = Math.atan2(player.y - z.y, player.x - z.x);
+            z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
             if(Math.hypot(player.x-z.x, player.y-z.y) < 30) { 
                 player.hp -= 0.5; updateHUD();
-                document.getElementById("blood-screen").style.boxShadow = "inset 0 0 100px rgba(255,0,0,0.8)";
-                setTimeout(()=>document.getElementById("blood-screen").style.boxShadow="none", 100);
+                const screen = document.getElementById("blood-screen");
+                screen.style.boxShadow = "inset 0 0 100px rgba(255,0,0,0.8)";
+                setTimeout(()=>screen.style.boxShadow="none", 100);
             }
         });
+
+        // Jefe
         if(boss) {
-            let angle = Math.atan2(player.y - boss.y, player.x - boss.x); boss.x += Math.cos(angle)*2; boss.y += Math.sin(angle)*2;
+            let angle = Math.atan2(player.y - boss.y, player.x - boss.x);
+            boss.x += Math.cos(angle)*2; boss.y += Math.sin(angle)*2;
             if(Math.hypot(player.x-boss.x, player.y-boss.y) < 50) { player.hp -= 1; updateHUD(); }
         }
+
+        // Ítems
         for(let i=items.length-1; i>=0; i--) {
             if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) { ammo += 10; items.splice(i,1); updateHUD(); }
         }
+
         if(player.hp <= 0) location.reload();
     }
 
-    // --- FUNCIÓN DE DIBUJO ROBUSTA ---
+    // --- DIBUJO ---
     function draw() {
-        // 1. SIEMPRE pintar un fondo base gris oscuro (Seguridad)
-        ctx.fillStyle = '#1a1a1a';
+        // 1. FONDO DE SEGURIDAD (Gris Oscuro)
+        ctx.fillStyle = '#1b1b1b'; 
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 2. Intentar dibujar la imagen encima
-        if (imgGround.complete && imgGround.naturalWidth > 0) {
+        // 2. INTENTAR DIBUJAR IMAGEN ASFALTO
+        if(imgGround.complete && imgGround.naturalWidth > 0) {
             ctx.drawImage(imgGround, 0, 0, canvas.width, canvas.height);
-            // Filtro oscuro para ambiente
-            ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; 
+            // Capa oscura para que no sea muy brillante
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
             ctx.fillRect(0,0,canvas.width,canvas.height);
         } else {
-            // Si la imagen falla, dibujamos la rejilla táctica
+            // SI FALLA LA IMAGEN: DIBUJAR REJILLA TÁCTICA
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -186,9 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.stroke();
         }
 
+        // 3. DIBUJAR ENTIDADES
         items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
+        
         if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
+        
         zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
+        
         if(boss && imgBoss.complete) { ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); }
         
         bullets.forEach(b => { 
@@ -198,38 +237,25 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.shadowBlur=0;
     }
 
-    const k = {};
-    window.addEventListener("keydown", e => k[e.key.toLowerCase()] = true);
-    window.addEventListener("keyup", e => k[e.key.toLowerCase()] = false);
-    function updatePCKeys() {
-        if (!dragging) {
-            let dx=0, dy=0;
-            if(k['d']||k['arrowright']) dx=1; if(k['a']||k['arrowleft']) dx=-1;
-            if(k['s']||k['arrowdown']) dy=1; if(k['w']||k['arrowup']) dy=-1;
-            player.x += dx * player.speed; player.y += dy * player.speed;
-        }
-    }
+    function loop() { if(gameRunning) { update(); draw(); requestAnimationFrame(loop); } }
 
-    function loop() { if(gameRunning) { update(); updatePCKeys(); draw(); requestAnimationFrame(loop); } }
-
-    const touchZone = document.getElementById("touch-zone");
-    const joyWrapper = document.getElementById("joystick-wrapper");
-    const joyStick = document.getElementById("joystick-stick");
-    let joyX = 0, joyY = 0, dragging = false, startX, startY;
-    if(touchZone) {
-        touchZone.addEventListener("touchstart", e => { e.preventDefault(); const t = e.touches[0]; startX = t.clientX; startY = t.clientY; dragging = true; joyWrapper.style.display = "block"; joyWrapper.style.left = (startX-60)+"px"; joyWrapper.style.top = (startY-60)+"px"; joyStick.style.transform = `translate(-50%, -50%)`; joyX=0; joyY=0; });
-        touchZone.addEventListener("touchmove", e => { if(!dragging) return; e.preventDefault(); const t = e.touches[0]; let dx = t.clientX-startX; let dy = t.clientY-startY; const dist = Math.hypot(dx, dy); if(dist>50) { const r=50/dist; dx*=r; dy*=r; } joyStick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; joyX=dx/50; joyY=dy/50; });
-        touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
-    }
-
+    // --- INICIO DEL JUEGO ---
     document.getElementById("start-btn").onclick = () => {
         initAudio();
         document.getElementById("menu-screen").style.display = "none";
         document.getElementById("game-ui").style.display = "block";
         gameRunning = true;
-        resize(); 
+        
+        // REINICIAR Y AJUSTAR TAMAÑO
+        resize();
+        player.x = canvas.width / 2;
+        player.y = canvas.height / 2;
+        
+        // SPAWNERS
         setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
         setInterval(() => items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}), 8000);
-        updateHUD(); loop();
+        
+        updateHUD(); 
+        loop();
     };
 });
