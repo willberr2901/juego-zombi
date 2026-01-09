@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: V31 Estable</title>
+    <title>Ciudad Z: V32 Final</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="grid-bg"></div>
+    <canvas id="gameCanvas"></canvas>
+
     <div id="vignette"></div>
     <div id="blood-screen"></div>
     <div id="pulse-wave"></div>
@@ -20,13 +21,13 @@
 
         <div class="main-layout">
             <div class="hud-panel left-panel">
-                <h3 class="panel-header">📂 SISTEMA V31.0</h3>
+                <h3 class="panel-header">📂 SISTEMA V32.0</h3>
                 <div class="scroll-box">
                     <ul class="history-list">
-                        <li class="ver-header">>> ESTADO ACTUAL</li>
-                        <li class="fix">[!] Arranque Seguro Activado</li>
-                        <li class="buff">[+] Suelo Táctico Híbrido</li>
-                        <li class="buff">[+] Gráficos Full HD</li>
+                        <li class="ver-header">>> ESTADO: ESTABLE</li>
+                        <li class="fix">[!] Visibilidad Forzada</li>
+                        <li class="buff">[+] Motor Gráfico Optimizado</li>
+                        <li class="buff">[+] Carga de Texturas Segura</li>
                     </ul>
                 </div>
             </div>
@@ -34,28 +35,29 @@
             <div class="center-stage">
                 <div class="boss-hologram"><img src="imagenes/boss.png" alt="BOSS"></div>
                 <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-                <button id="start-btn">INICIAR MISIÓN</button>
+                <button id="start-btn">INICIAR CAOS</button>
             </div>
 
             <div class="hud-panel right-panel">
-                <h3 class="panel-header">📝 OPERACIÓN</h3>
+                <h3 class="panel-header">📝 OPERACIÓN FINAL</h3>
                 <div class="intel-grid">
                     <div class="intel-row"><span>UBICACIÓN:</span> <span class="val">ZONA CERO</span></div>
-                    <div class="intel-row"><span>AMENAZA:</span> <span class="val red">CRÍTICA</span></div>
+                    <div class="intel-row"><span>PELIGRO:</span> <span class="val red">INMINENTE</span></div>
                 </div>
                 <hr class="panel-hr">
                 <div class="objective-box">
-                    <p class="obj-main">SOBREVIVIR</p>
+                    <p class="obj-main">SOBREVIVE</p>
                 </div>
             </div>
         </div>
 
         <div class="bottom-ticker">
-            <p class="ticker-text">⚠️ SISTEMAS EN LÍNEA... CONEXIÓN ESTABLECIDA... PREPÁRESE PARA EL COMBATE... ⚠️</p>
+            <p class="ticker-text">⚠️ ALERTA MÁXIMA: LOS ZOMBIS SE APROXIMAN... REVISE SU MUNICIÓN... DISPARE A LA CABEZA... ⚠️</p>
         </div>
     </div>
 
     <div id="game-ui" class="ui-container" style="display:none;">
+        
         <div class="combat-panel health-panel">
             <div class="icon-box">✚</div>
             <div class="bars-container">
@@ -82,7 +84,7 @@
         <button id="pause-btn">PAUSA</button>
 
         <div id="combat-banner" class="banner-container">
-            <div class="banner-text" id="banner-msg">¡ALERTA!</div>
+            <div class="banner-text" id="banner-msg">¡JEFE EN CAMINO!</div>
         </div>
     </div>
 
@@ -90,7 +92,6 @@
     <div id="joystick-wrapper" style="display:none;"><div id="joystick-stick"></div></div>
     <div class="action-btn"><button id="btn-fire">🔥</button></div>
 
-    <canvas id="gameCanvas"></canvas>
     <script src="script.js"></script>
 </body>
 </html>
