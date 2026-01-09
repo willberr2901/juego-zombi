@@ -1,20 +1,20 @@
-/* script.js - V31.0 ARRANQUE SEGURO */
+/* script.js - V32.0 FINAL Y LIMPIO */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. CONFIGURACIÓN INICIAL
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     
-    // Función de ajuste de pantalla
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resize);
-    resize(); // Ejecutar al inicio
+    resize();
 
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // SISTEMA DE AUDIO
+    // 2. AUDIO
     let audioCtx;
     function initAudio() {
         if (!audioCtx) {
@@ -41,37 +41,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // CARGA DE IMÁGENES
-    const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png'; // NOMBRE CONFIRMADO
+    // 3. VARIABLES DEL JUEGO
+    // Imágenes
+    const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png';
     const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
     const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
     const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
     const imgBoss = new Image(); imgBoss.src = 'imagenes/boss.png';
 
-    // VARIABLES GLOBALES
+    // Estado
     let gameRunning = false;
     let score = 0, level = 1, ammo = 12, maxAmmo = 12;
     let killCount = 0, killsForNextLevel = 10;
-    let zombies = [], bullets = [], items = [], boss = null;
     
-    // Objeto Jugador (Se reinicia al empezar)
-    let player = { x: 0, y: 0, hp: 100, maxHp: 100, speed: 5 };
+    // Entidades
+    let zombies = [];
+    let bullets = [];
+    let items = [];
+    let boss = null;
+    let player = { x: canvas.width/2, y: canvas.height/2, hp: 100, maxHp: 100, speed: 5 };
 
-    // INPUTS
+    // Inputs
     let mouseX = 0, mouseY = 0;
+    const k = {}; // Teclas PC
+    let joyX = 0, joyY = 0, dragging = false, startX, startY; // Joystick Móvil
+
+    // 4. LISTENERS DE INPUT
     window.addEventListener('mousemove', e => {
         const rect = canvas.getBoundingClientRect();
         mouseX = e.clientX - rect.left; mouseY = e.clientY - rect.top;
     });
-
-    const k = {};
     window.addEventListener("keydown", e => k[e.key.toLowerCase()] = true);
     window.addEventListener("keyup", e => k[e.key.toLowerCase()] = false);
 
     const touchZone = document.getElementById("touch-zone");
     const joyWrapper = document.getElementById("joystick-wrapper");
     const joyStick = document.getElementById("joystick-stick");
-    let joyX = 0, joyY = 0, dragging = false, startX, startY;
 
     if(touchZone) {
         touchZone.addEventListener("touchstart", e => { e.preventDefault(); const t = e.touches[0]; startX = t.clientX; startY = t.clientY; dragging = true; joyWrapper.style.display = "block"; joyWrapper.style.left = (startX-60)+"px"; joyWrapper.style.top = (startY-60)+"px"; joyStick.style.transform = `translate(-50%, -50%)`; joyX=0; joyY=0; });
@@ -79,8 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
     }
 
-    // --- FUNCIONES DEL JUEGO ---
-
+    // 5. LÓGICA DEL JUEGO
     function getNearestZombie() {
         let nearest = null, minDist = Infinity;
         zombies.forEach(z => {
@@ -140,18 +144,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("btn-fire").addEventListener("touchstart", (e)=>{e.preventDefault(); shoot();});
     window.addEventListener("mousedown", e => { if(gameRunning && e.target.tagName !== 'BUTTON') shoot(); });
 
-    // --- LOOP PRINCIPAL ---
     function update() {
-        // Movimiento Jugador
+        // Movimiento
         let dx = joyX, dy = joyY;
         if(!dragging) {
             if(k['d']||k['arrowright']) dx=1; if(k['a']||k['arrowleft']) dx=-1;
             if(k['s']||k['arrowdown']) dy=1; if(k['w']||k['arrowup']) dy=-1;
         }
         player.x += dx * player.speed; player.y += dy * player.speed;
-        
-        // Límites de pantalla
-        player.x = Math.max(0, Math.min(canvas.width, player.x));
+        player.x = Math.max(0, Math.min(canvas.width, player.x)); 
         player.y = Math.max(0, Math.min(canvas.height, player.y));
 
         // Balas
@@ -174,60 +175,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Zombis
         zombies.forEach(z => {
-            let angle = Math.atan2(player.y - z.y, player.x - z.x);
-            z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
+            let angle = Math.atan2(player.y - z.y, player.x - z.x); z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
             if(Math.hypot(player.x-z.x, player.y-z.y) < 30) { 
                 player.hp -= 0.5; updateHUD();
-                const screen = document.getElementById("blood-screen");
-                screen.style.boxShadow = "inset 0 0 100px rgba(255,0,0,0.8)";
-                setTimeout(()=>screen.style.boxShadow="none", 100);
+                document.getElementById("blood-screen").style.boxShadow = "inset 0 0 100px rgba(255,0,0,0.8)";
+                setTimeout(()=>document.getElementById("blood-screen").style.boxShadow="none", 100);
             }
         });
 
-        // Jefe
         if(boss) {
-            let angle = Math.atan2(player.y - boss.y, player.x - boss.x);
-            boss.x += Math.cos(angle)*2; boss.y += Math.sin(angle)*2;
+            let angle = Math.atan2(player.y - boss.y, player.x - boss.x); boss.x += Math.cos(angle)*2; boss.y += Math.sin(angle)*2;
             if(Math.hypot(player.x-boss.x, player.y-boss.y) < 50) { player.hp -= 1; updateHUD(); }
         }
 
-        // Ítems
         for(let i=items.length-1; i>=0; i--) {
             if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) { ammo += 10; items.splice(i,1); updateHUD(); }
         }
-
         if(player.hp <= 0) location.reload();
     }
 
-    // --- DIBUJO ---
+    // 6. DIBUJO (CON FONDO DE SEGURIDAD)
     function draw() {
-        // 1. FONDO DE SEGURIDAD (Gris Oscuro)
-        ctx.fillStyle = '#1b1b1b'; 
+        // A. FONDO DE RESPALDO (Gris Oscuro) - Esto evita la pantalla negra
+        ctx.fillStyle = '#1b1b1b';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 2. INTENTAR DIBUJAR IMAGEN ASFALTO
+        // B. INTENTAR DIBUJAR IMAGEN
         if(imgGround.complete && imgGround.naturalWidth > 0) {
             ctx.drawImage(imgGround, 0, 0, canvas.width, canvas.height);
-            // Capa oscura para que no sea muy brillante
-            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            // Capa de oscuridad
+            ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; 
             ctx.fillRect(0,0,canvas.width,canvas.height);
         } else {
-            // SI FALLA LA IMAGEN: DIBUJAR REJILLA TÁCTICA
-            ctx.strokeStyle = '#333';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
+            // SI FALLA LA IMAGEN, DIBUJAR REJILLA
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.beginPath();
             for (let x = 0; x < canvas.width; x += 100) { ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
             for (let y = 0; y < canvas.height; y += 100) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
             ctx.stroke();
         }
 
-        // 3. DIBUJAR ENTIDADES
+        // C. ENTIDADES
         items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
-        
         if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
-        
         zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
-        
         if(boss && imgBoss.complete) { ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); }
         
         bullets.forEach(b => { 
@@ -239,23 +229,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loop() { if(gameRunning) { update(); draw(); requestAnimationFrame(loop); } }
 
-    // --- INICIO DEL JUEGO ---
+    // 7. INICIO
     document.getElementById("start-btn").onclick = () => {
         initAudio();
         document.getElementById("menu-screen").style.display = "none";
         document.getElementById("game-ui").style.display = "block";
         gameRunning = true;
-        
-        // REINICIAR Y AJUSTAR TAMAÑO
         resize();
-        player.x = canvas.width / 2;
-        player.y = canvas.height / 2;
-        
-        // SPAWNERS
         setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
         setInterval(() => items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}), 8000);
-        
-        updateHUD(); 
-        loop();
+        updateHUD(); loop();
     };
 });
