@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: V27 Historial</title>
+    <title>Ciudad Z: V31 Estable</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,26 +19,14 @@
         <div class="neon-decor right-decor"><img src="imagenes/zombie.png" alt=""></div>
 
         <div class="main-layout">
-            
             <div class="hud-panel left-panel">
-                <h3 class="panel-header">📂 REGISTRO DE DESARROLLO</h3>
+                <h3 class="panel-header">📂 SISTEMA V31.0</h3>
                 <div class="scroll-box">
                     <ul class="history-list">
-                        <li class="ver-header">>> VERSIÓN ACTUAL (V27)</li>
-                        <li class="buff">[+] Suelo Generado por Código</li>
-                        <li class="buff">[+] Historial Visible</li>
-                        
-                        <li class="ver-header">>> VERSIÓN V25</li>
-                        <li class="buff">[+] Cinta de Noticias</li>
-                        <li class="fix">[!] Zombis Más Grandes</li>
-
-                        <li class="ver-header">>> VERSIÓN V24</li>
-                        <li class="buff">[+] Puntería Automática</li>
-                        <li class="buff">[+] Bomba Nuclear</li>
-
-                        <li class="ver-header">>> VERSIÓN V23</li>
-                        <li class="del">[-] HUD Simple Eliminado</li>
-                        <li class="buff">[+] Visor Táctico Añadido</li>
+                        <li class="ver-header">>> ESTADO ACTUAL</li>
+                        <li class="fix">[!] Arranque Seguro Activado</li>
+                        <li class="buff">[+] Suelo Táctico Híbrido</li>
+                        <li class="buff">[+] Gráficos Full HD</li>
                     </ul>
                 </div>
             </div>
@@ -46,29 +34,24 @@
             <div class="center-stage">
                 <div class="boss-hologram"><img src="imagenes/boss.png" alt="BOSS"></div>
                 <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-                <button id="start-btn">
-                    INICIAR MISIÓN
-                    <div class="btn-sub">NO HAY RETORNO</div>
-                </button>
+                <button id="start-btn">INICIAR MISIÓN</button>
             </div>
 
             <div class="hud-panel right-panel">
-                <h3 class="panel-header">📝 REPORTE DE INTELIGENCIA</h3>
+                <h3 class="panel-header">📝 OPERACIÓN</h3>
                 <div class="intel-grid">
-                    <div class="intel-row"><span>UBICACIÓN:</span> <span class="val">SECTOR 7</span></div>
-                    <div class="intel-row"><span>AMENAZA:</span> <span class="val red">PANDEMIA</span></div>
-                    <div class="intel-row"><span>ESTADO:</span> <span class="val">SOLO</span></div>
+                    <div class="intel-row"><span>UBICACIÓN:</span> <span class="val">ZONA CERO</span></div>
+                    <div class="intel-row"><span>AMENAZA:</span> <span class="val red">CRÍTICA</span></div>
                 </div>
                 <hr class="panel-hr">
                 <div class="objective-box">
-                    <p class="obj-label">OBJETIVO PRIMARIO:</p>
-                    <p class="obj-main">SOBREVIVIR AL CAOS</p>
+                    <p class="obj-main">SOBREVIVIR</p>
                 </div>
             </div>
         </div>
 
         <div class="bottom-ticker">
-            <p class="ticker-text">⚠️ ULTIMA HORA: EL SUELO TÁCTICO HA SIDO REPARADO... LOS SISTEMAS DE VISUALIZACIÓN ESTÁN EN LÍNEA... PREPÁRESE PARA EL COMBATE... ⚠️</p>
+            <p class="ticker-text">⚠️ SISTEMAS EN LÍNEA... CONEXIÓN ESTABLECIDA... PREPÁRESE PARA EL COMBATE... ⚠️</p>
         </div>
     </div>
 
@@ -76,7 +59,7 @@
         <div class="combat-panel health-panel">
             <div class="icon-box">✚</div>
             <div class="bars-container">
-                <div class="bar-label">SIGNOS VITALES</div>
+                <div class="bar-label">SALUD</div>
                 <div class="health-bar-frame"><div id="health-bar"></div></div>
             </div>
             <div class="health-number"><span id="health-num">100</span>%</div>
@@ -84,7 +67,7 @@
 
         <div class="combat-panel stats-panel">
             <div class="stat-row ammo-row">
-                <span class="big-num" id="ammo">12</span> <span class="label">BALAS</span> 🔫
+                <span class="big-num" id="ammo">12</span> <span class="label">MUNICIÓN</span> 🔫
             </div>
             <hr class="panel-sep">
             <div class="stat-row">
@@ -99,7 +82,7 @@
         <button id="pause-btn">PAUSA</button>
 
         <div id="combat-banner" class="banner-container">
-            <div class="banner-text" id="banner-msg">¡JEFE EN CAMINO!</div>
+            <div class="banner-text" id="banner-msg">¡ALERTA!</div>
         </div>
     </div>
 
