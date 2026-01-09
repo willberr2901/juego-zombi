@@ -1,10 +1,15 @@
-/* script.js - V25.0 SUELO OSCURO Y TERROR */
+/* script.js - V26.0 SUELO TÁCTICO GENERADO (SIN IMAGEN FEA) */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Ajustar canvas al tamaño real de la ventana
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas(); // Llamar al inicio
 
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -34,10 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // YA NO USAMOS imgGround.src = 'imagenes/asfalto.png';
     const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
     const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
     const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
-    const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png';
     const imgBoss = new Image(); imgBoss.src = 'imagenes/boss.png';
 
     let gameRunning = false, score = 0, level = 1, ammo = 12, maxAmmo = 12;
@@ -114,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function update() {
         let dx = joyX, dy = joyY;
-        const keys = {}; // Si quieres WASD, descomenta abajo
+        const keys = {}; 
         if(!dragging) { if(keys['d']) dx=1; /* ... lógica teclas ... */ }
         player.x += dx * player.speed; player.y += dy * player.speed;
         player.x = Math.max(0, Math.min(canvas.width, player.x)); player.y = Math.max(0, Math.min(canvas.height, player.y));
@@ -153,19 +158,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if(player.hp <= 0) location.reload();
     }
 
-    function draw() {
-        // --- SUELO REALISTA PERO OSCURO ---
-        if(imgGround.complete) {
-            const ptrn = ctx.createPattern(imgGround, 'repeat');
-            ctx.fillStyle = ptrn;
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            
-            // CAPA DE OSCURIDAD (El truco para quitar lo gris)
-            ctx.fillStyle = "rgba(0, 0, 0, 0.7)"; 
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-        } else {
-            ctx.fillStyle='#111'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    // --- NUEVA FUNCIÓN PARA DIBUJAR EL SUELO TÁCTICO ---
+    function drawBackground() {
+        // 1. Fondo base: Concreto oscuro
+        ctx.fillStyle = '#1a1a1a'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 2. Rejilla Táctica (Líneas rojas sutiles)
+        ctx.strokeStyle = 'rgba(100, 0, 0, 0.2)'; 
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const gridSize = 100; // Tamaño de los cuadros
+        for (let x = 0; x <= canvas.width; x += gridSize) {
+            ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
         }
+        for (let y = 0; y <= canvas.height; y += gridSize) {
+            ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
+        }
+        ctx.stroke();
+
+        // 3. Viñeta oscura (sombra en las esquinas para dar profundidad)
+        const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 100, canvas.width/2, canvas.height/2, canvas.width);
+        gradient.addColorStop(0, 'transparent');
+        gradient.addColorStop(1, 'rgba(0,0,0,0.7)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function draw() {
+        drawBackground(); // Usamos la nueva función
 
         items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
         if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
@@ -174,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bullets.forEach(b => { ctx.fillStyle='#ff0'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill(); });
     }
 
-    // Teclas PC (Movimiento WASD y Flechas)
+    // Teclas PC
     const k = {};
     window.addEventListener("keydown", e => k[e.key.toLowerCase()] = true);
     window.addEventListener("keyup", e => k[e.key.toLowerCase()] = false);
@@ -204,6 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("menu-screen").style.display = "none";
         document.getElementById("game-ui").style.display = "block";
         gameRunning = true;
+        // Iniciar spawners y ajustar canvas
+        resizeCanvas();
         setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
         setInterval(() => items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}), 8000);
         updateHUD(); loop();
