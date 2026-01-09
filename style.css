@@ -1,154 +1,84 @@
-/* style.css - V21.0 EXPEDIENTE COMPLETO */
-body {
-    margin: 0; padding: 0; background: #000;
-    color: #eee; font-family: 'Courier New', monospace;
-    overflow: hidden; touch-action: none; user-select: none;
-}
+/* style.css - V34.0 FUSIÓN FINAL */
+body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Courier New', monospace; overflow: hidden; touch-action: none; user-select: none; }
 
-/* FONDO TÉCNICO */
-.grid-bg {
-    position: absolute; inset: 0; opacity: 0.15;
-    background-image: linear-gradient(#500 1px, transparent 1px), linear-gradient(90deg, #500 1px, transparent 1px);
-    background-size: 40px 40px; z-index: 1; pointer-events: none;
-}
-#vignette {
-    position: absolute; inset: 0; z-index: 2; pointer-events: none;
-    background: radial-gradient(circle, transparent 20%, #000 100%);
-}
+/* --- EFECTOS ESPECIALES --- */
+.grid-bg { position: absolute; inset: 0; opacity: 0.15; background-image: linear-gradient(#500 1px, transparent 1px), linear-gradient(90deg, #500 1px, transparent 1px); background-size: 40px 40px; z-index: 1; pointer-events: none; }
+#vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle, transparent 20%, #000 100%); }
+#blood-screen { position: absolute; inset: 0; pointer-events: none; z-index: 40; box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: box-shadow 0.1s; }
 
-/* MENÚ PRINCIPAL */
-.menu-overlay {
-    position: absolute; inset: 0; z-index: 100;
-    display: flex; justify-content: center; align-items: center;
-    background: rgba(0,0,0,0.85);
-}
+/* EFECTO RECOMPENSA (BOMBA NUCLEAR) */
+#pulse-wave { position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(0, 255, 0, 0.5); transform: translate(-50%, -50%); pointer-events: none; z-index: 90; box-shadow: 0 0 100px #0f0; }
+.pulse-active { animation: shockwave 0.8s ease-out; }
+@keyframes shockwave { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 250vw; height: 250vw; opacity: 0; } }
 
-/* --- ZOMBIS NEÓN (Igual que antes, funcionó perfecto) --- */
-.neon-decor {
-    position: absolute; bottom: 0; width: 300px;
-    z-index: 10; pointer-events: none; opacity: 0.85;
-    filter: brightness(0) drop-shadow(0 -5px 8px #ff0000);
-}
-.left-decor { left: -50px; transform: scaleX(-1); }
-.right-decor { right: -50px; }
+/* --- MENÚ PRINCIPAL (ESTILO V21) --- */
+.menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.95); flex-direction: column; }
+.neon-decor { position: absolute; bottom: 0; width: 300px; z-index: 10; pointer-events: none; opacity: 0.9; filter: brightness(0) drop-shadow(0 -5px 15px #ff0000); }
+.left-decor { left: -50px; transform: scaleX(-1); } .right-decor { right: -50px; }
 
-/* LAYOUT CENTRAL */
-.main-layout {
-    display: flex; flex-direction: row; align-items: center; justify-content: center;
-    gap: 50px; z-index: 20; width: 100%; max-width: 1300px;
-    padding: 0 20px;
-}
-
-/* PANELES LATERALES (Más grandes y detallados) */
-.hud-panel {
-    width: 280px; height: 400px; /* Más alto para más info */
-    background: rgba(10, 0, 0, 0.85);
-    border: 1px solid #700; border-top: 4px solid #f00;
-    padding: 20px; border-radius: 4px;
-    box-shadow: 0 0 25px rgba(150, 0, 0, 0.2);
-    display: flex; flex-direction: column;
-}
-
-.panel-header {
-    margin: 0 0 15px 0; color: #f00; font-size: 16px; letter-spacing: 1px;
-    border-bottom: 2px solid #300; padding-bottom: 8px; text-align: center;
-    text-shadow: 0 0 5px #f00;
-}
-
-/* Estilos Panel Izquierdo */
+.main-layout { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 50px; z-index: 20; width: 100%; max-width: 1300px; padding: 0 20px; }
+.hud-panel { width: 280px; height: 380px; background: rgba(10, 0, 0, 0.85); border: 1px solid #700; border-top: 4px solid #f00; padding: 20px; border-radius: 4px; box-shadow: 0 0 25px rgba(150, 0, 0, 0.2); display: flex; flex-direction: column; }
+.panel-header { margin: 0 0 15px 0; color: #f00; font-size: 16px; border-bottom: 2px solid #300; padding-bottom: 8px; text-align: center; text-shadow: 0 0 5px #f00; }
 .section-title { font-size: 12px; color: #aaa; margin: 10px 0 5px 0; font-weight: bold; }
 .patch-notes { padding: 0; list-style: none; font-size: 11px; color: #ccc; margin: 0; }
 .patch-notes li { margin-bottom: 4px; border-left: 2px solid #333; padding-left: 5px; }
-.buff { color: #4f4; border-color: #4f4 !important; } 
-.nerf { color: #f44; border-color: #f44 !important; }
-
-.system-footer { margin-top: auto; font-size: 10px; color: #666; text-align: center; border-top: 1px solid #333; padding-top: 5px; }
-
-/* Estilos Panel Derecho */
+.buff { color: #4f4; border-color: #4f4 !important; } .nerf { color: #f44; border-color: #f44 !important; }
 .intel-grid { display: flex; flex-direction: column; gap: 8px; font-size: 12px; }
 .intel-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #333; padding-bottom: 2px; }
-.intel-row span { color: #888; }
-.intel-row .val { color: #fff; font-weight: bold; }
-.intel-row .red { color: #f00; }
-
-.panel-hr { border: 0; border-top: 1px solid #500; margin: 20px 0; }
-
-.objective-box { text-align: center; background: rgba(50,0,0,0.3); padding: 10px; border: 1px solid #500; }
-.obj-label { font-size: 10px; color: #f00; margin: 0; letter-spacing: 2px; }
+.intel-row .val { color: #fff; font-weight: bold; } .intel-row .red { color: #f00; }
+.objective-box { text-align: center; background: rgba(50,0,0,0.3); padding: 10px; border: 1px solid #500; margin-top: 20px; }
 .obj-main { font-size: 16px; color: #fff; font-weight: bold; margin: 5px 0 0 0; text-shadow: 0 0 5px #f00; }
 
-/* CENTRO */
-.center-stage {
-    display: flex; flex-direction: column; align-items: center;
-    text-align: center; min-width: 350px;
-}
-
-.boss-hologram img {
-    width: 170px;
-    filter: drop-shadow(0 0 35px #f00) contrast(1.1);
-    animation: float 4s infinite ease-in-out;
-}
+.center-stage { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 350px; }
+.boss-hologram img { width: 170px; filter: drop-shadow(0 0 35px #f00) contrast(1.1); animation: float 4s infinite ease-in-out; }
 @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
-
-.main-title {
-    font-size: 65px; margin: 15px 0; color: #fff;
-    font-family: 'Arial Black', sans-serif; letter-spacing: -2px;
-    text-shadow: 0 5px 0 #000;
-}
+.main-title { font-size: 65px; margin: 15px 0; color: #fff; font-family: 'Arial Black', sans-serif; letter-spacing: -2px; text-shadow: 0 5px 0 #000; }
 .blood-text { color: #f00; text-shadow: 0 0 25px #f00; }
-
-#start-btn {
-    padding: 15px 50px; font-size: 22px;
-    background: #000; color: #f00;
-    border: 2px solid #f00; cursor: pointer;
-    font-family: 'Courier New', monospace; font-weight: 900;
-    box-shadow: 0 0 20px #f00; transition: 0.2s;
-    letter-spacing: 1px; display: flex; flex-direction: column; align-items: center;
-}
+#start-btn { padding: 15px 50px; font-size: 22px; background: #000; color: #f00; border: 2px solid #f00; cursor: pointer; font-family: 'Courier New', monospace; font-weight: 900; box-shadow: 0 0 20px #f00; transition: 0.2s; letter-spacing: 1px; display: flex; flex-direction: column; align-items: center; }
 #start-btn:hover { background: #f00; color: #000; box-shadow: 0 0 50px #f00; }
 .btn-sub { font-size: 10px; margin-top: 5px; opacity: 0.8; font-weight: normal; }
 
-/* BARRA INFERIOR (SCROLL) */
-.bottom-ticker {
-    position: absolute; bottom: 0; left: 0; width: 100%; height: 30px;
-    background: #100; border-top: 1px solid #f00;
-    display: flex; align-items: center; overflow: hidden; white-space: nowrap;
-}
-.ticker-text {
-    color: #f00; font-weight: bold; font-size: 14px;
-    animation: ticker 15s linear infinite; padding-left: 100%;
-}
+.bottom-ticker { position: absolute; bottom: 0; left: 0; width: 100%; height: 30px; background: #100; border-top: 1px solid #f00; display: flex; align-items: center; overflow: hidden; white-space: nowrap; }
+.ticker-text { color: #f00; font-weight: bold; font-size: 14px; animation: ticker 20s linear infinite; padding-left: 100%; }
 @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-150%); } }
 
-/* RESPONSIVE (MÓVIL) */
-@media (max-width: 900px) {
-    .menu-overlay { overflow-y: auto; padding-top: 20px; align-items: flex-start; }
-    .main-layout { flex-direction: column; gap: 30px; margin-bottom: 50px; }
-    .center-stage { order: -1; }
-    .neon-decor { width: 150px; opacity: 0.5; }
-    .hud-panel { width: 90%; height: auto; }
-}
-
-/* --- HUD JUEGO --- */
+/* --- HUD DE JUEGO (ESTILO PRO/TÁCTICO) --- */
 .ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
-.top-bar { position: absolute; top: 15px; left: 15px; display: flex; gap: 10px; }
-.stat {
-    background: rgba(0,0,0,0.8); border: 1px solid #555;
-    padding: 5px 10px; color: #fff; font-weight: bold; font-size: 18px;
-    border-left: 3px solid #f00;
-}
-.health-wrap {
-    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-    width: 250px; display: flex; align-items: center; gap: 10px;
-}
-.hp-border { width: 100%; height: 15px; background: #222; border: 1px solid #fff; }
-#health-bar { width: 100%; height: 100%; background: #f00; transition: width 0.2s; }
+.combat-panel { position: absolute; background: rgba(0, 0, 0, 0.9); border: 2px solid #444; border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px #000; backdrop-filter: blur(5px); }
+.health-panel { top: 20px; left: 20px; border-left: 5px solid #e74c3c; width: 300px; }
+.icon-box { font-size: 30px; color: #e74c3c; font-weight: bold; text-shadow: 0 0 10px red; }
+.bars-container { flex-grow: 1; }
+.bar-label { font-size: 10px; color: #aaa; margin-bottom: 3px; letter-spacing: 1px; }
+.health-bar-frame { width: 100%; height: 15px; background: #111; border: 1px solid #555; overflow: hidden; }
+#health-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #c0392b, #e74c3c); transition: width 0.2s; box-shadow: 0 0 10px #c0392b; }
+.health-number { font-size: 20px; font-weight: bold; color: #fff; width: 60px; text-align: right; }
 
-#pause-btn {
-    position: absolute; right: 10px; top: 15px;
-    background: #333; color: #fff; border: 1px solid #fff;
-    cursor: pointer; pointer-events: auto; width: 40px; height: 35px;
-}
+.stats-panel { top: 20px; right: 20px; flex-direction: column; align-items: flex-end; border-right: 5px solid #f1c40f; padding: 10px 20px; }
+.stat-row { display: flex; align-items: center; gap: 10px; }
+.big-num { font-size: 32px; font-weight: 900; color: #fff; text-shadow: 2px 2px 0 #000; }
+.label { font-size: 10px; color: #aaa; text-transform: uppercase; margin-right: 5px; }
+.panel-sep { width: 100%; border: 0; border-top: 1px solid #444; margin: 5px 0; }
+
+.level-badge { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); border: 2px solid #3498db; padding: 5px 20px; border-radius: 0 0 10px 10px; text-align: center; }
+.lvl-label { display: block; font-size: 9px; color: #3498db; letter-spacing: 2px; }
+.lvl-num { font-size: 24px; font-weight: bold; color: #fff; }
+
+#pause-btn { position: absolute; top: 130px; right: 20px; background: #333; color: white; border: 1px solid #777; padding: 8px 15px; cursor: pointer; pointer-events: auto; font-weight: bold; border-radius: 4px; }
+
+/* ALERTAS */
+.banner-container { position: absolute; top: 35%; width: 100%; height: 80px; display: flex; align-items: center; justify-content: center; background: rgba(200, 0, 0, 0.8); border-top: 4px solid #fff; border-bottom: 4px solid #fff; transform: scaleX(0); transition: transform 0.3s; }
+.banner-text { font-size: 40px; font-weight: 900; color: #fff; text-shadow: 0 0 20px #000; text-transform: uppercase; letter-spacing: 5px; animation: flashText 0.2s infinite; }
+@keyframes flashText { 0% { opacity: 1; } 50% { opacity: 0.5; } }
+.banner-active { transform: scaleX(1); }
+.banner-green { background: rgba(46, 204, 113, 0.8) !important; border-color: #fff; }
+
+/* MENÚ PAUSA */
+.pause-box { background: rgba(0,0,0,0.9); border: 2px solid #fff; padding: 40px; text-align: center; border-radius: 10px; box-shadow: 0 0 50px rgba(255,255,255,0.2); }
+.pause-title { color: #fff; font-size: 40px; margin-bottom: 30px; letter-spacing: 5px; }
+.menu-btn { display: block; width: 250px; padding: 15px; margin: 10px auto; background: #333; color: #fff; border: 1px solid #fff; font-size: 20px; cursor: pointer; font-family: inherit; font-weight: bold; }
+.menu-btn:hover { background: #fff; color: #000; }
+.red-btn { border-color: #f00; color: #f00; }
+.red-btn:hover { background: #f00; color: #fff; }
 
 /* CONTROLES */
 #touch-zone { position: absolute; inset: 0; z-index: 40; }
@@ -156,5 +86,5 @@ body {
 #joystick-stick { position: absolute; width: 50px; height: 50px; background: rgba(255,255,255,0.6); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 .action-btn { position: absolute; bottom: 50px; right: 30px; z-index: 60; pointer-events: auto; }
 #btn-fire { width: 90px; height: 90px; border-radius: 50%; background: rgba(200, 0, 0, 0.5); border: 2px solid #fff; cursor: pointer; color: white; font-size: 35px; }
-
 @media (min-width: 1024px) { #touch-zone, .action-btn { display: none; } }
+@media (max-width: 900px) { .main-layout { flex-direction: column; gap: 30px; margin-bottom: 50px; } .center-stage { order: -1; } .neon-decor { width: 150px; opacity: 0.5; } .hud-panel { width: 90%; height: auto; } }
