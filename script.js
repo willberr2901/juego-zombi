@@ -1,15 +1,16 @@
-/* script.js - V26.0 SUELO TÁCTICO GENERADO (SIN IMAGEN FEA) */
+/* script.js - V27.0 SUELO GENERADO Y FIX PANTALLA NEGRA */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
-    // Ajustar canvas al tamaño real de la ventana
-    function resizeCanvas() {
+    
+    // Función para ajustar el tamaño
+    function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas(); // Llamar al inicio
+    window.addEventListener('resize', resize);
+    resize();
 
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -39,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // YA NO USAMOS imgGround.src = 'imagenes/asfalto.png';
     const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
     const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
     const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
@@ -50,14 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let zombies = [], bullets = [], items = [], boss = null;
     const player = { x: canvas.width/2, y: canvas.height/2, hp: 100, maxHp: 100, speed: 5 };
 
-    // MOUSE PC
     let mouseX = 0, mouseY = 0;
     window.addEventListener('mousemove', e => {
         const rect = canvas.getBoundingClientRect();
         mouseX = e.clientX - rect.left; mouseY = e.clientY - rect.top;
     });
 
-    // AUTO-AIM MÓVIL
     function getNearestZombie() {
         let nearest = null, minDist = Infinity;
         zombies.forEach(z => {
@@ -120,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function update() {
         let dx = joyX, dy = joyY;
         const keys = {}; 
-        if(!dragging) { if(keys['d']) dx=1; /* ... lógica teclas ... */ }
+        if(!dragging) { if(keys['d']) dx=1; }
         player.x += dx * player.speed; player.y += dy * player.speed;
         player.x = Math.max(0, Math.min(canvas.width, player.x)); player.y = Math.max(0, Math.min(canvas.height, player.y));
 
@@ -158,44 +156,40 @@ document.addEventListener('DOMContentLoaded', () => {
         if(player.hp <= 0) location.reload();
     }
 
-    // --- NUEVA FUNCIÓN PARA DIBUJAR EL SUELO TÁCTICO ---
-    function drawBackground() {
-        // 1. Fondo base: Concreto oscuro
-        ctx.fillStyle = '#1a1a1a'; 
+    // --- AQUÍ ESTÁ EL ARREGLO DEL FONDO NEGRO ---
+    function draw() {
+        // DIBUJAR SUELO CON CÓDIGO (No depende de imagen)
+        // 1. Fondo base gris oscuro
+        ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 2. Rejilla Táctica (Líneas rojas sutiles)
-        ctx.strokeStyle = 'rgba(100, 0, 0, 0.2)'; 
+        // 2. Rejilla / Grietas (Simulado con líneas)
+        ctx.strokeStyle = '#2a2a2a';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        const gridSize = 100; // Tamaño de los cuadros
-        for (let x = 0; x <= canvas.width; x += gridSize) {
+        for (let x = 0; x < canvas.width; x += 80) {
             ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
         }
-        for (let y = 0; y <= canvas.height; y += gridSize) {
+        for (let y = 0; y < canvas.height; y += 80) {
             ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
         }
         ctx.stroke();
 
-        // 3. Viñeta oscura (sombra en las esquinas para dar profundidad)
-        const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 100, canvas.width/2, canvas.height/2, canvas.width);
-        gradient.addColorStop(0, 'transparent');
-        gradient.addColorStop(1, 'rgba(0,0,0,0.7)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function draw() {
-        drawBackground(); // Usamos la nueva función
-
+        // 3. Dibujar entidades
         items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
         if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
         zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
         if(boss && imgBoss.complete) { ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); }
-        bullets.forEach(b => { ctx.fillStyle='#ff0'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill(); });
+        
+        // 4. Balas
+        bullets.forEach(b => { 
+            ctx.fillStyle='#ff0'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill();
+            ctx.shadowBlur=10; ctx.shadowColor='orange';
+        });
+        ctx.shadowBlur=0;
     }
 
-    // Teclas PC
+    // Loop
     const k = {};
     window.addEventListener("keydown", e => k[e.key.toLowerCase()] = true);
     window.addEventListener("keyup", e => k[e.key.toLowerCase()] = false);
@@ -225,8 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("menu-screen").style.display = "none";
         document.getElementById("game-ui").style.display = "block";
         gameRunning = true;
-        // Iniciar spawners y ajustar canvas
-        resizeCanvas();
+        resize(); // Asegurar tamaño
         setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
         setInterval(() => items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}), 8000);
         updateHUD(); loop();
