@@ -6,7 +6,7 @@ body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Couri
 #vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle, transparent 20%, #000 100%); }
 #blood-screen { position: absolute; inset: 0; pointer-events: none; z-index: 40; box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: box-shadow 0.1s; }
 
-/* EFECTO BOMBA */
+/* EFECTO BOMBA DE NIVEL */
 #pulse-wave { position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(50, 255, 50, 0.6); transform: translate(-50%, -50%); pointer-events: none; z-index: 30; box-shadow: 0 0 50px #0f0; }
 .pulse-active { animation: shockwave 0.5s ease-out; }
 @keyframes shockwave { 0% { width: 0; height: 0; opacity: 0.8; } 100% { width: 200vw; height: 200vw; opacity: 0; } }
@@ -14,19 +14,19 @@ body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Couri
 /* MENÚ PRINCIPAL */
 .menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); }
 
-/* ZOMBIS DECORATIVOS (MÁS GRANDES AHORA) */
+/* ZOMBIS DECORATIVOS (MÁS GRANDES) */
 .neon-decor {
-    position: absolute; bottom: 0; width: 350px; /* Antes 300px */
+    position: absolute; bottom: 0; width: 350px; /* Aumentado */
     z-index: 10; pointer-events: none; opacity: 0.9;
-    filter: brightness(0) drop-shadow(0 -5px 15px #ff0000); /* Más brillo */
+    filter: brightness(0) drop-shadow(0 -5px 15px #ff0000); /* Efecto neón rojo */
 }
 .left-decor { left: -60px; transform: scaleX(-1); } 
 .right-decor { right: -60px; }
 
-/* LAYOUT */
-.main-layout { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 50px; z-index: 20; width: 100%; max-width: 1400px; padding: 0 20px; margin-bottom: 40px; /* Espacio para la cinta */ }
+/* LAYOUT MENÚ */
+.main-layout { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 50px; z-index: 20; width: 100%; max-width: 1400px; padding: 0 20px; margin-bottom: 40px; }
 
-/* PANELES */
+/* PANELES LATERALES */
 .hud-panel { width: 280px; height: 420px; background: rgba(10, 0, 0, 0.85); border: 1px solid #700; border-top: 4px solid #f00; padding: 20px; border-radius: 4px; box-shadow: 0 0 25px rgba(150, 0, 0, 0.2); display: flex; flex-direction: column; }
 .panel-header { margin: 0 0 15px 0; color: #f00; font-size: 16px; letter-spacing: 1px; border-bottom: 2px solid #300; padding-bottom: 8px; text-align: center; text-shadow: 0 0 5px #f00; }
 .section-title { font-size: 12px; color: #aaa; margin: 10px 0 5px 0; font-weight: bold; }
@@ -41,7 +41,7 @@ body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Couri
 .objective-box { text-align: center; background: rgba(50,0,0,0.3); padding: 10px; border: 1px solid #500; }
 .obj-main { font-size: 16px; color: #fff; font-weight: bold; margin: 5px 0 0 0; text-shadow: 0 0 5px #f00; }
 
-/* CENTRO */
+/* CENTRO MENÚ */
 .center-stage { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 350px; }
 .boss-hologram img { 
     width: 200px; /* JEFE MÁS GRANDE */
@@ -55,7 +55,7 @@ body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Couri
 #start-btn:hover { background: #f00; color: #000; box-shadow: 0 0 50px #f00; }
 .btn-sub { font-size: 10px; margin-top: 5px; opacity: 0.8; font-weight: normal; }
 
-/* CINTA DE NOTICIAS (TICKER) - ESTILOS */
+/* CINTA DE NOTICIAS (RESTAURADA) */
 .bottom-ticker { position: absolute; bottom: 0; left: 0; width: 100%; height: 35px; background: #100; border-top: 2px solid #f00; display: flex; align-items: center; overflow: hidden; white-space: nowrap; z-index: 150; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
 .ticker-text { color: #f00; font-weight: bold; font-size: 16px; animation: ticker 25s linear infinite; padding-left: 100%; }
 @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-150%); } }
