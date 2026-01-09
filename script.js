@@ -137,7 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         zombies.forEach(z => {
             let angle = Math.atan2(player.y - z.y, player.x - z.x); z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
-            if(Math.hypot(player.x-z.x, player.y-z.y) < 30) { player.hp -= 0.5; updateHUD(); }
+            if(Math.hypot(player.x-z.x, player.y-z.y) < 30) { 
+                player.hp -= 0.5; updateHUD();
+                document.getElementById("blood-screen").style.boxShadow = "inset 0 0 100px rgba(255,0,0,0.8)";
+                setTimeout(()=>document.getElementById("blood-screen").style.boxShadow="none", 100);
+            }
         });
         if(boss) {
             let angle = Math.atan2(player.y - boss.y, player.x - boss.x); boss.x += Math.cos(angle)*2; boss.y += Math.sin(angle)*2;
