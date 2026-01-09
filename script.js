@@ -1,10 +1,9 @@
-/* script.js - V27.0 SUELO GENERADO Y FIX PANTALLA NEGRA */
+/* script.js - V28.1 CORRECCIÓN NOMBRE IMAGEN (asfalto.png) */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     
-    // Función para ajustar el tamaño
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -40,6 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- AQUÍ ESTÁ EL CAMBIO: Apunta a 'asfalto.png' ---
+    const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png'; 
+    
     const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
     const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
     const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
@@ -156,32 +158,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if(player.hp <= 0) location.reload();
     }
 
-    // --- AQUÍ ESTÁ EL ARREGLO DEL FONDO NEGRO ---
     function draw() {
-        // DIBUJAR SUELO CON CÓDIGO (No depende de imagen)
-        // 1. Fondo base gris oscuro
-        ctx.fillStyle = '#1a1a1a';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // 2. Rejilla / Grietas (Simulado con líneas)
-        ctx.strokeStyle = '#2a2a2a';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        for (let x = 0; x < canvas.width; x += 80) {
-            ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
+        if(imgGround.complete) {
+            // Dibuja la imagen estirada
+            ctx.drawImage(imgGround, 0, 0, canvas.width, canvas.height);
+            
+            // Capa de oscuridad (Filtro)
+            ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+        } else {
+            // Fondo de respaldo si falla la imagen
+            ctx.fillStyle='#111'; 
+            ctx.fillRect(0,0,canvas.width,canvas.height);
         }
-        for (let y = 0; y < canvas.height; y += 80) {
-            ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
-        }
-        ctx.stroke();
 
-        // 3. Dibujar entidades
         items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
         if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
         zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
         if(boss && imgBoss.complete) { ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); }
         
-        // 4. Balas
         bullets.forEach(b => { 
             ctx.fillStyle='#ff0'; ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill();
             ctx.shadowBlur=10; ctx.shadowColor='orange';
@@ -189,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.shadowBlur=0;
     }
 
-    // Loop
     const k = {};
     window.addEventListener("keydown", e => k[e.key.toLowerCase()] = true);
     window.addEventListener("keyup", e => k[e.key.toLowerCase()] = false);
@@ -219,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("menu-screen").style.display = "none";
         document.getElementById("game-ui").style.display = "block";
         gameRunning = true;
-        resize(); // Asegurar tamaño
+        resize(); 
         setInterval(() => { if(!boss) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
         setInterval(() => items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}), 8000);
         updateHUD(); loop();
