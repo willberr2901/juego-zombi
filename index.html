@@ -3,99 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Pro Edition</title>
+    <title>Ciudad Z: Master Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="grid-bg"></div>
-    <div id="vignette"></div>
-    <div id="blood-screen"></div> <div id="pulse-wave"></div> <div id="menu-screen" class="menu-overlay">
-        <div class="neon-decor left-decor"><img src="imagenes/zombie.png"></div>
-        <div class="neon-decor right-decor"><img src="imagenes/zombie.png"></div>
-        <div class="main-layout">
-            <div class="hud-panel left-panel">
-                <h3 class="panel-header">📂 SISTEMA V35.0</h3>
-                <ul class="patch-notes">
-                    <li class="buff">[+] Sangre Realista</li>
-                    <li class="buff">[+] Barra de Jefe</li>
-                    <li class="buff">[+] Menú Dinámico</li>
-                </ul>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="damage-overlay"></div>
+    <div id="flash-overlay"></div>
+
+    <div id="menu-screen" class="menu-overlay">
+        <div class="decor-zombie left-z"><img src="imagenes/zombie.png"></div>
+        <div class="decor-zombie right-z"><img src="imagenes/zombie.png"></div>
+        
+        <div class="menu-content">
+            <h1 class="game-title">CIUDAD <span class="red-z">Z</span></h1>
+            <p class="game-subtitle">OPERACIÓN: LIMPIEZA TOTAL</p>
+            
+            <div class="mission-brief">
+                <h3>📝 MISIÓN ACTUAL</h3>
+                <p>El Sector 7 ha caído. Tu objetivo es eliminar la amenaza biológica y sobrevivir a las oleadas.</p>
+                <hr>
+                <p>OBJETIVO: <span class="gold">MATAR AL PACIENTE CERO</span></p>
             </div>
-            <div class="center-stage">
-                <div class="boss-hologram"><img src="imagenes/boss.png"></div>
-                <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-                <button id="start-btn">DESPLEGAR AGENTE</button>
-            </div>
-            <div class="hud-panel right-panel">
-                <h3 class="panel-header">📝 INTRODUCCIÓN</h3>
-                <div class="objective-box">
-                    <p class="intro-lore">"La ciudad ha caído. Eres el último superviviente del Equipo Bravo. Tu misión es limpiar el Sector 7 y eliminar al Paciente Cero."</p>
-                    <p class="obj-main">OBJETIVO: SOBREVIVIR</p>
-                </div>
-            </div>
+
+            <button id="start-btn" class="big-btn">DESPLEGAR AGENTE</button>
+        </div>
+        
+        <div class="ticker-bar">
+            <p>⚠️ ALERTA BIOHAZARD: NIVELES DE INFECCIÓN CRÍTICOS... LA EVACUACIÓN HA SIDO CANCELADA... ⚠️</p>
         </div>
     </div>
 
-    <div id="game-ui" class="ui-container" style="display:none;">
+    <div id="game-ui" class="ui-layer" style="display:none;">
         
-        <div class="hud-card health-card">
-            <div class="icon-pulse">❤️</div>
-            <div class="bar-container">
-                <div class="bar-label">ESTADO DEL AGENTE</div>
-                <div class="hp-track"><div id="health-bar"></div></div>
+        <div class="hud-box health-box">
+            <div class="icon">✚</div>
+            <div class="bar-wrap">
+                <div class="bar-fill" id="hp-bar"></div>
             </div>
-            <div class="big-text"><span id="health-num">100</span>%</div>
+            <div class="value"><span id="hp-text">100</span>%</div>
         </div>
 
-        <div id="boss-hud" class="boss-card" style="display:none;">
+        <div id="boss-container" class="boss-box" style="display:none;">
             <div class="boss-icon">☠️</div>
-            <div class="boss-bar-track">
-                <div id="boss-health-bar"></div>
+            <div class="boss-bar-wrap">
+                <div class="boss-fill" id="boss-bar"></div>
                 <span class="boss-name">PACIENTE CERO</span>
             </div>
         </div>
 
-        <div class="hud-card stats-card">
-            <div class="stat-line">
-                <span class="ammo-icon">🔫</span>
-                <span id="ammo" class="ammo-num">12</span>
-                <span class="label">BALAS</span>
+        <div class="hud-box stats-box">
+            <div class="stat-row">
+                <span class="stat-val yellow" id="ammo">12</span>
+                <span class="stat-label">BALAS</span>
+                <span class="stat-icon">🔫</span>
             </div>
-            <div class="stat-separator"></div>
-            <div class="stat-line">
-                <span class="skull-icon">💀</span>
-                <span id="score" class="score-num">0</span>
-                <span class="label">BAJAS</span>
+            <div class="sep"></div>
+            <div class="stat-row">
+                <span class="stat-val white" id="score">0</span>
+                <span class="stat-label">BAJAS</span>
+                <span class="stat-icon">💀</span>
             </div>
-            <div class="level-indicator">NIVEL <span id="level">1</span></div>
+            <div class="level-tag">NIVEL <span id="level">1</span></div>
         </div>
 
-        <button id="pause-btn">⏸️</button>
+        <button id="pause-btn">⚙️ PAUSA</button>
 
-        <div id="big-alert" class="alert-overlay">
-            <h2 id="alert-title">¡OLEADA COMPLETADA!</h2>
-            <p id="alert-sub">PREPARANDO SIGUIENTE NIVEL...</p>
+        <div id="big-message" class="message-overlay">
+            <h2 id="msg-title">¡JEFE EN CAMINO!</h2>
+            <p id="msg-sub">PREPÁRATE</p>
         </div>
     </div>
 
     <div id="pause-menu" class="menu-overlay" style="display:none; background: rgba(0,0,0,0.85);">
-        <div class="pause-box">
-            <h2 class="pause-title">JUEGO PAUSADO</h2>
-            <div class="pause-stats">
-                <p>PUNTUACIÓN ACTUAL: <span id="pause-score">0</span></p>
+        <div class="pause-panel">
+            <h2>JUEGO PAUSADO</h2>
+            <div class="stats-summary">
+                <p>Puntos: <span id="pause-score">0</span></p>
             </div>
-            <button id="resume-btn" class="menu-btn">CONTINUAR</button>
-            <button id="restart-btn" class="menu-btn">REINICIAR MISIÓN</button>
-            <button id="home-btn" class="menu-btn red-btn">IR AL INICIO</button>
+            <button id="resume-btn" class="menu-btn">REANUDAR</button>
+            <button id="restart-btn" class="menu-btn">REINICIAR</button>
+            <button id="home-btn" class="menu-btn red">SALIR AL MENÚ</button>
         </div>
     </div>
 
     <div id="touch-zone"></div>
-    <div id="joystick-wrapper" style="display:none;"><div id="joystick-stick"></div></div>
-    <div class="action-btn"><button id="btn-fire">🔥</button></div>
+    <div id="joy-base" style="display:none;"><div id="joy-stick"></div></div>
+    <div id="fire-btn-zone"><button id="fire-btn">🔥</button></div>
 
-    <canvas id="gameCanvas"></canvas>
     <script src="script.js"></script>
 </body>
 </html>
