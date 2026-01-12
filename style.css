@@ -1,17 +1,25 @@
-body, html { margin:0; padding:0; overflow:hidden; font-family: sans-serif; background:#111; color:#fff;}
-#intro-screen, #menu-screen, #pause-menu { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; background:rgba(0,0,0,0.9); z-index:10;}
-#game-ui { display:none; position:relative; width:100%; height:100%; }
-#hud { position:absolute; top:10px; left:10px; z-index:5; font-size:18px;}
-#health-bar-container { display:inline-block; width:100px; height:10px; background:#555; margin:0 5px;}
-#health-bar { height:100%; width:100%; background:red;}
-#boss-hud { position:absolute; top:50px; left:10px; display:none; }
-#boss-health-bar { width:200px; height:15px; background:red; }
-#blood-screen { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
-#pause-menu { display:none; position:absolute; top:0; left:0; width:100%; height:100%; justify-content:center; align-items:center; background:rgba(0,0,0,0.8); z-index:20;}
-#big-alert { position:absolute; top:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.7); padding:15px; border:2px solid #f00; display:none; z-index:30; }
-.alert-visible { display:block; animation:fade 0.5s;}
-@keyframes fade { 0%{opacity:0}50%{opacity:1}100%{opacity:0} }
-#joystick-wrapper { display:none; position:absolute; width:120px; height:120px; border:2px solid #fff; border-radius:50%; touch-action:none; z-index:5;}
-#joystick-stick { width:60px; height:60px; background:#fff; border-radius:50%; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); }
-#touch-zone { position:absolute; width:100%; height:100%; z-index:1; }
-#btn-fire { position:absolute; bottom:20px; right:20px; z-index:5; font-size:18px; padding:10px 20px;}
+body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Courier New', monospace; overflow: hidden; touch-action: none; user-select: none; }
+.grid-bg { position: absolute; inset: 0; opacity: 0.15; background-image: linear-gradient(#500 1px, transparent 1px), linear-gradient(90deg, #500 1px, transparent 1px); background-size: 40px 40px; z-index: 1; pointer-events: none; }
+#vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle, transparent 20%, #000 100%); }
+#blood-screen { position: absolute; inset: 0; pointer-events: none; z-index: 40; box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: box-shadow 0.1s; }
+
+/* MENÚ PRINCIPAL */
+.menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); flex-direction: column; }
+.main-title { font-size: 65px; margin: 15px 0; color: #fff; font-family: 'Arial Black', sans-serif; letter-spacing: -2px; text-shadow: 0 5px 0 #000; }
+#start-btn { padding: 15px 50px; font-size: 22px; background: #000; color: #f00; border: 2px solid #f00; cursor: pointer; }
+#start-btn:hover { background: #f00; color: #000; }
+
+/* HUD */
+.ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+.hud-card { position: absolute; background: rgba(0, 0, 0, 0.9); border: 2px solid #555; border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 5px 15px #000; }
+.health-card { top: 20px; left: 20px; width: 320px; border-left: 5px solid #e74c3c; }
+.hp-track { width: 100%; height: 18px; background: #222; border: 1px solid #444; overflow: hidden; }
+#health-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #c0392b, #e74c3c); transition: width 0.2s; }
+.stats-card { top: 20px; right: 20px; flex-direction: column; align-items: flex-end; border-right: 5px solid #f1c40f; }
+.ammo-num { font-size: 32px; font-weight: 900; color: #f1c40f; }
+.score-num { font-size: 20px; font-weight: bold; color: #fff; }
+.level-indicator { font-size: 12px; color: #3498db; font-weight: bold; letter-spacing: 2px; margin-top: 5px; }
+
+/* JOYSTICK */
+#joystick-wrapper { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.1); pointer-events: none; z-index: 55; }
+#joystick-stick { position: absolute; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.3); top: 50%; left: 50%; transform: translate(-50%, -50%); }
