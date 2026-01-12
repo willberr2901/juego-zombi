@@ -1,252 +1,100 @@
-/* script.js - V37.0 SANGRE Y ACCIÓN PRO (INTACTO) */
+/* style.css - V37.1 (MENU MEJORADO + HUD PRO) */
+body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Courier New', monospace; overflow: hidden; touch-action: none; user-select: none; }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-    
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+/* EFECTOS GLOBALES */
+.grid-bg { position: absolute; inset: 0; opacity: 0.15; background-image: linear-gradient(#500 1px, transparent 1px), linear-gradient(90deg, #500 1px, transparent 1px); background-size: 40px 40px; z-index: 1; pointer-events: none; }
+#vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle, transparent 20%, #000 100%); }
+#blood-screen { position: absolute; inset: 0; pointer-events: none; z-index: 40; box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: box-shadow 0.1s; }
+
+/* --- MENÚ PRINCIPAL (ESTILO V37 CON MEJORAS) --- */
+.menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); flex-direction: column; }
+.neon-decor { position: absolute; bottom: 0; width: 300px; z-index: 10; pointer-events: none; opacity: 0.85; filter: brightness(0) drop-shadow(0 -5px 8px #ff0000); }
+.left-decor { left: -50px; transform: scaleX(-1); } .right-decor { right: -50px; }
+
+.main-layout { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 50px; z-index: 20; width: 100%; max-width: 1300px; padding: 0 20px; }
+.hud-panel { width: 280px; height: 420px; /* Un poco más alto para la nueva info */ background: rgba(10, 0, 0, 0.85); border: 1px solid #700; border-top: 4px solid #f00; padding: 20px; border-radius: 4px; box-shadow: 0 0 25px rgba(150, 0, 0, 0.2); display: flex; flex-direction: column; }
+.panel-header { margin: 0 0 15px 0; color: #f00; font-size: 16px; letter-spacing: 1px; border-bottom: 2px solid #300; padding-bottom: 8px; text-align: center; text-shadow: 0 0 5px #f00; }
+.section-title { font-size: 12px; color: #aaa; margin: 15px 0 5px 0; font-weight: bold; }
+.patch-notes { padding: 0; list-style: none; font-size: 11px; color: #ccc; margin: 0; }
+.patch-notes li { margin-bottom: 4px; border-left: 2px solid #333; padding-left: 5px; }
+.buff { color: #4f4; border-color: #4f4 !important; } .nerf { color: #f44; border-color: #f44 !important; }
+.system-footer { margin-top: auto; font-size: 9px; color: #666; text-align: center; border-top: 1px solid #333; padding-top: 5px; }
+.intel-grid { display: flex; flex-direction: column; gap: 8px; font-size: 12px; }
+.intel-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #333; padding-bottom: 2px; }
+.intel-row span { color: #888; } .intel-row .val { color: #fff; font-weight: bold; } .intel-row .red { color: #f00; }
+.panel-hr { border: 0; border-top: 1px solid #500; margin: 15px 0; }
+.objective-box { text-align: center; background: rgba(50,0,0,0.3); padding: 10px; border: 1px solid #500; }
+.obj-label { font-size: 10px; color: #f00; margin: 0; letter-spacing: 2px; }
+.obj-main { font-size: 15px; color: #fff; font-weight: bold; margin: 5px 0 0 0; text-shadow: 0 0 5px #f00; }
+.center-stage { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 350px; }
+
+/* --- ANIMACIÓN DEL JEFE (ZOOM PRO) --- */
+.boss-hologram img {
+    width: 170px;
+    /* Sombra y contraste inicial */
+    filter: drop-shadow(0 0 35px #f00) contrast(1.1);
+    /* Nueva animación de Zoom */
+    animation: bossZoom 3s ease-in-out infinite alternate;
+}
+/* Keyframes para el efecto de acercarse y alejarse */
+@keyframes bossZoom {
+    0% {
+        transform: scale(1); /* Tamaño normal */
+        filter: drop-shadow(0 0 35px #f00) contrast(1.1) blur(0px);
     }
-    window.addEventListener('resize', resize);
-    resize();
-
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    // IMÁGENES
-    const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png';
-    const imgPlayer = new Image(); imgPlayer.src = 'imagenes/player.png';
-    const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
-    const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
-    const imgBoss = new Image(); imgBoss.src = 'imagenes/boss.png';
-
-    // VARIABLES
-    let gameRunning = false, isPaused = false;
-    let score = 0, level = 1, ammo = 12, maxAmmo = 12;
-    let killCount = 0, killsForNextLevel = 10;
-    
-    let zombies = [], bullets = [], items = [], particles = []; // Sangre
-    let boss = null;
-    let player = { x: canvas.width/2, y: canvas.height/2, hp: 100, maxHp: 100, speed: 5 };
-
-    // AUDIO SIMPLE
-    let audioCtx;
-    function initAudio() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); }
-    function playTone(f, t) { if(!audioCtx) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.frequency.value=f; o.type=t; g.gain.value=0.1; o.start(); o.stop(audioCtx.currentTime+0.1); }
-
-    // --- EFECTO SANGRE (PUNTO 6) ---
-    function spawnBlood(x, y) {
-        // "Chorra más" = Más partículas
-        for(let i=0; i<12; i++){
-            particles.push({
-                x: x, y: y,
-                vx: (Math.random()-0.5)*12, // Más expansión
-                vy: (Math.random()-0.5)*12,
-                life: 1.0, 
-                size: Math.random()*6+3, // Gotas más grandes
-                color: '#8a0303' // Rojo oscuro
-            });
-        }
+    100% {
+        transform: scale(1.3); /* 30% más grande (acercado) */
+        /* Un poco más de brillo y un ligero desenfoque al acercarse */
+        filter: drop-shadow(0 0 50px #f00) contrast(1.3) blur(1px);
     }
+}
 
-    // --- ALERTAS (PUNTO 4) ---
-    function showAlert(title, sub) {
-        const alertBox = document.getElementById("big-alert");
-        document.getElementById("alert-title").innerText = title;
-        document.getElementById("alert-sub").innerText = sub;
-        alertBox.classList.add("alert-visible");
-        setTimeout(() => { alertBox.classList.remove("alert-visible"); }, 3000);
-    }
+.main-title { font-size: 65px; margin: 15px 0; color: #fff; font-family: 'Arial Black', sans-serif; letter-spacing: -2px; text-shadow: 0 5px 0 #000; }
+.blood-text { color: #f00; text-shadow: 0 0 25px #f00; }
+#start-btn { padding: 15px 50px; font-size: 22px; background: #000; color: #f00; border: 2px solid #f00; cursor: pointer; font-family: 'Courier New', monospace; font-weight: 900; box-shadow: 0 0 20px #f00; transition: 0.2s; letter-spacing: 1px; display: flex; flex-direction: column; align-items: center; }
+#start-btn:hover { background: #f00; color: #000; box-shadow: 0 0 50px #f00; }
+.btn-sub { font-size: 10px; margin-top: 5px; opacity: 0.8; font-weight: normal; }
+.bottom-ticker { position: absolute; bottom: 0; left: 0; width: 100%; height: 30px; background: #100; border-top: 1px solid #f00; display: flex; align-items: center; overflow: hidden; white-space: nowrap; }
+.ticker-text { color: #f00; font-weight: bold; font-size: 14px; animation: ticker 15s linear infinite; padding-left: 100%; }
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-150%); } }
 
-    // --- LÓGICA DE JUEGO ---
-    function levelUp() {
-        level++;
-        killsForNextLevel += 5;
-        killCount = 0;
-        ammo = maxAmmo;
-        player.hp = Math.min(player.maxHp, player.hp + 30);
-        
-        // Regalo visual: Todos los zombies explotan
-        zombies.forEach(z => spawnBlood(z.x, z.y));
-        zombies = [];
-        
-        showAlert("¡NIVEL " + level + "!", "RECOMPENSA: MUNICIÓN LLENA");
-        updateHUD();
-    }
-
-    function spawnBoss() {
-        boss = { x: canvas.width/2, y: -100, hp: 200 + (level*50), maxHp: 200 + (level*50) };
-        document.getElementById("boss-hud").style.display = "flex";
-        showAlert("¡ALERTA!", "PACIENTE CERO EN CAMINO");
-    }
-
-    function updateHUD() {
-        document.getElementById("score").innerText = score;
-        document.getElementById("ammo").innerText = ammo;
-        document.getElementById("level").innerText = level;
-        document.getElementById("health-num").innerText = Math.floor(player.hp);
-        document.getElementById("health-bar").style.width = Math.max(0, player.hp) + "%";
-        
-        if (boss) {
-            document.getElementById("boss-health-bar").style.width = (boss.hp / boss.maxHp * 100) + "%";
-        } else {
-            document.getElementById("boss-hud").style.display = "none";
-        }
-    }
-
-    function shoot() {
-        if(ammo <= 0 || isPaused) return;
-        let vx, vy;
-        if (!isMobile) {
-            const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
-            vx = Math.cos(angle) * 20; vy = Math.sin(angle) * 20;
-        } else {
-            if (dragging) { vx = joyX * 20; vy = joyY * 20; }
-            else {
-                let target = boss || zombies[0]; 
-                if (target) { const angle = Math.atan2(target.y - player.y, target.x - player.x); vx = Math.cos(angle) * 20; vy = Math.sin(angle) * 20; }
-                else { vx = 0; vy = -20; }
-            }
-        }
-        bullets.push({x: player.x, y: player.y, vx: vx, vy: vy});
-        ammo--; updateHUD(); playTone(400, 'square');
-    }
-
-    // --- LOOP ---
-    function update() {
-        let dx = joyX, dy = joyY;
-        if(!dragging) { if(k['d']) dx=1; if(k['a']) dx=-1; if(k['s']) dy=1; if(k['w']) dy=-1; }
-        player.x += dx * player.speed; player.y += dy * player.speed;
-        player.x = Math.max(0, Math.min(canvas.width, player.x)); 
-        player.y = Math.max(0, Math.min(canvas.height, player.y));
-
-        // Balas (PUNTO 5: Realistas)
-        for(let i=bullets.length-1; i>=0; i--){
-            let b = bullets[i]; b.x += b.vx; b.y += b.vy;
-            if(b.x<0||b.x>canvas.width||b.y<0||b.y>canvas.height) { bullets.splice(i,1); continue; }
-            
-            for(let j=zombies.length-1; j>=0; j--){
-                if(Math.hypot(b.x-zombies[j].x, b.y-zombies[j].y) < 35) {
-                    spawnBlood(zombies[j].x, zombies[j].y); // Sangre al impactar
-                    zombies.splice(j,1); bullets.splice(i,1);
-                    score+=10; killCount++; updateHUD();
-                    if (killCount >= killsForNextLevel && !boss) levelUp();
-                    if (score > 0 && score % 300 === 0 && !boss) spawnBoss();
-                    break;
-                }
-            }
-            if(boss && Math.hypot(b.x-boss.x, b.y-boss.y) < 60) {
-                boss.hp -= 5; bullets.splice(i,1); updateHUD();
-                spawnBlood(boss.x, boss.y);
-                if(boss.hp <= 0) { 
-                    boss=null; score+=500; levelUp(); 
-                    showAlert("¡JEFE ELIMINADO!", "+500 PUNTOS");
-                }
-            }
-        }
-
-        // Sangre (Actualizar)
-        for(let i=particles.length-1; i>=0; i--){
-            let p = particles[i];
-            p.x += p.vx; p.y += p.vy; p.life -= 0.03; // Duran más
-            if(p.life <= 0) particles.splice(i,1);
-        }
-
-        // Zombis
-        zombies.forEach(z => {
-            let angle = Math.atan2(player.y - z.y, player.x - z.x);
-            z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
-            if(Math.hypot(player.x-z.x, player.y-z.y) < 30) { 
-                player.hp -= 0.5; updateHUD();
-                document.getElementById("blood-screen").style.boxShadow = "inset 0 0 50px rgba(255,0,0,0.5)";
-                setTimeout(()=>document.getElementById("blood-screen").style.boxShadow="none", 100);
-            }
-        });
-
-        if(boss) {
-            let angle = Math.atan2(player.y - boss.y, player.x - boss.x);
-            boss.x += Math.cos(angle)*2.5; boss.y += Math.sin(angle)*2.5;
-            if(Math.hypot(player.x-boss.x, player.y-boss.y) < 50) { player.hp -= 1; updateHUD(); }
-        }
-
-        for(let i=items.length-1; i>=0; i--) {
-            if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) { ammo += 10; items.splice(i,1); updateHUD(); }
-        }
-        if(player.hp <= 0) showPauseMenu("¡MISIÓN FALLIDA!");
-    }
-
-    function draw() {
-        // Fondo (Con seguridad para que no se vea negro)
-        ctx.fillStyle = '#222'; ctx.fillRect(0,0,canvas.width,canvas.height); // Fondo base
-        if(imgGround.complete) {
-            ctx.drawImage(imgGround, 0, 0, canvas.width, canvas.height);
-            // Capa oscura sutil
-            ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-        }
-
-        // Sangre en el piso
-        particles.forEach(p => {
-            ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
-            ctx.globalAlpha = 1.0;
-        });
-
-        items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
-        if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
-        zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
-        if(boss && imgBoss.complete) { ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); }
-        
-        // Balas Trazadoras (Líneas doradas)
-        ctx.strokeStyle = '#f1c40f'; ctx.lineWidth = 4;
-        bullets.forEach(b => {
-            ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(b.x - b.vx, b.y - b.vy); ctx.stroke();
-        });
-    }
-
-    function loop() { if(gameRunning && !isPaused) { update(); draw(); requestAnimationFrame(loop); } }
-
-    // --- MENÚ PAUSA (PUNTO 8) ---
-    function showPauseMenu(title="JUEGO PAUSADO") {
-        isPaused = true;
-        document.querySelector(".pause-title").innerText = title;
-        document.getElementById("pause-menu").style.display = "flex";
-    }
-    
-    // Listeners Botones
-    document.getElementById("start-btn").onclick = () => {
-        initAudio();
-        document.getElementById("menu-screen").style.display = "none";
-        document.getElementById("game-ui").style.display = "block";
-        gameRunning = true; isPaused = false;
-        player.hp=100; score=0; level=1; ammo=12; killCount=0;
-        zombies=[]; bullets=[]; items=[]; boss=null; particles=[];
-        resize();
-        setInterval(() => { if(!boss && !isPaused && gameRunning) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
-        setInterval(() => { if(!isPaused && gameRunning) items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}); }, 8000);
-        updateHUD(); loop();
-    };
-
-    document.getElementById("pause-btn").onclick = () => showPauseMenu();
-    document.getElementById("resume-btn").onclick = () => { if(player.hp > 0) { isPaused = false; document.getElementById("pause-menu").style.display="none"; loop(); } };
-    document.getElementById("restart-btn").onclick = () => { document.getElementById("start-btn").click(); document.getElementById("pause-menu").style.display="none"; };
-    document.getElementById("home-btn").onclick = () => location.reload();
-
-    // Inputs
-    const k={}; let mouseX=0, mouseY=0, joyX=0, joyY=0, dragging=false, startX, startY;
-    window.addEventListener("keydown", e => k[e.key.toLowerCase()] = true);
-    window.addEventListener("keyup", e => k[e.key.toLowerCase()] = false);
-    window.addEventListener('mousemove', e => { const r=canvas.getBoundingClientRect(); mouseX=e.clientX-r.left; mouseY=e.clientY-r.top; });
-    
-    document.getElementById("btn-fire").addEventListener("touchstart", (e)=>{e.preventDefault(); shoot();});
-    window.addEventListener("mousedown", e => { if(gameRunning && !isPaused && e.target.tagName !== 'BUTTON') shoot(); });
-
-    // Joystick Logic
-    const touchZone = document.getElementById("touch-zone");
-    const joyWrapper = document.getElementById("joystick-wrapper");
-    const joyStick = document.getElementById("joystick-stick");
-    if(touchZone) {
-        touchZone.addEventListener("touchstart", e => { if(isPaused) return; e.preventDefault(); const t=e.touches[0]; startX=t.clientX; startY=t.clientY; dragging=true; joyWrapper.style.display="block"; joyWrapper.style.left=(startX-60)+"px"; joyWrapper.style.top=(startY-60)+"px"; joyStick.style.transform=`translate(-50%, -50%)`; joyX=0; joyY=0; });
-        touchZone.addEventListener("touchmove", e => { if(!dragging || isPaused) return; e.preventDefault(); const t=e.touches[0]; let dx=t.clientX-startX; let dy=t.clientY-startY; const dist=Math.hypot(dx, dy); if(dist>50){ const r=50/dist; dx*=r; dy*=r; } joyStick.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; joyX=dx/50; joyY=dy/50; });
-        touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
-    }
-});
+/* --- HUD DE JUEGO (INTACTO V37) --- */
+.ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+.hud-card { position: absolute; background: rgba(0, 0, 0, 0.9); border: 2px solid #555; border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 5px 15px #000; }
+.health-card { top: 20px; left: 20px; border-left: 5px solid #e74c3c; width: 320px; }
+.icon-pulse { font-size: 28px; animation: beat 1s infinite; }
+@keyframes beat { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
+.bar-container { flex-grow: 1; }
+.bar-label { font-size: 10px; color: #aaa; margin-bottom: 3px; font-weight: bold; letter-spacing: 1px; }
+.hp-track { width: 100%; height: 18px; background: #222; border: 1px solid #444; overflow: hidden; }
+#health-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #c0392b, #e74c3c); transition: width 0.2s; }
+.big-text { font-size: 24px; font-weight: 900; }
+.stats-card { top: 20px; right: 20px; flex-direction: column; align-items: flex-end; border-right: 5px solid #f1c40f; padding: 10px 20px; gap: 5px; }
+.stat-line { display: flex; align-items: center; gap: 10px; }
+.ammo-num { font-size: 32px; font-weight: 900; color: #f1c40f; }
+.score-num { font-size: 20px; font-weight: bold; color: #fff; }
+.label { font-size: 10px; color: #aaa; font-weight: bold; }
+.stat-separator { width: 100%; height: 1px; background: #444; margin: 5px 0; }
+.level-indicator { font-size: 12px; color: #3498db; font-weight: bold; letter-spacing: 2px; margin-top: 5px; }
+.boss-card { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 400px; background: rgba(0,0,0,0.9); border: 2px solid #8e44ad; padding: 10px; display: flex; align-items: center; gap: 10px; border-radius: 5px; }
+.boss-icon { font-size: 24px; }
+.boss-bar-track { flex-grow: 1; height: 20px; background: #222; position: relative; }
+#boss-health-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #8e44ad, #9b59b6); transition: width 0.2s; }
+.boss-name { position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 10px; font-weight: bold; line-height: 20px; text-shadow: 1px 1px #000; }
+#pause-btn { position: absolute; top: 140px; right: 20px; background: #333; color: #fff; border: 1px solid #777; padding: 8px 15px; cursor: pointer; pointer-events: auto; border-radius: 4px; font-weight: bold; }
+.alert-overlay { position: absolute; top: 40%; left: 0; width: 100%; text-align: center; pointer-events: none; opacity: 0; transition: opacity 0.5s; background: rgba(0,0,0,0.6); padding: 20px 0; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
+.alert-visible { opacity: 1; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+#alert-title { font-size: 40px; color: #f1c40f; margin: 0; text-shadow: 0 0 20px #f1c40f; }
+#alert-sub { font-size: 20px; color: #fff; margin: 5px 0; letter-spacing: 3px; }
+.pause-box { background: #111; border: 2px solid #fff; padding: 30px; text-align: center; border-radius: 10px; box-shadow: 0 0 50px rgba(255,255,255,0.2); }
+.pause-title { color: #fff; font-size: 30px; margin-bottom: 20px; letter-spacing: 5px; }
+.menu-btn { display: block; width: 220px; padding: 12px; margin: 10px auto; background: #333; color: #fff; border: 1px solid #555; cursor: pointer; font-weight: bold; }
+.menu-btn:hover { background: #fff; color: #000; }
+.red-btn { border-color: #c00; color: #c00; } .red-btn:hover { background: #c00; color: #fff; }
+#touch-zone { position: absolute; inset: 0; z-index: 60; }
+#joystick-wrapper { position: absolute; width: 120px; height: 120px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: none; z-index: 65; }
+#joystick-stick { position: absolute; width: 50px; height: 50px; background: rgba(255,255,255,0.6); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.action-btn { position: absolute; bottom: 50px; right: 30px; z-index: 70; pointer-events: auto; }
+#btn-fire { width: 90px; height: 90px; border-radius: 50%; background: rgba(200, 0, 0, 0.5); border: 2px solid #fff; cursor: pointer; color: white; font-size: 35px; }
+@media (min-width: 1024px) { #touch-zone, .action-btn { display: none; } }
+@media (max-width: 900px) { .main-layout { flex-direction: column; gap: 30px; margin-bottom: 50px; } .boss-card { width: 90%; } }
