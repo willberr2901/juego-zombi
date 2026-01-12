@@ -3,74 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SANGRE Y ACCIÓN PRO</title>
+<title>Sangre y Acción Pro</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<!-- PANTALLA DE INTRO -->
-<div id="intro-screen">
-    <div class="intro-content">
-        <h1>¡Bienvenido a SANGRE Y ACCIÓN PRO!</h1>
-        <p id="controls-info"></p>
-        <button id="intro-btn">COMENZAR MISIÓN</button>
+    <!-- INTRO -->
+    <div id="intro-screen">
+        <h1>BIENVENIDO A SANGRE Y ACCIÓN PRO</h1>
+        <div id="controls-info"></div>
+        <button id="intro-btn">COMENZAR</button>
     </div>
-</div>
 
-<!-- MENÚ PRINCIPAL -->
-<div id="menu-screen">
-    <h1>MENÚ</h1>
-    <button id="start-btn">INICIAR JUEGO</button>
-</div>
+    <!-- MENÚ PRINCIPAL -->
+    <div id="menu-screen">
+        <h2>MENÚ PRINCIPAL</h2>
+        <button id="start-btn">INICIAR JUEGO</button>
+    </div>
 
-<!-- HUD DEL JUEGO -->
-<div id="game-ui">
-    <canvas id="gameCanvas"></canvas>
-    <div id="hud">
-        <div>Score: <span id="score">0</span></div>
-        <div>Ammo: <span id="ammo">12</span></div>
-        <div>Nivel: <span id="level">1</span></div>
-        <div>HP: <span id="health-num">100</span>
-            <div id="health-bar"></div>
+    <!-- JUEGO / HUD -->
+    <div id="game-ui">
+        <canvas id="gameCanvas"></canvas>
+        <div id="hud">
+            <div>Puntos: <span id="score">0</span></div>
+            <div>Muni: <span id="ammo">12</span></div>
+            <div>Nivel: <span id="level">1</span></div>
+            <div>Vida: <div id="health-bar-container"><div id="health-bar"></div></div> <span id="health-num">100</span></div>
         </div>
+        <div id="boss-hud">
+            <div>Jefe</div>
+            <div id="boss-health-bar"></div>
+        </div>
+        <div id="blood-screen"></div>
+        <button id="pause-btn">PAUSA</button>
     </div>
 
-    <!-- Boss HUD -->
-    <div id="boss-hud">
-        <div>JEFE</div>
-        <div id="boss-health-bar"></div>
-    </div>
-
-    <!-- Pantalla de sangre -->
-    <div id="blood-screen"></div>
-
-    <!-- Botones de pausa -->
-    <button id="pause-btn">PAUSA</button>
-
-    <!-- Menú de pausa -->
+    <!-- MENÚ PAUSA -->
     <div id="pause-menu">
-        <h2 class="pause-title">JUEGO PAUSADO</h2>
+        <h1 class="pause-title">JUEGO PAUSADO</h1>
         <button id="resume-btn">RESUMIR</button>
         <button id="restart-btn">REINICIAR</button>
-        <button id="home-btn">MENÚ</button>
+        <button id="home-btn">SALIR</button>
     </div>
-</div>
 
-<!-- ALERTAS GRANDES -->
-<div id="big-alert">
-    <h2 id="alert-title"></h2>
-    <p id="alert-sub"></p>
-</div>
+    <!-- ALERTAS -->
+    <div id="big-alert">
+        <h2 id="alert-title"></h2>
+        <p id="alert-sub"></p>
+    </div>
 
-<!-- Zona táctil para joystick (móvil) -->
-<div id="touch-zone">
+    <!-- JOYSTICK MÓVIL -->
+    <div id="touch-zone"></div>
     <div id="joystick-wrapper">
         <div id="joystick-stick"></div>
     </div>
-</div>
-
-<!-- Botón de disparo (móvil) -->
-<button id="btn-fire">🔫</button>
+    <button id="btn-fire">DISPARAR</button>
 
 <script src="script.js"></script>
 </body>
