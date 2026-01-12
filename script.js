@@ -269,14 +269,6 @@
     zombies.forEach(z => imgZombie.complete && ctx.drawImage(imgZombie, z.x - 32, z.y - 32, 64, 64));
     boss && imgBoss.complete && ctx.drawImage(imgBoss, boss.x - 64, boss.y - 64, 128, 128);
 
-     // DEBUG: posición jugador
-    ctx.fillStyle = "white";
-    ctx.fillText(
-      `X:${Math.floor(player.x)} Y:${Math.floor(player.y)}`,
-      20,
-      30
-    );
-
     // Balas
     ctx.strokeStyle = '#f1c40f';
     ctx.lineWidth = 4;
