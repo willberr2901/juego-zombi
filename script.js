@@ -271,5 +271,3 @@ itemInterval = setInterval(() => {
         touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
     }
 });
-let zombieInterval = null;
-
