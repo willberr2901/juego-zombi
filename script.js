@@ -9,6 +9,29 @@
         function resize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+
+            const introScreen = document.getElementById("intro-screen");
+            const introBtn = document.getElementById("intro-btn");
+            const controlsInfo = document.getElementById("controls-info");
+
+        if (isMobile) {
+          controlsInfo.innerHTML = `
+        📱 <strong>CONTROLES MÓVIL</strong><br>
+        Moverse: Joystick<br>
+        Disparar: Botón 🔫
+          `;
+} else {
+  controlsInfo.innerHTML = `
+    🖥️ <strong>CONTROLES PC</strong><br>
+    Moverse: W A S D<br>
+    Disparar: Mouse
+  `;
+}
+
+introBtn.onclick = () => {
+  introScreen.style.display = "none";
+};
+
         }
         window.addEventListener('resize', resize);
         resize();
