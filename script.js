@@ -37,11 +37,17 @@ if (isMobile) {
 }
 
 // Bloquear menú hasta cerrar intro
-document.getElementById("menu-screen").style.display = "none";
+const menuScreen = document.getElementById("menu-screen");
+
+if (menuScreen) {
+  menuScreen.style.display = "none";
+}
 
 introBtn.onclick = () => {
   introScreen.style.display = "none";
-  document.getElementById("menu-screen").style.display = "flex";
+  if (menuScreen) {
+    menuScreen.style.display = "flex";
+  }
 };
     
         // IMÁGENES
