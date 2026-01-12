@@ -63,4 +63,15 @@ body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Couri
 .boss-icon { font-size: 24px; }
 .boss-bar-track { flex-grow: 1; height: 20px; background: #222; position: relative; }
 #boss-health-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #8e44ad, #9b59b6); transition: width 0.2s; }
-.boss-name { position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 10px; font-weight: bold;
+.boss-name { position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 10px; font-weight: bold; color: #fff; text-shadow: 0 0 3px #000; }
+
+/* ALERTAS */
+.alert-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); color: #f00; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Courier New', monospace; font-size: 36px; font-weight: 900; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.alert-visible { opacity: 1; pointer-events: all; animation: pulseAlert 1s ease-in-out infinite alternate; }
+@keyframes pulseAlert { 0% {text-shadow: 0 0 10px #f00;} 100% {text-shadow: 0 0 30px #f00;} }
+
+/* JOYSTICK */
+#joystick-wrapper { position: absolute; bottom: 100px; left: 80px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%; pointer-events: auto; touch-action: none; }
+#joystick-stick { width: 50px; height: 50px; background: rgba(255,0,0,0.5); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+.action-btn { position: absolute; bottom: 90px; right: 40px; pointer-events: auto; }
+.action-btn button { width: 80px; height: 80px; border-radius: 50%; font-size: 24px; background: #f00; color: #fff; border: none; box-shadow: 0 0 25px #f00; cursor: pointer; }
