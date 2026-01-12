@@ -1,57 +1,111 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sangre y Acción Pro</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ciudad Z: V61 Graphics Fix</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- CANVAS -->
-<canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas"></canvas>
 
-<!-- INTRODUCCIÓN -->
-<div id="intro-screen">
-    <h1>¡BIENVENIDO!</h1>
-    <p id="controls-info">Cargando controles...</p>
-    <button id="intro-btn">JUGAR</button>
-</div>
+    <div id="vignette"></div>
+    <div id="blood-screen"></div>
+    <div id="flash-effect"></div>
+    <div id="dog-fog"></div>
+    <div id="heli-shadow"></div>
 
-<!-- MENÚ PRINCIPAL -->
-<div id="menu-screen">
-    <h2>Menú Principal</h2>
-    <button onclick="startGame()">Iniciar Juego</button>
-    <button onclick="showPauseMenu()">Pausar</button>
-</div>
+    <div id="menu-screen" class="menu-overlay">
+        <div class="neon-decor left-decor"><img src="imagenes/zombie.png" onerror="this.style.display='none'"></div>
+        <div class="neon-decor right-decor"><img src="imagenes/zombie.png" onerror="this.style.display='none'"></div>
 
-<!-- HUD -->
-<div id="hud">
-    <div>Puntaje: <span id="score">0</span></div>
-    <div>Nivel: <span id="level">1</span></div>
-    <div>Munición: <span id="ammo">12</span></div>
-    <div>Salud: <span id="health-num">100</span></div>
-    <div id="health-bar"></div>
-</div>
+        <div class="main-layout">
+            <div class="hud-panel left-panel">
+                <h3 class="panel-header">SISTEMA V61.0</h3>
+                <div class="intel-grid">
+                    <div class="intel-row"><span>MOTOR GRÁFICO:</span> <span class="val buff">ACTUALIZADO</span></div>
+                    <div class="intel-row"><span>ESTADO:</span> <span class="val gold">LISTO</span></div>
+                </div>
+                <hr class="panel-hr">
+                <ul class="patch-notes">
+                    <li class="buff">[+] Renderizado 3D Simulado</li>
+                    <li class="buff">[+] Corrección de Inicio</li>
+                    <li class="buff">[+] Interfaz Militar</li>
+                </ul>
+            </div>
 
-<!-- ALERTA GRANDE -->
-<div id="big-alert">
-    <div id="alert-title">TÍTULO</div>
-    <div id="alert-sub">SUBTÍTULO</div>
-</div>
+            <div class="center-stage">
+                <div class="boss-hologram"><img src="imagenes/boss.png" onerror="this.style.display='none'" alt="BOSS"></div>
+                <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
+                <button id="start-btn" class="big-btn">DESPLEGAR AGENTE</button>
+            </div>
 
-<!-- HUD BOSS -->
-<div id="boss-hud">
-    <div id="boss-health-bar"></div>
-</div>
+            <div class="hud-panel right-panel">
+                <h3 class="panel-header">CONTROLES</h3>
+                <div class="objective-box">
+                    <p><span style="color:#f1c40f">WASD</span>: MOVER</p>
+                    <p><span style="color:#e74c3c">CLIC</span>: DISPARAR</p>
+                    <p><span style="color:#3498db">ESPACIO</span>: CUCHILLO</p>
+                    <p><span style="color:#fff">G</span>: GRANADA</p>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-ticker"><p class="ticker-text">⚠️ GRÁFICOS DE ALTA RESOLUCIÓN ACTIVADOS... SISTEMAS DE DEFENSA EN LÍNEA... MÁQUINAS EXPENDEDORAS OPERATIVAS... ⚠️</p></div>
+    </div>
 
-<!-- PAUSE MENU -->
-<div id="pause-menu">
-    <div class="pause-title">JUEGO PAUSADO</div>
-    <button onclick="resumeGame()">Reanudar</button>
-    <button onclick="restartGame()">Reiniciar</button>
-</div>
+    <div id="game-ui" class="ui-container" style="display:none;">
+        <div class="hud-panel-pro points-card"><span class="points-sign">$</span><span class="points-val" id="score">500</span></div>
+        <div class="hud-panel-pro round-counter"><div class="round-label">RONDA</div><div class="round-num" id="level">1</div></div>
+        
+        <div class="hud-panel-pro ammo-card">
+            <div class="ammo-text"><span id="ammo" class="big-ammo">30</span> <span class="small-ammo">BALAS</span></div>
+            <div id="weapon-name" class="weapon-tag">M1911</div>
+        </div>
+        
+        <div class="health-strip-pro"><div id="hp-bar"></div></div>
+        <div id="perks-container"></div>
+        
+        <div id="parts-container" class="hud-panel-pro">
+            <div class="part-slot" id="part-1">📡</div>
+            <div class="part-slot" id="part-2">🔋</div>
+            <div class="part-slot" id="part-3">📻</div>
+        </div>
+        <div id="grenade-container" class="hud-panel-pro"><div class="grenade-icon">💣</div><span id="grenade-count">3</span></div>
+        
+        <div id="achievement-area"></div>
+        <button id="interact-btn" class="pro-btn">USAR</button>
+        <div class="buy-prompt">COMPRAR MUNICIÓN ($250)</div>
 
-<script src="script.js"></script>
+        <div id="round-splash"><h1 class="splash-text" id="splash-title">RONDA 1</h1></div>
+        <div id="zone-splash"><h2 id="zone-name">ZONA INICIAL</h2></div>
+        <div id="weapon-pickup" class="pickup-msg"></div>
+    </div>
+
+    <div id="win-screen" class="menu-overlay" style="display:none; background:rgba(0,0,0,1);">
+        <div class="game-over-content">
+            <h1 class="go-title" style="color:#2ecc71;">¡MISIÓN CUMPLIDA!</h1>
+            <p class="go-sub">EXTRACCIÓN EXITOSA</p>
+            <div class="go-stats"><div class="stat-box"><span>PUNTOS</span><h2 id="win-score">0</h2></div></div>
+            <button onclick="location.reload()" class="big-btn">JUGAR DE NUEVO</button>
+        </div>
+    </div>
+
+    <div id="game-over-screen" class="menu-overlay" style="display:none; background:rgba(50,0,0,0.95);">
+        <div class="game-over-content">
+            <h1 class="go-title">MIA</h1>
+            <p class="go-sub">EL AGENTE HA CAÍDO</p>
+            <div class="go-stats"><div class="stat-box"><span>RONDA</span><h2 id="go-round">1</h2></div></div>
+            <button onclick="location.reload()" class="big-btn">REINICIAR</button>
+        </div>
+    </div>
+
+    <div id="touch-zone"></div>
+    <div id="joystick-wrapper" style="display:none;"><div id="joystick-stick"></div></div>
+    <div class="action-btn"><button id="btn-fire">🔥</button></div>
+    <button id="mobile-knife-btn">🔪</button>
+    <button id="mobile-grenade-btn">💣</button>
+
+    <script src="script.js"></script>
 </body>
 </html>
