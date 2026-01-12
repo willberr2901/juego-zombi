@@ -118,15 +118,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function update() {
 
     // 1️⃣ MOVIMIENTO DEL JUGADOR (PRIMERO DE TODO)
-    let dx = joyX, dy = joyY;
+   let dx = 0, dy = 0;
 
-    if(!dragging) {
-        if(k['d']) dx = 1;
-        if(k['a']) dx = -1;
-        if(k['s']) dy = 1;
-        if(k['w']) dy = -1;
-    }
-
+// 🎮 JOYSTICK (MÓVIL)
+if (dragging) {
+    dx = joyX;
+    dy = joyY;
+}
+// ⌨️ TECLADO (PC)
+else {
+    if (k['d']) dx += 1;
+    if (k['a']) dx -= 1;
+    if (k['s']) dy += 1;
+    if (k['w']) dy -= 1;
+}
     const length = Math.hypot(dx, dy);
     if (length > 0) {
         dx /= length;
