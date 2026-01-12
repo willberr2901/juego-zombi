@@ -1,6 +1,8 @@
 /* script.js - V37.0 SANGRE Y ACCIÓN PRO (INTACTO) */
 
 document.addEventListener('DOMContentLoaded', () => {
+    let zombieInterval = null;
+    let itemInterval = null;
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     
@@ -221,8 +223,27 @@ document.addEventListener('DOMContentLoaded', () => {
         player.hp=100; score=0; level=1; ammo=12; killCount=0;
         zombies=[]; bullets=[]; items=[]; boss=null; particles=[];
         resize();
-        setInterval(() => { if(!boss && !isPaused && gameRunning) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
-        setInterval(() => { if(!isPaused && gameRunning) items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}); }, 8000);
+        if (zombieInterval) clearInterval(zombieInterval);
+if (itemInterval) clearInterval(itemInterval);
+
+zombieInterval = setInterval(() => {
+    if(!boss && !isPaused && gameRunning) {
+        zombies.push({
+            x: Math.random()*canvas.width,
+            y: -50,
+            speed: 1 + level*0.2
+        });
+    }
+}, 1000);
+
+itemInterval = setInterval(() => {
+    if(!isPaused && gameRunning) {
+        items.push({
+            x: Math.random()*canvas.width,
+            y: Math.random()*canvas.height
+        });
+    }
+}, 8000);
         updateHUD(); loop();
     };
 
@@ -250,3 +271,5 @@ document.addEventListener('DOMContentLoaded', () => {
         touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
     }
 });
+let zombieInterval = null;
+
