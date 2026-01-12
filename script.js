@@ -10,16 +10,24 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
-            const introScreen = document.getElementById("intro-screen");
-            const introBtn = document.getElementById("intro-btn");
-            const controlsInfo = document.getElementById("controls-info");
+        }
+        window.addEventListener('resize', resize);
+        resize();
+    
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-        if (isMobile) {
-          controlsInfo.innerHTML = `
-        📱 <strong>CONTROLES MÓVIL</strong><br>
-        Moverse: Joystick<br>
-        Disparar: Botón 🔫
-          `;
+        c// --- INTRODUCCIÓN V2.0 ---
+const introScreen = document.getElementById("intro-screen");
+const introBtn = document.getElementById("intro-btn");
+const controlsInfo = document.getElementById("controls-info");
+
+// Mostrar controles según dispositivo
+if (isMobile) {
+  controlsInfo.innerHTML = `
+    📱 <strong>CONTROLES MÓVIL</strong><br>
+    Moverse: Joystick<br>
+    Disparar: Botón 🔫
+  `;
 } else {
   controlsInfo.innerHTML = `
     🖥️ <strong>CONTROLES PC</strong><br>
@@ -28,15 +36,13 @@
   `;
 }
 
+// Bloquear menú hasta cerrar intro
+document.getElementById("menu-screen").style.display = "none";
+
 introBtn.onclick = () => {
   introScreen.style.display = "none";
+  document.getElementById("menu-screen").style.display = "flex";
 };
-
-        }
-        window.addEventListener('resize', resize);
-        resize();
-    
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
         // IMÁGENES
         const imgGround = new Image(); imgGround.src = 'imagenes/asfalto.png';
