@@ -1,63 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sangre y Acción Pro</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sangre y Acción Pro</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- INTRO -->
-    <div id="intro-screen">
-        <h1>BIENVENIDO A SANGRE Y ACCIÓN PRO</h1>
+    <!-- PANTALLA DE INTRO -->
+    <div id="intro-screen" class="menu-overlay">
+        <h1 class="main-title">SANGRE Y ACCIÓN PRO</h1>
         <div id="controls-info"></div>
         <button id="intro-btn">COMENZAR</button>
     </div>
 
     <!-- MENÚ PRINCIPAL -->
-    <div id="menu-screen">
-        <h2>MENÚ PRINCIPAL</h2>
+    <div id="menu-screen" class="menu-overlay">
         <button id="start-btn">INICIAR JUEGO</button>
     </div>
 
-    <!-- JUEGO / HUD -->
-    <div id="game-ui">
-        <canvas id="gameCanvas"></canvas>
-        <div id="hud">
-            <div>Puntos: <span id="score">0</span></div>
-            <div>Muni: <span id="ammo">12</span></div>
-            <div>Nivel: <span id="level">1</span></div>
-            <div>Vida: <div id="health-bar-container"><div id="health-bar"></div></div> <span id="health-num">100</span></div>
+    <!-- HUD DEL JUEGO -->
+    <div id="game-ui" class="ui-container" style="display:none;">
+        <div class="hud-card health-card">
+            <div class="bar-container">
+                <div class="bar-label">HP</div>
+                <div class="hp-track"><div id="health-bar"></div></div>
+            </div>
+            <div id="health-num" class="big-text">100</div>
         </div>
-        <div id="boss-hud">
-            <div>Jefe</div>
-            <div id="boss-health-bar"></div>
-        </div>
-        <div id="blood-screen"></div>
-        <button id="pause-btn">PAUSA</button>
-    </div>
 
-    <!-- MENÚ PAUSA -->
-    <div id="pause-menu">
-        <h1 class="pause-title">JUEGO PAUSADO</h1>
-        <button id="resume-btn">RESUMIR</button>
-        <button id="restart-btn">REINICIAR</button>
-        <button id="home-btn">SALIR</button>
+        <div class="hud-card stats-card">
+            <div class="stat-line">
+                <div class="label">Ammo</div>
+                <div id="ammo" class="ammo-num">12</div>
+            </div>
+            <div class="stat-line">
+                <div class="label">Score</div>
+                <div id="score" class="score-num">0</div>
+            </div>
+            <div class="level-indicator" id="level">1</div>
+        </div>
+
+        <div class="boss-card" id="boss-hud" style="display:none;">
+            <div class="boss-icon">👹</div>
+            <div class="boss-bar-track">
+                <div id="boss-health-bar"></div>
+            </div>
+        </div>
+
+        <div id="blood-screen"></div>
+        <canvas id="gameCanvas"></canvas>
+
+        <button id="pause-btn">PAUSAR</button>
+        <button id="btn-fire" style="display:none;">DISPARAR</button>
+        <div id="joystick-wrapper" style="display:none;">
+            <div id="joystick-stick"></div>
+        </div>
+        <div id="touch-zone"></div>
     </div>
 
     <!-- ALERTAS -->
-    <div id="big-alert">
+    <div id="big-alert" class="alert-overlay">
         <h2 id="alert-title"></h2>
         <p id="alert-sub"></p>
     </div>
 
-    <!-- JOYSTICK MÓVIL -->
-    <div id="touch-zone"></div>
-    <div id="joystick-wrapper">
-        <div id="joystick-stick"></div>
+    <!-- MENÚ DE PAUSA -->
+    <div id="pause-menu" class="menu-overlay" style="display:none;">
+        <h2 class="pause-title">JUEGO PAUSADO</h2>
+        <button id="resume-btn">RESUMIR</button>
+        <button id="restart-btn">REINICIAR</button>
+        <button id="home-btn">MENU PRINCIPAL</button>
     </div>
-    <button id="btn-fire">DISPARAR</button>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
