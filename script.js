@@ -118,7 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function update() {
         let dx = joyX, dy = joyY;
         if(!dragging) { if(k['d']) dx=1; if(k['a']) dx=-1; if(k['s']) dy=1; if(k['w']) dy=-1; }
-        player.x += dx * player.speed; player.y += dy * player.speed;
+       const length = Math.hypot(dx, dy);
+        if (length > 0) {
+        dx /= length;
+        dy /= length;
+    }
         player.x = Math.max(0, Math.min(canvas.width, player.x)); 
         player.y = Math.max(0, Math.min(canvas.height, player.y));
 
