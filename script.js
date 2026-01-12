@@ -123,6 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
         dx /= length;
         dy /= length;
     }
+        // 🔥 ESTAS DOS LÍNEAS FALTABAN
+player.x += dx * player.speed;
+player.y += dy * player.speed;
         player.x = Math.max(0, Math.min(canvas.width, player.x)); 
         player.y = Math.max(0, Math.min(canvas.height, player.y));
 
