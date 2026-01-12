@@ -98,3 +98,42 @@ body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Couri
 #btn-fire { width: 90px; height: 90px; border-radius: 50%; background: rgba(200, 0, 0, 0.5); border: 2px solid #fff; cursor: pointer; color: white; font-size: 35px; }
 @media (min-width: 1024px) { #touch-zone, .action-btn { display: none; } }
 @media (max-width: 900px) { .main-layout { flex-direction: column; gap: 30px; margin-bottom: 50px; } .boss-card { width: 90%; } }
+#intro-screen {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.intro-box {
+  max-width: 600px;
+  text-align: center;
+  padding: 30px;
+  border: 2px solid #8a0303;
+  background: #111;
+}
+
+.intro-text {
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+#controls-info {
+  margin: 20px 0;
+  font-size: 14px;
+  color: #f1c40f;
+}
+
+#intro-btn {
+  padding: 12px 25px;
+  font-size: 16px;
+  background: #8a0303;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
