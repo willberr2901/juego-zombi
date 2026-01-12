@@ -1,111 +1,17 @@
-/* style.css */
-
-body, html {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: sans-serif;
-    background: #000;
-    color: #fff;
-}
-
-/* PANTALLA INTRO */
-#intro-screen {
-    display: none;
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    flex-direction: column;
-    z-index: 10;
-}
-
-#menu-screen {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-#game-ui {
-    display: none;
-    position: relative;
-}
-
-#gameCanvas {
-    display: block;
-}
-
-/* HUD */
-#hud {
-    position: absolute;
-    top: 10px; left: 10px;
-    z-index: 5;
-}
-
-#health-bar {
-    background: red;
-    height: 10px;
-    width: 100%;
-}
-
-/* Boss */
-#boss-hud {
-    display: none;
-    position: absolute;
-    top: 50px; left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255,0,0,0.5);
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-/* Sangre */
-#blood-screen {
-    position: absolute;
-    top:0; left:0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-}
-
-/* Pausa */
-#pause-menu {
-    display: none;
-    position: absolute;
-    top:0; left:0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-/* Alertas */
-#big-alert {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    background: rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.3s;
-    z-index: 20;
-}
-
-.alert-visible { opacity: 1; }
-
-/* Joystick */
-#touch-zone { position: absolute; bottom: 20px; left: 20px; width: 150px; height: 150px; }
-#joystick-wrapper { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.2); display: none; }
-#joystick-stick { position: absolute; top:50%; left:50%; width: 40px; height: 40px; background: #fff; border-radius: 50%; transform: translate(-50%,-50%); }
-
-/* Botón disparo */
-#btn-fire { position: absolute; bottom: 50px; right: 50px; width: 60px; height: 60px; font-size: 30px; border-radius: 50%; }
+body, html { margin:0; padding:0; overflow:hidden; font-family: sans-serif; background:#111; color:#fff;}
+#intro-screen, #menu-screen, #pause-menu { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; background:rgba(0,0,0,0.9); z-index:10;}
+#game-ui { display:none; position:relative; width:100%; height:100%; }
+#hud { position:absolute; top:10px; left:10px; z-index:5; font-size:18px;}
+#health-bar-container { display:inline-block; width:100px; height:10px; background:#555; margin:0 5px;}
+#health-bar { height:100%; width:100%; background:red;}
+#boss-hud { position:absolute; top:50px; left:10px; display:none; }
+#boss-health-bar { width:200px; height:15px; background:red; }
+#blood-screen { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+#pause-menu { display:none; position:absolute; top:0; left:0; width:100%; height:100%; justify-content:center; align-items:center; background:rgba(0,0,0,0.8); z-index:20;}
+#big-alert { position:absolute; top:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.7); padding:15px; border:2px solid #f00; display:none; z-index:30; }
+.alert-visible { display:block; animation:fade 0.5s;}
+@keyframes fade { 0%{opacity:0}50%{opacity:1}100%{opacity:0} }
+#joystick-wrapper { display:none; position:absolute; width:120px; height:120px; border:2px solid #fff; border-radius:50%; touch-action:none; z-index:5;}
+#joystick-stick { width:60px; height:60px; background:#fff; border-radius:50%; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); }
+#touch-zone { position:absolute; width:100%; height:100%; z-index:1; }
+#btn-fire { position:absolute; bottom:20px; right:20px; z-index:5; font-size:18px; padding:10px 20px;}
