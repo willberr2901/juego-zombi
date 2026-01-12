@@ -16,7 +16,7 @@
     
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-        c// --- INTRODUCCIÓN V2.0 ---
+        // --- INTRODUCCIÓN V2.0 ---
 const introScreen = document.getElementById("intro-screen");
 const introBtn = document.getElementById("intro-btn");
 const controlsInfo = document.getElementById("controls-info");
