@@ -1,25 +1,50 @@
-body { margin: 0; padding: 0; background: #000; color: #eee; font-family: 'Courier New', monospace; overflow: hidden; touch-action: none; user-select: none; }
-.grid-bg { position: absolute; inset: 0; opacity: 0.15; background-image: linear-gradient(#500 1px, transparent 1px), linear-gradient(90deg, #500 1px, transparent 1px); background-size: 40px 40px; z-index: 1; pointer-events: none; }
-#vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(circle, transparent 20%, #000 100%); }
-#blood-screen { position: absolute; inset: 0; pointer-events: none; z-index: 40; box-shadow: inset 0 0 0 0 rgba(255,0,0,0); transition: box-shadow 0.1s; }
+/* style.css - V37.0 SANGRE Y ACCIÓN PRO */
 
-/* MENÚ PRINCIPAL */
-.menu-overlay { position: absolute; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); flex-direction: column; }
-.main-title { font-size: 65px; margin: 15px 0; color: #fff; font-family: 'Arial Black', sans-serif; letter-spacing: -2px; text-shadow: 0 5px 0 #000; }
-#start-btn { padding: 15px 50px; font-size: 22px; background: #000; color: #f00; border: 2px solid #f00; cursor: pointer; }
-#start-btn:hover { background: #f00; color: #000; }
+/* --- RESET --- */
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
 
-/* HUD */
-.ui-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
-.hud-card { position: absolute; background: rgba(0, 0, 0, 0.9); border: 2px solid #555; border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 5px 15px #000; }
-.health-card { top: 20px; left: 20px; width: 320px; border-left: 5px solid #e74c3c; }
-.hp-track { width: 100%; height: 18px; background: #222; border: 1px solid #444; overflow: hidden; }
-#health-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #c0392b, #e74c3c); transition: width 0.2s; }
-.stats-card { top: 20px; right: 20px; flex-direction: column; align-items: flex-end; border-right: 5px solid #f1c40f; }
-.ammo-num { font-size: 32px; font-weight: 900; color: #f1c40f; }
-.score-num { font-size: 20px; font-weight: bold; color: #fff; }
-.level-indicator { font-size: 12px; color: #3498db; font-weight: bold; letter-spacing: 2px; margin-top: 5px; }
+/* --- BODY Y CANVAS --- */
+body { background:#111; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
 
-/* JOYSTICK */
-#joystick-wrapper { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.1); pointer-events: none; z-index: 55; }
-#joystick-stick { position: absolute; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.3); top: 50%; left: 50%; transform: translate(-50%, -50%); }
+/* --- PANTALLAS --- */
+#intro-screen, #menu-screen, #pause-menu {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    display:flex; justify-content:center; align-items:center;
+    flex-direction:column; background:rgba(0,0,0,0.85);
+    color:#fff; z-index:1000;
+}
+#intro-screen { background:rgba(0,0,0,0.95); }
+#menu-screen { display:none; }
+
+/* --- BOTONES --- */
+button { padding:12px 24px; background:#d00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:18px; }
+button:hover { background:#f33; }
+
+/* --- HUD --- */
+#hud { position:absolute; top:10px; left:10px; color:#fff; z-index:500; }
+#hud div { margin-bottom:4px; }
+#health-bar { height:20px; background:red; width:100%; border-radius:4px; }
+#ammo, #score, #level, #health-num { font-weight:bold; }
+
+/* --- ALERTAS GRANDES --- */
+#big-alert {
+    position:absolute; top:40%; left:50%; transform:translate(-50%,-50%);
+    background:rgba(200,0,0,0.9); color:#fff; padding:30px 50px; border-radius:12px;
+    font-size:32px; font-weight:bold; text-align:center; opacity:0; transition:0.5s; z-index:1500;
+}
+.alert-visible { opacity:1; }
+
+/* --- HUD BOSS --- */
+#boss-hud { position:absolute; top:10px; right:10px; width:300px; height:30px; background:#222; border:2px solid #f00; display:none; }
+#boss-health-bar { height:100%; width:100%; background:#f00; }
+
+/* --- PAUSE MENU --- */
+#pause-menu { display:none; flex-direction:column; justify-content:center; align-items:center; background:rgba(0,0,0,0.85); }
+.pause-title { font-size:36px; margin-bottom:20px; color:#ff0; }
+
+/* --- CONTROLES --- */
+#controls-info { position:absolute; bottom:10px; left:10px; color:#fff; font-size:16px; }
+
+/* --- PARTICULAS SANGRE --- */
+.particle { position:absolute; border-radius:50%; pointer-events:none; }
