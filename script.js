@@ -177,22 +177,34 @@ else {
         }
 
         // Zombis
-        zombies.forEach(z => {
-            let angle = Math.atan2(player.y - z.y, player.x - z.x);
-            z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
-            if(Math.hypot(player.x-z.x, player.y-z.y) < 30) { 
-                player.hp -= 0.5; updateHUD();
-                document.getElementById("blood-screen").style.boxShadow = "inset 0 0 50px rgba(255,0,0,0.5)";
-                setTimeout(()=>document.getElementById("blood-screen").style.boxShadow="none", 100);
-            }
-        });
+    zombies.forEach(z => {
+    let angle = Math.atan2(player.y - z.y, player.x - z.x);
+    z.x += Math.cos(angle) * z.speed;
+    z.y += Math.sin(angle) * z.speed;
 
-        if(boss) {
-            let angle = Math.atan2(player.y - boss.y, player.x - boss.x);
-            boss.x += Math.cos(angle)*2.5; boss.y += Math.sin(angle)*2.5;
-            if(Math.hypot(player.x-boss.x, player.y-boss.y) < 50) { player.hp -= 1; updateHUD(); }
-        }
+    if (!isPaused && Math.hypot(player.x - z.x, player.y - z.y) < 30) {
+        player.hp -= 0.5;
+        updateHUD();
 
+        document.getElementById("blood-screen").style.boxShadow =
+            "inset 0 0 50px rgba(255,0,0,0.5)";
+        setTimeout(() => {
+            document.getElementById("blood-screen").style.boxShadow = "none";
+        }, 100);
+    }
+});
+
+
+if (boss) {
+    let angle = Math.atan2(player.y - boss.y, player.x - boss.x);
+    boss.x += Math.cos(angle) * 2.5;
+    boss.y += Math.sin(angle) * 2.5;
+
+    if (!isPaused && Math.hypot(player.x - boss.x, player.y - boss.y) < 50) {
+        player.hp -= 1;
+        updateHUD();
+    }
+}
         for(let i=items.length-1; i>=0; i--) {
             if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) { ammo += 10; items.splice(i,1); updateHUD(); }
         }
