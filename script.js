@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0, level = 1, ammo = 12, maxAmmo = 12;
     let killCount = 0, killsForNextLevel = 10;
     
+    // --- NUEVO: Variables para controlar los intervalos ---
+    let zombieInterval = null;
+    let itemInterval = null;
+    
     let zombies = [], bullets = [], items = [], particles = []; // Sangre
     let boss = null;
     let player = { x: canvas.width/2, y: canvas.height/2, hp: 100, maxHp: 100, speed: 5 };
