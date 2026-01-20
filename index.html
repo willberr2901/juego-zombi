@@ -3,118 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: Final Pro Menu</title>
+    <title>Ciudad Z: V2.0 PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="grid-bg"></div>
-    <div id="vignette"></div>
-    <div id="blood-screen"></div>
+    <div id="vignette"></div> <div id="blood-screen"></div>
 
     <div id="menu-screen" class="menu-overlay">
-        <div class="neon-decor left-decor"><img src="imagenes/zombie.png" alt=""></div>
-        <div class="neon-decor right-decor"><img src="imagenes/zombie.png" alt=""></div>
+        <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
+        <div id="high-score-box">🏆 RÉCORD: <span id="best-score">0</span></div>
+        <button id="start-btn">DESPLEGAR AGENTE</button>
+        <p class="credits">V2.0 TACTICAL OPS</p>
+    </div>
 
-        <div class="main-layout">
-            <div class="hud-panel left-panel">
-                <h3 class="panel-header">🖥️ ESTADO DEL SISTEMA</h3>
-                
-                <div class="intel-grid">
-                    <div class="intel-row"><span>ID AGENTE:</span> <span class="val">DELTA-07</span></div>
-                    <div class="intel-row"><span>REGIÓN:</span> <span class="val">LATAM-SUR</span></div>
-                    <div class="intel-row"><span>CONEXIÓN:</span> <span class="val buff">ESTABLE</span></div>
-                </div>
-                <hr class="panel-hr">
-                
-                <div class="data-section">
-                    <p class="section-title">>> PARCHE V37.1 ACTIVADO</p>
-                    <ul class="patch-notes">
-                        <li class="buff">[+] Gore y Sangre Realista</li>
-                        <li class="buff">[+] Rastreador de Jefe</li>
-                        <li class="buff">[+] Balas Trazadoras</li>
-                    </ul>
-                </div>
-                <div class="system-footer">PING: 24ms | FPS: 60 | LOSS: 0%</div>
+    <div id="game-ui" style="display:none;">
+        
+        <div class="hud-panel health-panel">
+            <div class="label">ESTADO VITAL</div>
+            <div class="hp-container">
+                <div id="health-bar"></div>
             </div>
-
-            <div class="center-stage">
-                <div class="boss-hologram"><img src="imagenes/boss.png" alt="BOSS"></div>
-                <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-                <div id="high-score-box" style="color: #f1c40f; font-family: 'Courier New'; font-weight: bold; font-size: 20px; text-shadow: 0 0 10px #f1c40f; margin-bottom: 20px;">
-    🏆 MEJOR PUNTUACIÓN: <span id="best-score">0</span>
-</div>
-                <button id="start-btn">
-                    INICIAR PROTOCOLO
-                    <div class="btn-sub">CONFIRMAR DESPLIEGUE</div>
-                </button>
-            </div>
-
-            <div class="hud-panel right-panel">
-                <h3 class="panel-header">📝 REPORTE DE OPERACIÓN</h3>
-                <div class="intel-grid">
-                    <div class="intel-row"><span>UBICACIÓN:</span> <span class="val">SECTOR 7 - ZONA CERO</span></div>
-                    <div class="intel-row"><span>AMENAZA:</span> <span class="val red" style="font-size:14px;">EXTREMA (CLASE 5)</span></div>
-                    <div class="intel-row"><span>ESTADO CIUDAD:</span> <span class="val red">CUARENTENA TOTAL</span></div>
-                    <div class="intel-row"><span>ESCUADRÓN:</span> <span class="val">SOLO (MIA)</span></div>
-                </div>
-                <hr class="panel-hr">
-                <div class="objective-box">
-                    <p class="obj-label">DIRECTIVA PRIMARIA:</p>
-                    <p class="obj-main">ELIMINAR PACIENTE CERO Y SOBREVIVIR</p>
-                </div>
-            </div>
+            <div class="hp-text"><span id="health-num">100</span>%</div>
         </div>
 
-        <div class="bottom-ticker">
-            <p class="ticker-text">⚠️ TRANSMISIÓN DE EMERGENCIA: LA ZONA DE EXTRACCIÓN HA SIDO COMPROMETIDA... MÚLTIPLES HOSTILES DETECTADOS... PREPÁRESE PARA EL COMBATE INMEDIATO... ⚠️</p>
+        <div class="hud-panel ammo-panel">
+            <div class="score-box">BAJAS: <span id="score">0</span></div>
+            <div class="ammo-box">
+                <span id="ammo" class="big-num">12</span>
+                <span class="label-sm">BALAS</span>
+            </div>
+            <div class="level-box">ZONA <span id="level">1</span></div>
+        </div>
+
+        <div id="boss-hud" style="display:none;">
+            <span class="boss-label">⚠️ AMENAZA BIOLÓGICA ⚠️</span>
+            <div class="boss-bar-container"><div id="boss-health-bar"></div></div>
+        </div>
+
+        <button id="pause-btn">⏸</button>
+
+        <div id="big-alert">
+            <h2 id="alert-title"></h2>
+            <p id="alert-sub"></p>
         </div>
     </div>
 
-    <div id="game-ui" class="ui-container" style="display:none;">
-        <div class="hud-card health-card">
-            <div class="icon-pulse">❤️</div>
-            <div class="bar-container">
-                <div class="bar-label">ESTADO DEL AGENTE</div>
-                <div class="hp-track"><div id="health-bar"></div></div>
-            </div>
-            <div class="big-text"><span id="health-num">100</span>%</div>
-        </div>
-        <div id="boss-hud" class="boss-card" style="display:none;">
-            <div class="boss-icon">☠️</div>
-            <div class="boss-bar-track">
-                <div id="boss-health-bar"></div>
-                <span class="boss-name">PACIENTE CERO</span>
-            </div>
-        </div>
-        <div class="hud-card stats-card">
-            <div class="stat-line">
-                <span class="ammo-icon">🔫</span>
-                <span id="ammo" class="ammo-num">12</span>
-                <span class="label">BALAS</span>
-            </div>
-            <div class="stat-separator"></div>
-            <div class="stat-line">
-                <span class="skull-icon">💀</span>
-                <span id="score" class="score-num">0</span>
-                <span class="label">BAJAS</span>
-            </div>
-            <div class="level-indicator">NIVEL <span id="level">1</span></div>
-        </div>
-        <button id="pause-btn">⚙️ MENÚ</button>
-        <div id="big-alert" class="alert-overlay">
-            <h2 id="alert-title">¡OLEADA COMPLETADA!</h2>
-            <p id="alert-sub">PREPARANDO SIGUIENTE NIVEL...</p>
-        </div>
-    </div>
-
-    <div id="pause-menu" class="menu-overlay" style="display:none; background: rgba(0,0,0,0.9); z-index: 200;">
-        <div class="pause-box">
-            <h2 class="pause-title">JUEGO PAUSADO</h2>
-            <button id="resume-btn" class="menu-btn">CONTINUAR</button>
-            <button id="restart-btn" class="menu-btn">REINICIAR</button>
-            <button id="home-btn" class="menu-btn red-btn">IR AL INICIO</button>
-        </div>
+    <div id="pause-menu" class="menu-overlay" style="display:none;">
+        <h2 class="pause-title">SISTEMA PAUSADO</h2>
+        <button id="resume-btn" class="menu-btn">CONTINUAR</button>
+        <button id="restart-btn" class="menu-btn">REINICIAR MISIÓN</button>
+        <button id="home-btn" class="menu-btn red-btn">ABANDONAR</button>
     </div>
 
     <div id="touch-zone"></div>
