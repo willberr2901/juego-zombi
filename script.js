@@ -263,8 +263,6 @@ document.getElementById('best-score').innerText = highScore; // Lo muestra en el
              ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); 
         }
         // -----------------------------------
-        }
-
         // Sangre en el piso
         particles.forEach(p => {
             ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
