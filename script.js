@@ -283,6 +283,12 @@ document.getElementById('best-score').innerText = highScore; // Lo muestra en el
             }
         });
 
+        // --- ESTO ES LO QUE FALTABA: DIBUJAR ZOMBIES ---
+        zombies.forEach(z => { 
+            if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); 
+        });
+        // -----------------------------------------------
+        
         // Dibujar Jugador (Con Aura si es invencible)
         if(imgPlayer.complete) {
             if (isInvincible) {
