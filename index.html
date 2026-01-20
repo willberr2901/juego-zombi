@@ -3,124 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ciudad Z: NEON EDITION</title>
-    <link rel="stylesheet" href="style.css?v=neon">
+    <title>Ciudad Z: BIOHAZARD PROTOCOL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Black+Ops+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=biohazard">
 </head>
 <body>
 
     <div class="grid-bg"></div>
     <div id="vignette"></div>
     <div id="blood-screen"></div>
-    <div class="scanlines"></div> 
+    <div class="scanlines"></div>
 
     <div id="menu-screen" class="menu-overlay">
-        <div class="neon-decor left-decor"><img src="imagenes/zombie.png" alt=""></div>
-        <div class="neon-decor right-decor"><img src="imagenes/zombie.png" alt=""></div>
+        
+        <div class="bio-border">
+            <div class="hazard-stripe top-stripe"></div>
+            
+            <h1 class="main-title">CIUDAD <span class="bio-text">Z</span></h1>
+            <p class="subtitle">PROTOCOLO DE CONTENCIÓN: ACTIVO</p>
 
-        <div class="main-layout">
-            <div class="hud-panel left-panel">
-                <h3 class="panel-header">ESTADO DEL SISTEMA</h3>
-                <div class="intel-grid">
-                    <div class="intel-row"><span>AGENTE:</span> <span class="val">DELTA-07</span></div>
-                    <div class="intel-row"><span>SERVIDOR:</span> <span class="val">LATAM</span></div>
-                    <div class="intel-row"><span>PING:</span> <span class="val buff">24ms</span></div>
-                </div>
-                <hr class="panel-hr">
-                <div class="data-section">
-                    <p class="section-title">>> PARCHE V38.0 NEON</p>
-                    <ul class="patch-notes">
-                        <li class="buff">[+] Gráficos: HD Neon</li>
-                        <li class="buff">[+] Arma: Escopeta</li>
-                        <li class="buff">[+] Enemigo: Hellhounds</li>
-                    </ul>
-                </div>
+            <div id="high-score-box">
+                ☣️ MUESTRA ALFA: <span id="best-score">0</span>
             </div>
 
-            <div class="center-stage">
-                <div class="boss-hologram"><img src="imagenes/boss.png" alt="BOSS"></div>
-                <h1 class="main-title">CIUDAD <span class="blood-text">Z</span></h1>
-                
-                <div id="high-score-box">
-                    🏆 RÉCORD: <span id="best-score">0</span>
-                </div>
+            <div class="menu-grid">
+                <button id="start-btn" class="main-btn">
+                    <span class="btn-icon">☢️</span> INICIAR PURGA
+                </button>
 
-                <button id="start-btn">
-                    INICIAR MISIÓN
-                    <div class="btn-sub">PRESIONA PARA COMENZAR</div>
+                <button class="secondary-btn disabled">
+                    <span class="btn-icon">🔒</span> TIENDA (BIO-LAB)
+                </button>
+                <button class="secondary-btn">
+                    <span class="btn-icon">⚙️</span> SISTEMA
+                </button>
+                <button class="secondary-btn">
+                    <span class="btn-icon">📄</span> INFECTADOS
                 </button>
             </div>
 
-            <div class="hud-panel right-panel">
-                <h3 class="panel-header">MISIÓN ACTUAL</h3>
-                <div class="intel-grid">
-                    <div class="intel-row"><span>ZONA:</span> <span class="val">SECTOR 7</span></div>
-                    <div class="intel-row"><span>RIESGO:</span> <span class="val red">EXTREMO</span></div>
-                </div>
-                <hr class="panel-hr">
-                <div class="objective-box">
-                    <p class="obj-label">OBJETIVO:</p>
-                    <p class="obj-main">SOBREVIVIR</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bottom-ticker">
-            <p class="ticker-text">⚠️ ALERTA: HORDA DE ZOMBIES EN CAMINO... PERROS DETECTADOS... USE LA ESCOPETA... ⚠️</p>
-        </div>
-    </div>
-
-    <div id="game-ui" class="ui-container" style="display:none;">
-        <div class="hud-card health-card">
-            <div class="icon-pulse">❤️</div>
-            <div class="bar-container">
-                <div class="bar-label">SALUD</div>
-                <div class="hp-track"><div id="health-bar"></div></div>
-            </div>
-            <div class="big-text"><span id="health-num">100</span>%</div>
+            <div class="hazard-stripe bottom-stripe"></div>
         </div>
         
-        <div id="boss-hud" class="boss-card" style="display:none;">
-            <div class="boss-icon">☠️</div>
-            <div class="boss-bar-track">
+        <div class="version-tag">SYS.VER.38.0 // ESTADO: CRÍTICO</div>
+    </div>
+
+    <div id="game-ui" style="display:none;">
+        
+        <div class="hud-panel health-panel">
+            <div class="bio-icon">🧬</div>
+            <div class="status-group">
+                <div class="label">INTEGRIDAD GENÉTICA</div>
+                <div class="dna-container">
+                    <div id="health-bar"></div>
+                    <div class="dna-overlay"></div> 
+                </div>
+            </div>
+            <div class="hp-text"><span id="health-num">100</span>%</div>
+        </div>
+
+        <div class="hud-panel ammo-panel">
+            <div class="ammo-group">
+                <span id="ammo" class="digital-num">12</span>
+                <span class="label">PROYECTILES</span>
+            </div>
+            <div class="score-group">
+                <div class="label">AMENAZAS ELIMINADAS</div>
+                <span id="score" class="score-num">0</span>
+            </div>
+            <div class="zone-tag">ZONA DE CUARENTENA <span id="level">1</span></div>
+        </div>
+
+        <div id="boss-hud" style="display:none;">
+            <div class="warning-box">
+                <span class="blink">⚠️ ALERTA BIOLÓGICA CLASE 5 ⚠️</span>
+            </div>
+            <div class="boss-bar-frame">
                 <div id="boss-health-bar"></div>
-                <span class="boss-name">PACIENTE CERO</span>
             </div>
         </div>
 
-        <div class="hud-card stats-card">
-            <div class="stat-line">
-                <span class="ammo-icon">⚡</span>
-                <span id="ammo" class="ammo-num">12</span>
-            </div>
-            <div class="stat-line small">
-                <span>BAJAS:</span> <span id="score" class="score-num">0</span>
-            </div>
-            <div class="level-indicator">NIVEL <span id="level">1</span></div>
-        </div>
+        <button id="pause-btn">❚❚</button>
 
-        <button id="pause-btn">II</button>
-        
-        <div id="big-alert" class="alert-overlay">
-            <h2 id="alert-title">¡OLEADA COMPLETADA!</h2>
-            <p id="alert-sub">PREPARANDO SIGUIENTE NIVEL...</p>
+        <div id="big-alert" class="bio-alert">
+            <h2 id="alert-title"></h2>
+            <p id="alert-sub"></p>
         </div>
     </div>
 
-    <div id="pause-menu" class="menu-overlay" style="display:none; background: rgba(0,0,0,0.9); z-index: 200;">
-        <div class="pause-box">
-            <h2 class="pause-title">PAUSA</h2>
-            <button id="resume-btn" class="menu-btn">CONTINUAR</button>
-            <button id="restart-btn" class="menu-btn">REINICIAR</button>
-            <button id="home-btn" class="menu-btn red-btn">SALIR</button>
+    <div id="pause-menu" class="menu-overlay" style="display:none;">
+        <div class="pause-frame">
+            <h2 class="pause-title">SISTEMA CONGELADO</h2>
+            <button id="resume-btn" class="bio-btn">REANUDAR</button>
+            <button id="restart-btn" class="bio-btn">REINICIAR SIMULACIÓN</button>
+            <button id="home-btn" class="bio-btn red-btn">ABORTAR</button>
         </div>
     </div>
 
     <div id="touch-zone"></div>
     <div id="joystick-wrapper" style="display:none;"><div id="joystick-stick"></div></div>
-    <div class="action-btn"><button id="btn-fire">🔥</button></div>
+    <div class="action-btn"><button id="btn-fire">☣️</button></div>
 
     <canvas id="gameCanvas"></canvas>
-    
-    <script src="script.js?v=neon"></script>
+    <script src="script.js?v=biohazard"></script>
 </body>
 </html>
