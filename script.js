@@ -266,11 +266,33 @@ document.getElementById('best-score').innerText = highScore; // Lo muestra en el
             ctx.globalAlpha = 1.0;
         });
 
-        items.forEach(it => { if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); });
-        if(imgPlayer.complete) ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
-        zombies.forEach(z => { if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); });
-        if(boss && imgBoss.complete) { ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); }
-        
+        // Dibujar Ítems (Diferenciar Escudo de Munición)
+        items.forEach(it => { 
+            if (it.type === 'shield') {
+                // Dibujar Escudo (Círculo brillante Azul)
+                ctx.save();
+                ctx.shadowBlur = 15; ctx.shadowColor = '#00ffff';
+                ctx.fillStyle = '#00ffff';
+                ctx.beginPath(); ctx.arc(it.x, it.y, 15, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#000'; // Texto "S"
+                ctx.font = "bold 12px Arial"; ctx.fillText("S", it.x-4, it.y+4);
+                ctx.restore();
+            } else {
+                // Dibujar Munición (Normal)
+                if(imgItem.complete) ctx.drawImage(imgItem, it.x-20, it.y-20, 40, 40); 
+            }
+        });
+
+        // Dibujar Jugador (Con Aura si es invencible)
+        if(imgPlayer.complete) {
+            if (isInvincible) {
+                ctx.save();
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = '#00ffff'; // Brillo Azul Cian
+            }
+            ctx.drawImage(imgPlayer, player.x-32, player.y-32, 64, 64);
+            if (isInvincible) ctx.restore();
+        }
         // Balas Trazadoras (Líneas doradas)
         ctx.strokeStyle = '#f1c40f'; ctx.lineWidth = 4;
         bullets.forEach(b => {
