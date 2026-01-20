@@ -332,20 +332,18 @@ document.getElementById('best-score').innerText = highScore; // Lo muestra en el
                 zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); 
         }, 1000);
 
-        itemInterval = setInterval(() => { 
-            if(!isPaused && gameRunning) 
-                itemInterval = setInterval(() => { 
-            if(!isPaused && gameRunning) {
-                // 20% de probabilidad de ser 'shield' (escudo), si no, es 'ammo'
-                const type = Math.random() > 0.8 ? 'shield' : 'ammo';
-                items.push({
-                    x: Math.random()*canvas.width, 
-                    y: Math.random()*canvas.height,
-                    type: type // Guardamos qué tipo es
-                }); 
-            }
-        }, 8000); 
-        }, 8000);
+        // --- Intervalo de Ítems (Limpio y corregido) ---
+       itemInterval = setInterval(() => { 
+           if(!isPaused && gameRunning) {
+               // 20% de probabilidad de ser 'shield' (escudo), si no, es 'ammo'
+               const type = Math.random() > 0.8 ? 'shield' : 'ammo';
+               items.push({
+                   x: Math.random()*canvas.width, 
+                   y: Math.random()*canvas.height,
+                   type: type 
+               }); 
+           }
+       }, 8000);
         
         updateHUD(); 
         loop();
