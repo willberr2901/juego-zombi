@@ -257,6 +257,12 @@ document.getElementById('best-score').innerText = highScore; // Lo muestra en el
             ctx.drawImage(imgGround, 0, 0, canvas.width, canvas.height);
             // Capa oscura sutil
             ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+            // --- ESTO FALTA: DIBUJAR AL JEFE ---
+        if(boss && imgBoss.complete) { 
+             ctx.drawImage(imgBoss, boss.x-64, boss.y-64, 128, 128); 
+        }
+        // -----------------------------------
         }
 
         // Sangre en el piso
