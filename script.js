@@ -183,7 +183,17 @@ document.getElementById('best-score').innerText = highScore; // Lo muestra en el
         for(let i=items.length-1; i>=0; i--) {
             if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) { ammo += 10; items.splice(i,1); updateHUD(); }
         }
-        if(player.hp <= 0) showPauseMenu("¡MISIÓN FALLIDA!");
+        if(player.hp <= 0) {
+            // --- NUEVO: Lógica de Récord ---
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('ciudadZ_record', highScore);
+                document.getElementById('best-score').innerText = highScore;
+                showAlert("¡NUEVO RÉCORD!", "🏆 " + score + " PUNTOS");
+            }
+            // -------------------------------
+            showPauseMenu("¡MISIÓN FALLIDA!");
+        }
     }
 
     function draw() {
