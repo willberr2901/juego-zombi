@@ -222,12 +222,30 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("menu-screen").style.display = "none";
         document.getElementById("game-ui").style.display = "block";
         gameRunning = true; isPaused = false;
-        player.hp=100; score=0; level=1; ammo=12; killCount=0;
-        zombies=[]; bullets=[]; items=[]; boss=null; particles=[];
+        
+        // Reiniciar variables
+        player.hp = 100; score = 0; level = 1; ammo = 12; killCount = 0;
+        zombies = []; bullets = []; items = []; boss = null; particles = [];
+        
         resize();
-        setInterval(() => { if(!boss && !isPaused && gameRunning) zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); }, 1000);
-        setInterval(() => { if(!isPaused && gameRunning) items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}); }, 8000);
-        updateHUD(); loop();
+
+        // --- CORRECCIÓN: Limpiamos intervalos viejos antes de crear nuevos ---
+        if (zombieInterval) clearInterval(zombieInterval);
+        if (itemInterval) clearInterval(itemInterval);
+
+        // --- Asignamos los nuevos intervalos a las variables ---
+        zombieInterval = setInterval(() => { 
+            if(!boss && !isPaused && gameRunning) 
+                zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); 
+        }, 1000);
+
+        itemInterval = setInterval(() => { 
+            if(!isPaused && gameRunning) 
+                items.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height}); 
+        }, 8000);
+        
+        updateHUD(); 
+        loop();
     };
 
     document.getElementById("pause-btn").onclick = () => showPauseMenu();
