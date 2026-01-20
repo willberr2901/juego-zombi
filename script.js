@@ -1,4 +1,4 @@
-/* script.js - V37.3 VERSIÓN FINAL CORREGIDA (Zombies y Jefe Visibles) */
+/* script.js - V38.0 ACTUALIZACIÓN: PERRO ZOMBIE (HELLHOUND) */
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
@@ -19,12 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const imgZombie = new Image(); imgZombie.src = 'imagenes/zombie.png';
     const imgItem = new Image(); imgItem.src = 'imagenes/survivor.png'; 
     const imgBoss = new Image(); imgBoss.src = 'imagenes/boss.png';
+    
+    // NUEVA IMAGEN: PERRO
+    const imgDog = new Image(); imgDog.src = 'imagenes/dog.png'; 
 
     // VARIABLES
     let gameRunning = false, isPaused = false;
     let score = 0, level = 1, ammo = 12, maxAmmo = 12;
     let killCount = 0, killsForNextLevel = 10;
-    let isInvincible = false; // Variable para saber si el escudo está activo
+    let isInvincible = false;
 
     // Récord
     let highScore = localStorage.getItem('ciudadZ_record') || 0; 
@@ -33,9 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Intervalos
     let zombieInterval = null;
+    let dogInterval = null; // NUEVO
     let itemInterval = null;
     
-    let zombies = [], bullets = [], items = [], particles = []; 
+    let zombies = [], dogs = [], bullets = [], items = [], particles = []; 
     let boss = null;
     let player = { x: canvas.width/2, y: canvas.height/2, hp: 100, maxHp: 100, speed: 5 };
 
@@ -79,8 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         zombies.forEach(z => spawnBlood(z.x, z.y));
         zombies = [];
+        dogs.forEach(d => spawnBlood(d.x, d.y)); // Matar perros también al subir nivel
+        dogs = [];
         
-        showAlert("¡NIVEL " + level + "!", "RECOMPENSA: MUNICIÓN LLENA");
+        showAlert("¡NIVEL " + level + "!", "MÁS PELIGRO...");
         updateHUD();
     }
 
@@ -158,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let b = bullets[i]; b.x += b.vx; b.y += b.vy;
             if(b.x<0||b.x>canvas.width||b.y<0||b.y>canvas.height) { bullets.splice(i,1); continue; }
             
+            // Impacto Zombies
             for(let j=zombies.length-1; j>=0; j--){
                 if(Math.hypot(b.x-zombies[j].x, b.y-zombies[j].y) < 35) {
                     spawnBlood(zombies[j].x, zombies[j].y); 
@@ -168,6 +175,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
                 }
             }
+
+            // Impacto Perros (Hitbox más pequeña)
+            for(let j=dogs.length-1; j>=0; j--){
+                if(Math.hypot(b.x-dogs[j].x, b.y-dogs[j].y) < 25) {
+                    spawnBlood(dogs[j].x, dogs[j].y); 
+                    dogs.splice(j,1); bullets.splice(i,1);
+                    score+=15; killCount++; updateHUD(); // Dan más puntos
+                    if (killCount >= killsForNextLevel && !boss) levelUp();
+                    break;
+                }
+            }
+
             if(boss && Math.hypot(b.x-boss.x, b.y-boss.y) < 60) {
                 boss.hp -= 5; bullets.splice(i,1); updateHUD();
                 spawnBlood(boss.x, boss.y);
@@ -185,18 +204,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if(p.life <= 0) particles.splice(i,1);
         }
 
-        // Zombies
+        // Zombies (Normales)
         zombies.forEach(z => {
             let angle = Math.atan2(player.y - z.y, player.x - z.x);
             z.x += Math.cos(angle)*z.speed; z.y += Math.sin(angle)*z.speed;
             if(Math.hypot(player.x-z.x, player.y-z.y) < 30) { 
                 if (!isInvincible) { 
                     player.hp -= 0.5; updateHUD();
-                    const bs = document.getElementById("blood-screen");
-                    if(bs) {
-                        bs.style.boxShadow = "inset 0 0 50px rgba(255,0,0,0.5)";
-                        setTimeout(()=>bs.style.boxShadow="none", 100);
-                    }
+                    damageEffect();
+                }
+            }
+        });
+
+        // Perros (Rápidos)
+        dogs.forEach(d => {
+            let angle = Math.atan2(player.y - d.y, player.x - d.x);
+            // Velocidad base más alta (3)
+            d.x += Math.cos(angle)*d.speed; d.y += Math.sin(angle)*d.speed;
+            if(Math.hypot(player.x-d.x, player.y-d.y) < 25) { 
+                if (!isInvincible) { 
+                    player.hp -= 0.2; // Muerden rápido pero quitan menos
+                    updateHUD();
+                    damageEffect();
                 }
             }
         });
@@ -241,6 +270,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function damageEffect() {
+        const bs = document.getElementById("blood-screen");
+        if(bs) {
+            bs.style.boxShadow = "inset 0 0 50px rgba(255,0,0,0.5)";
+            setTimeout(()=>bs.style.boxShadow="none", 100);
+        }
+    }
+
     function draw() {
         ctx.fillStyle = '#222'; ctx.fillRect(0,0,canvas.width,canvas.height); 
         if(imgGround.complete) {
@@ -269,9 +306,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // DIBUJAR ZOMBIES (¡AQUÍ ESTABAN FALTANDO!)
+        // DIBUJAR ZOMBIES
         zombies.forEach(z => { 
             if(imgZombie.complete) ctx.drawImage(imgZombie, z.x-32, z.y-32, 64, 64); 
+        });
+
+        // DIBUJAR PERROS (NUEVO)
+        dogs.forEach(d => {
+            if(imgDog.complete && imgDog.naturalHeight !== 0) {
+                ctx.drawImage(imgDog, d.x-25, d.y-25, 50, 50); 
+            } else {
+                // Si no hay imagen, dibuja un círculo marrón rápido
+                ctx.fillStyle = '#8B4513'; 
+                ctx.beginPath(); ctx.arc(d.x, d.y, 20, 0, Math.PI*2); ctx.fill();
+                // Ojos brillantes
+                ctx.fillStyle = '#FFFF00';
+                ctx.beginPath(); ctx.arc(d.x-6, d.y-5, 3, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(d.x+6, d.y-5, 3, 0, Math.PI*2); ctx.fill();
+            }
         });
 
         // DIBUJAR JEFE
@@ -315,18 +367,32 @@ document.addEventListener('DOMContentLoaded', () => {
             gameRunning = true; isPaused = false;
             
             player.hp = 100; score = 0; level = 1; ammo = 12; killCount = 0;
-            zombies = []; bullets = []; items = []; boss = null; particles = [];
+            zombies = []; dogs = []; bullets = []; items = []; boss = null; particles = [];
             
             resize();
 
             if (zombieInterval) clearInterval(zombieInterval);
+            if (dogInterval) clearInterval(dogInterval); // Limpiar perros
             if (itemInterval) clearInterval(itemInterval);
 
+            // 1. Zombies (Cada 1 seg)
             zombieInterval = setInterval(() => { 
                 if(!boss && !isPaused && gameRunning) 
                     zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); 
             }, 1000);
 
+            // 2. Perros (Cada 3 seg - RÁPIDOS)
+            dogInterval = setInterval(() => { 
+                if(!boss && !isPaused && gameRunning && level >= 1) { // Salen desde nivel 1
+                    // Spawnean en bordes aleatorios
+                    let dx = Math.random()*canvas.width;
+                    let dy = Math.random() > 0.5 ? -50 : canvas.height + 50;
+                    // Velocidad base 3 (muy rápido)
+                    dogs.push({x:dx, y:dy, speed:3 + level*0.3}); 
+                }
+            }, 3000);
+
+            // 3. Ítems (Cada 8 seg)
             itemInterval = setInterval(() => { 
                 if(!isPaused && gameRunning) {
                     const type = Math.random() > 0.8 ? 'shield' : 'ammo';
