@@ -214,8 +214,29 @@ document.getElementById('best-score').innerText = highScore; // Lo muestra en el
         }
 
         for(let i=items.length-1; i>=0; i--) {
-            if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) { ammo += 10; items.splice(i,1); updateHUD(); }
+        if(Math.hypot(player.x-items[i].x, player.y-items[i].y) < 40) { 
+
+            // Si es escudo
+            if (items[i].type === 'shield') {
+                isInvincible = true;
+                showAlert("¡ESCUDO ACTIVO!", "INVENCIBLE POR 5s");
+                playTone(600, 'sine'); // Sonido especial
+
+                // Desactivar a los 5 segundos
+                setTimeout(() => { 
+                    isInvincible = false; 
+                    showAlert("¡ESCUDO AGOTADO!", "CUIDADO");
+                }, 5000);
+            } 
+            // Si es munición (normal)
+            else {
+                ammo += 10; 
+                updateHUD();
+            }
+
+            items.splice(i,1); 
         }
+    }
         if(player.hp <= 0) {
             // --- NUEVO: Lógica de Récord ---
             if (score > highScore) {
