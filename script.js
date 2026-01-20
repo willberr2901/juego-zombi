@@ -322,28 +322,28 @@ document.getElementById('best-score').innerText = highScore; // Lo muestra en el
         
         resize();
 
-        // --- CORRECCIÓN: Limpiamos intervalos viejos antes de crear nuevos ---
+        // --- CORRECCIÓN: Limpiamos intervalos viejos ---
         if (zombieInterval) clearInterval(zombieInterval);
         if (itemInterval) clearInterval(itemInterval);
 
-        // --- Asignamos los nuevos intervalos a las variables ---
+        // --- 1. Intervalo de Zombies (Cada 1 segundo) ---
         zombieInterval = setInterval(() => { 
             if(!boss && !isPaused && gameRunning) 
                 zombies.push({x:Math.random()*canvas.width, y:-50, speed:1+level*0.2}); 
         }, 1000);
 
-        // --- Intervalo de Ítems (Limpio y corregido) ---
-       itemInterval = setInterval(() => { 
-           if(!isPaused && gameRunning) {
-               // 20% de probabilidad de ser 'shield' (escudo), si no, es 'ammo'
-               const type = Math.random() > 0.8 ? 'shield' : 'ammo';
-               items.push({
-                   x: Math.random()*canvas.width, 
-                   y: Math.random()*canvas.height,
-                   type: type 
-               }); 
-           }
-       }, 8000);
+        // --- 2. Intervalo de Ítems (Cada 8 segundos) - CORREGIDO SIN DUPLICADOS ---
+        itemInterval = setInterval(() => { 
+            if(!isPaused && gameRunning) {
+                // 20% de probabilidad de ser 'shield' (escudo), si no, es 'ammo'
+                const type = Math.random() > 0.8 ? 'shield' : 'ammo';
+                items.push({
+                    x: Math.random()*canvas.width, 
+                    y: Math.random()*canvas.height,
+                    type: type 
+                }); 
+            }
+        }, 8000);
         
         updateHUD(); 
         loop();
