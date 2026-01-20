@@ -266,9 +266,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const touchZone = document.getElementById("touch-zone");
     const joyWrapper = document.getElementById("joystick-wrapper");
     const joyStick = document.getElementById("joystick-stick");
-    if(touchZone) {
-        touchZone.addEventListener("touchstart", e => { if(isPaused) return; e.preventDefault(); const t=e.touches[0]; startX=t.clientX; startY=t.clientY; dragging=true; joyWrapper.style.display="block"; joyWrapper.style.left=(startX-60)+"px"; joyWrapper.style.top=(startY-60)+"px"; joyStick.style.transform=`translate(-50%, -50%)`; joyX=0; joyY=0; });
-        touchZone.addEventListener("touchmove", e => { if(!dragging || isPaused) return; e.preventDefault(); const t=e.touches[0]; let dx=t.clientX-startX; let dy=t.clientY-startY; const dist=Math.hypot(dx, dy); if(dist>50){ const r=50/dist; dx*=r; dy*=r; } joyStick.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; joyX=dx/50; joyY=dy/50; });
-        touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
+  if(touchZone) {
+        // Función para soltar el joystick (Freno de emergencia)
+        const stopDrag = () => { 
+            dragging = false; 
+            joyWrapper.style.display = "none"; 
+            joyX = 0; 
+            joyY = 0; 
+        };
+
+        touchZone.addEventListener("touchstart", e => { 
+            if(isPaused) return; 
+            e.preventDefault(); 
+            const t = e.touches[0]; 
+            startX = t.clientX; 
+            startY = t.clientY; 
+            dragging = true; 
+            joyWrapper.style.display = "block"; 
+            joyWrapper.style.left = (startX - 60) + "px"; 
+            joyWrapper.style.top = (startY - 60) + "px"; 
+            joyStick.style.transform = `translate(-50%, -50%)`; 
+            joyX = 0; joyY = 0; 
+        });
+
+        touchZone.addEventListener("touchmove", e => { 
+            if(!dragging || isPaused) return; 
+            e.preventDefault(); 
+            const t = e.touches[0]; 
+            let dx = t.clientX - startX; 
+            let dy = t.clientY - startY; 
+            const dist = Math.hypot(dx, dy); 
+            
+            // Limitar el movimiento del stick al círculo
+            if(dist > 50){ 
+                const r = 50 / dist; 
+                dx *= r; 
+                dy *= r; 
+            } 
+            
+            joyStick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; 
+            joyX = dx / 50; 
+            joyY = dy / 50; 
+        });
+
+        // Estos dos eventos aseguran que el joystick se suelte siempre
+        touchZone.addEventListener("touchend", stopDrag);
+        touchZone.addEventListener("touchcancel", stopDrag); 
     }
 });
