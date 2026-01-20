@@ -119,7 +119,37 @@ document.getElementById('best-score').innerText = highScore; // Lo muestra en el
                 vy = -20; 
             }
         }
-        bullets.push({x: player.x, y: player.y, vx: vx, vy: vy});
+        // --- NUEVO: Lógica de Escopeta (Desde Nivel 3) ---
+        if (level >= 3) {
+            // Calculamos el ángulo hacia donde estás apuntando
+            const angle = Math.atan2(vy, vx);
+            const spread = 0.3; // "Apertura" del abanico (0.3 es buen ángulo)
+
+            // Bala 1: Central
+            bullets.push({x: player.x, y: player.y, vx: vx, vy: vy});
+            
+            // Bala 2: Izquierda (Restamos ángulo)
+            bullets.push({
+                x: player.x, y: player.y, 
+                vx: Math.cos(angle - spread) * 20, 
+                vy: Math.sin(angle - spread) * 20
+            });
+
+            // Bala 3: Derecha (Sumamos ángulo)
+            bullets.push({
+                x: player.x, y: player.y, 
+                vx: Math.cos(angle + spread) * 20, 
+                vy: Math.sin(angle + spread) * 20
+            });
+            
+            // Efecto de sonido extra (opcional, usamos el mismo tono agudo)
+            playTone(300, 'sawtooth'); 
+
+        } else {
+            // Disparo Normal (Niveles 1 y 2)
+            bullets.push({x: player.x, y: player.y, vx: vx, vy: vy});
+        }
+        // ------------------------------------------------
         ammo--; updateHUD(); playTone(400, 'square');
     }
 
