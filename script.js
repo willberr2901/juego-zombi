@@ -105,11 +105,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
             vx = Math.cos(angle) * 20; vy = Math.sin(angle) * 20;
         } else {
-            if (dragging) { vx = joyX * 20; vy = joyY * 20; }
-            else {
-                let target = boss || zombies[0]; 
-                if (target) { const angle = Math.atan2(target.y - player.y, target.x - player.x); vx = Math.cos(angle) * 20; vy = Math.sin(angle) * 20; }
-                else { vx = 0; vy = -20; }
+            // Lógica Móvil Corregida
+            if (dragging) { 
+                // Si mueve el joystick, dispara en esa dirección
+                vx = joyX * 20; 
+                vy = joyY * 20; 
+            } else {
+                // Si está quieto, dispara siempre hacia arriba (frente)
+                vx = 0; 
+                vy = -20; 
             }
         }
         bullets.push({x: player.x, y: player.y, vx: vx, vy: vy});
