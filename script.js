@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameRunning = false, isPaused = false;
     let score = 0, level = 1, ammo = 12, maxAmmo = 12;
     let killCount = 0, killsForNextLevel = 10;
+    // Agrega esto junto a tus otras variables:
+let highScore = localStorage.getItem('ciudadZ_record') || 0; // Recupera o empieza en 0
+document.getElementById('best-score').innerText = highScore; // Lo muestra en el menú
     
     // --- NUEVO: Variables para controlar los intervalos ---
     let zombieInterval = null;
