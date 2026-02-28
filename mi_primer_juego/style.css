@@ -1,93 +1,79 @@
-body {
+body{
     margin:0;
     overflow:hidden;
     background:#000;
     font-family:Arial;
 }
 
-canvas {
+/* CANVAS */
+canvas{
     position:absolute;
     inset:0;
 }
 
 /* HUD */
-.ui-container {
+#game-ui{
     position:absolute;
     inset:0;
     pointer-events:none;
 }
 
-.hud-card {
+.health-card{
     position:absolute;
-    background:rgba(0,0,0,0.8);
-    padding:10px 15px;
-    border-radius:8px;
-    border:2px solid #333;
-}
-
-/* VIDA */
-.health-card {
     top:20px;
     left:20px;
-    width:300px;
-    border-left:5px solid red;
-}
-
-.hp-track {
-    position:relative;
-    height:18px;
+    width:250px;
     background:#111;
-    overflow:hidden;
-    border-radius:4px;
+    padding:10px;
+    border-left:5px solid red;
+    color:white;
 }
 
-#health-bar {
+.hp-track{
+    position:relative;
+    height:15px;
+    background:#222;
+    margin:5px 0;
+}
+
+#health-bar{
     position:absolute;
     height:100%;
     width:100%;
-    background:linear-gradient(90deg,#ff0000,#ff4444);
-    transition:width 0.15s linear;
+    background:red;
+    transition:width 0.15s;
 }
 
-#health-bar-delay {
+#health-bar-delay{
     position:absolute;
     height:100%;
     width:100%;
-    background:#ff9900;
-    transition:width 0.6s ease;
+    background:orange;
+    transition:width 0.5s;
 }
 
-.big-text {
-    font-size:24px;
-    font-weight:bold;
-}
-
-/* VIDA BAJA */
-.low-hp {
+.low-hp{
     animation:pulse 0.5s infinite;
 }
 
-@keyframes pulse {
+@keyframes pulse{
     0%{box-shadow:0 0 5px red;}
     50%{box-shadow:0 0 20px red;}
     100%{box-shadow:0 0 5px red;}
 }
 
-/* DAÑO */
-.damage-hit {
-    animation:shake 0.2s;
-}
-
-@keyframes shake {
-    0%{transform:translate(2px,2px);}
-    25%{transform:translate(-2px,2px);}
-    50%{transform:translate(2px,-2px);}
-    75%{transform:translate(-2px,-2px);}
-    100%{transform:translate(0,0);}
+/* STATS */
+.stats-card{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:#111;
+    padding:10px;
+    color:white;
 }
 
 /* CROSSHAIR */
-#crosshair {
+#crosshair{
     position:absolute;
     width:20px;
     height:20px;
@@ -97,23 +83,23 @@ canvas {
     transform:translate(-50%,-50%);
 }
 
-/* FLASH DISPARO */
-.flash {
+/* FLASH */
+.flash{
     position:absolute;
     inset:0;
-    background:rgba(255,255,255,0.1);
+    background:rgba(255,255,255,0.2);
     animation:flash 0.1s;
 }
 
-@keyframes flash {
+@keyframes flash{
     from{opacity:1;}
     to{opacity:0;}
 }
 
-/* SANGRE */
-#blood-screen {
+/* BLOOD */
+#blood-screen{
     position:absolute;
     inset:0;
     pointer-events:none;
-    box-shadow: inset 0 0 0 0 red;
+    box-shadow:inset 0 0 0 0 red;
 }
