@@ -3,6 +3,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
+
+    let visualHP = 100;
+let delayHP = 100;
     
     function resize() {
         canvas.width = window.innerWidth;
@@ -81,18 +84,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateHUD() {
-        document.getElementById("score").innerText = score;
-        document.getElementById("ammo").innerText = ammo;
-        document.getElementById("level").innerText = level;
-        document.getElementById("health-num").innerText = Math.floor(player.hp);
-        document.getElementById("health-bar").style.width = Math.max(0, player.hp) + "%";
-        
-        if (boss) {
-            document.getElementById("boss-health-bar").style.width = (boss.hp / boss.maxHp * 100) + "%";
-        } else {
-            document.getElementById("boss-hud").style.display = "none";
-        }
+    document.getElementById("score").innerText = score;
+    document.getElementById("ammo").innerText = ammo;
+    document.getElementById("level").innerText = level;
+
+    // Animación suave del número
+    visualHP += (player.hp - visualHP) * 0.1;
+    delayHP += (player.hp - delayHP) * 0.03;
+
+    document.getElementById("health-num").innerText = Math.floor(visualHP);
+
+    document.getElementById("health-bar").style.width = visualHP + "%";
+    document.getElementById("health-bar-delay").style.width = delayHP + "%";
+
+    // Efecto vida baja
+    const card = document.querySelector(".health-card");
+    if (player.hp < 30) {
+        card.classList.add("low-hp");
+    } else {
+        card.classList.remove("low-hp");
     }
+
+    // Boss
+    if (boss) {
+        document.getElementById("boss-health-bar").style.width = (boss.hp / boss.maxHp * 100) + "%";
+    } else {
+        document.getElementById("boss-hud").style.display = "none";
+    }
+}
 
     function shoot() {
         if(ammo <= 0 || isPaused) return;
@@ -249,4 +268,5 @@ document.addEventListener('DOMContentLoaded', () => {
         touchZone.addEventListener("touchmove", e => { if(!dragging || isPaused) return; e.preventDefault(); const t=e.touches[0]; let dx=t.clientX-startX; let dy=t.clientY-startY; const dist=Math.hypot(dx, dy); if(dist>50){ const r=50/dist; dx*=r; dy*=r; } joyStick.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; joyX=dx/50; joyY=dy/50; });
         touchZone.addEventListener("touchend", () => { dragging=false; joyWrapper.style.display="none"; joyX=0; joyY=0; });
     }
+
 });
