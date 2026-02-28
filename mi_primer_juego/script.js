@@ -8,10 +8,13 @@ function resize(){
 window.addEventListener("resize", resize);
 resize();
 
-/* VARIABLES */
+/* ================= VARIABLES ================= */
+
 let player = {x:300,y:300,hp:100,maxHp:100};
+
 let zombies = [];
 let bullets = [];
+let particles = [];
 
 let score = 0;
 let ammo = 12;
@@ -20,22 +23,58 @@ let level = 1;
 let visualHP = 100;
 let delayHP = 100;
 
-let slowMotion = false;
+let mouseX = 0;
+let mouseY = 0;
 
-/* CROSSHAIR */
-let mouseX=0, mouseY=0;
+let crosshairSize = 20;
+let cameraShake = 0;
+
+/* ================= AUDIO ================= */
+
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playGunSound(){
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.type = "square";
+    osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.1);
+
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.1);
+}
+
+/* ================= INPUT ================= */
+
 window.addEventListener("mousemove", e=>{
     mouseX = e.clientX;
     mouseY = e.clientY;
-    document.getElementById("crosshair").style.left = mouseX+"px";
-    document.getElementById("crosshair").style.top = mouseY+"px";
+
+    const cross = document.getElementById("crosshair");
+    cross.style.left = mouseX+"px";
+    cross.style.top = mouseY+"px";
+    cross.style.width = crosshairSize+"px";
+    cross.style.height = crosshairSize+"px";
 });
 
-/* DISPARO */
-function shoot(){
-    if(ammo<=0) return;
+window.addEventListener("click", shoot);
 
-    const angle = Math.atan2(mouseY-player.y, mouseX-player.x);
+/* ================= DISPARO ================= */
+
+function shoot(){
+    if(ammo <= 0) return;
+
+    const baseAngle = Math.atan2(mouseY-player.y, mouseX-player.x);
+
+    const spread = (Math.random()-0.5)*0.3;
+    const angle = baseAngle + spread;
 
     bullets.push({
         x:player.x,
@@ -46,41 +85,80 @@ function shoot(){
 
     ammo--;
 
+    crosshairSize = 35;
+    cameraShake = 8;
+
+    muzzleFlash(player.x, player.y);
     flashEffect();
+    playGunSound();
 }
 
-/* FLASH */
+/* ================= EFECTOS ================= */
+
 function flashEffect(){
     const flash = document.createElement("div");
     flash.className="flash";
     document.body.appendChild(flash);
-
     setTimeout(()=>flash.remove(),100);
 }
 
-/* DAÑO */
+function muzzleFlash(x,y){
+    for(let i=0;i<6;i++){
+        particles.push({
+            x:x,
+            y:y,
+            vx:(Math.random()-0.5)*6,
+            vy:(Math.random()-0.5)*6,
+            life:0.3,
+            size:Math.random()*4+2,
+            color:"orange"
+        });
+    }
+}
+
+function bloodEffect(x,y){
+    for(let i=0;i<12;i++){
+        particles.push({
+            x:x,
+            y:y,
+            vx:(Math.random()-0.5)*10,
+            vy:(Math.random()-0.5)*10,
+            life:1,
+            size:Math.random()*6+2,
+            color:"#8a0303"
+        });
+    }
+}
+
 function hitEffect(){
-    const card = document.querySelector(".health-card");
-
-    card.classList.add("damage-hit");
-
     document.getElementById("blood-screen").style.boxShadow =
         "inset 0 0 80px rgba(255,0,0,0.6)";
 
     setTimeout(()=>{
-        card.classList.remove("damage-hit");
         document.getElementById("blood-screen").style.boxShadow="none";
     },100);
+
+    cameraShake = 10;
 }
 
-/* HUD */
+/* ================= SPAWN ================= */
+
+setInterval(()=>{
+    zombies.push({
+        x:Math.random()*canvas.width,
+        y:-50,
+        speed:1 + Math.random()
+    });
+},1000);
+
+/* ================= HUD ================= */
+
 function updateHUD(){
 
     visualHP += (player.hp - visualHP) * 0.1;
     delayHP += (player.hp - delayHP) * 0.03;
 
     document.getElementById("health-num").innerText = Math.floor(visualHP);
-
     document.getElementById("health-bar").style.width = visualHP+"%";
     document.getElementById("health-bar-delay").style.width = delayHP+"%";
 
@@ -92,22 +170,17 @@ function updateHUD(){
 
     if(player.hp < 30){
         card.classList.add("low-hp");
-    }else{
+    } else {
         card.classList.remove("low-hp");
     }
 }
 
-/* SPAWN */
-setInterval(()=>{
-    zombies.push({
-        x:Math.random()*canvas.width,
-        y:-50,
-        speed:1
-    });
-},1000);
+/* ================= UPDATE ================= */
 
-/* UPDATE */
 function update(){
+
+    crosshairSize += (20 - crosshairSize) * 0.2;
+    cameraShake *= 0.8;
 
     /* BALAS */
     for(let i=bullets.length-1;i>=0;i--){
@@ -118,15 +191,11 @@ function update(){
         for(let j=zombies.length-1;j>=0;j--){
             let z = zombies[j];
 
-            if(Math.hypot(b.x-z.x,b.y-z.y)<30){
+            if(Math.hypot(b.x-z.x,b.y-z.y) < 30){
+                bloodEffect(z.x,z.y);
                 zombies.splice(j,1);
                 bullets.splice(i,1);
                 score+=10;
-
-                /* CAMARA LENTA */
-                slowMotion = true;
-                setTimeout(()=>slowMotion=false,200);
-
                 break;
             }
         }
@@ -138,8 +207,8 @@ function update(){
         z.x += Math.cos(angle)*z.speed;
         z.y += Math.sin(angle)*z.speed;
 
-        if(Math.hypot(player.x-z.x,player.y-z.y)<30){
-            player.hp -= 0.2;
+        if(Math.hypot(player.x-z.x,player.y-z.y) < 30){
+            player.hp -= 0.3;
             hitEffect();
         }
     });
@@ -147,19 +216,31 @@ function update(){
     updateHUD();
 }
 
-/* DRAW */
+/* ================= DRAW ================= */
+
 function draw(){
+
+    ctx.save();
+
+    const shakeX = (Math.random()-0.5)*cameraShake;
+    const shakeY = (Math.random()-0.5)*cameraShake;
+
+    ctx.translate(shakeX, shakeY);
+
     ctx.fillStyle="#222";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
+    /* PLAYER */
     ctx.fillStyle="blue";
     ctx.fillRect(player.x-15,player.y-15,30,30);
 
+    /* ZOMBIES */
     ctx.fillStyle="green";
     zombies.forEach(z=>{
         ctx.fillRect(z.x-15,z.y-15,30,30);
     });
 
+    /* BALAS */
     ctx.strokeStyle="yellow";
     bullets.forEach(b=>{
         ctx.beginPath();
@@ -167,22 +248,32 @@ function draw(){
         ctx.lineTo(b.x-b.vx,b.y-b.vy);
         ctx.stroke();
     });
+
+    /* PARTICLES */
+    particles.forEach((p,i)=>{
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 0.05;
+
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        if(p.life <= 0) particles.splice(i,1);
+    });
+
+    ctx.restore();
 }
 
-/* LOOP */
+/* ================= LOOP ================= */
+
 function loop(){
-
-    if(slowMotion){
-        setTimeout(loop,30);
-    }else{
-        requestAnimationFrame(loop);
-    }
-
+    requestAnimationFrame(loop);
     update();
     draw();
 }
 
 loop();
-
-/* CLICK */
-window.addEventListener("click", shoot);
